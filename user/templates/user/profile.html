@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Profile-{{ user }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="section-title">
+            <div class="justify-content-center d-flex">
+                <h2>Personal Details</h2>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <p>Username:{{ user.username }}</p>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary">follow</button>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
