@@ -64,8 +64,8 @@ document.body.appendChild(black);
 
 var grabbed = false;
 
-controls = new THREE.OrbitControls( camera );
-controls.addEventListener( 'change', render );
+// controls = new THREE.OrbitControls( camera );
+// controls.addEventListener( 'change', render );
 
 
 $(document).ready(function () {
@@ -91,7 +91,7 @@ $(document).ready(function () {
             }
 
             else if (intersects[i].object['checkersObject'] == 'Tile') {
-                controls.enabled = false;
+                // controls.enabled = false;
             }
             /*
              An intersection has the following properties :
@@ -149,7 +149,7 @@ $(document).ready(function () {
              - uv : intersection point in the object's UV coordinates (THREE.Vector2)
              */
         }
-        controls.enabled = true;
+        // controls.enabled = true;
 
     });
 
