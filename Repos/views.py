@@ -18,26 +18,16 @@ def init_Repo(request):
 
 
 def add_remove_collaborator(request, ownerUsername, repoName):
-
     rName = str(ownerUsername) + '/' + repoName
     curRepo = get_object_or_404(Repo, repoURL = rName)
-    print(curRepo.collaborators.count())
-
     if request.method == 'POST':
         form = AddCollaboratorForm(request.POST)
         if form.is_valid():
             collaborator = User.objects.filter(username = form.cleaned_data['collaboratorUsername']).first()
-
-            print(f'{curRepo} {collaborator}')
-
             if(curRepo.collaborators.filter(username = collaborator.username).exists()):
-                print('removed')
                 curRepo.collaborators.remove(collaborator)
             else:
-                print('added')
                 curRepo.collaborators.add(collaborator)
-
-            print(curRepo.collaborators.count())
             curRepo.save()
             return redirect('home') #for now
     else:
