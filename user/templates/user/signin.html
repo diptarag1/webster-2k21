@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Sign In
+{% endblock %}
+
+{% block content %}
+    <style>html,
+    body {
+        height: 100%;
+    }
+
+    body {
+        display: flex;
+        align-items: center;
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+    }
+
+    .form-signin {
+        width: 100%;
+        max-width: 330px;
+        padding: 15px;
+        margin: auto;
+    }
+
+    .form-signin .checkbox {
+        font-weight: 400;
+    }
+
+    .form-signin .form-floating:focus-within {
+        z-index: 2;
+    }
+
+    .form-signin input[type="email"] {
+        margin-bottom: -1px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .form-signin input[type="password"] {
+        margin-bottom: 10px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+    </style>
+{#    <form class="box mx-auto" method="POST" action="">#}
+{#        {% csrf_token %}#}
+{##}
+{#        <h1>Login</h1>#}
+{#        <p class="text-muted"> Please enter your login and password!</p>#}
+{#        <input type="text" name="username" placeholder="Username">#}
+{#        <div class="passw mx-auto d-block" style="margin-bottom: -20px;">#}
+{#            <input type="password" name="password" id="password" placeholder="Password">#}
+{#            <span toggle="#password" class="fa fa-eye toggle-password field-icon"></span>#}
+{#        </div>#}
+{#        <a class="forgot" href="{% url 'signup' %}">Forgot password?</a>#}
+{#        <input type="submit" name="" value="Login">#}
+{#        <p class="forgot text-muted" style="line-height: 2.5em;">Don't have an account? <a#}
+{#                href="{% url 'signup' %}" class="signup">Sign Up</a></p>#}
+{#    </form>#}
+
+
+    <main class="form-signin text-center">
+        <form class="box mx-auto" method="POST" action="">
+            {% csrf_token %}
+            <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+
+            <div class="form-floating">
+                <input type="username" id="username" class="form-control" name="username" placeholder="Username">
+                <label for="floatingInput">Username</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" id="password" class="form-control" name="password" placeholder="Password">
+                <label for="floatingPassword">Password</label>
+            </div>
+
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" value="remember-me"> Remember me
+                </label>
+            </div>
+             <a class="forgot" href="{% url 'signup' %}">Forgot password?</a>
+        <p class="forgot text-muted" style="line-height: 2.5em;">Don't have an account? <a
+                href="{% url 'signup' %}" class="signup">Sign Up</a></p>
+            <button name="Sign in" class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+            <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
+        </form>
+    </main>
+
+
+
+{% endblock %}
