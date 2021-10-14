@@ -9,11 +9,11 @@ rw_dir = '~/git_test_repos'
 class Repo(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
     collaborators = models.ManyToManyField(User, related_name='collaborator')
-    repoURL = models.CharField(max_length=30)
+    repoURL = models.CharField(max_length=30) #ownerName/repoName
 
 
     def __str__(self):
-        return self.repoURL
+        return self.repoURL 
 
     def save(self, *args, **kwargs):
         gitRepo.init(os.path.join(rw_dir, self.repoURL))
