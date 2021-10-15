@@ -27,6 +27,12 @@
             <a href="{% url 'delete_repo' owner=repo.owner name=repo.name  %}"><button class="btn" disabled="disabled" id="delete_btn"> Delete</button></a>
         </div>
     </div>
+
+    <div id="body">
+        {% for item in contents %}
+            {{ item }} <br>
+        {% endfor %}
+    </div>
 {% endblock %}
 
 {% block script %}

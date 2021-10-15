@@ -4,6 +4,8 @@ helper_images/
 node_modules
 .idea/
 
+Repos/serverLocation.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
