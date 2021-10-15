@@ -67,8 +67,12 @@
                                 {% for item in dirContents %}
                                     <li class="collection-item">
                                         <div class="secondary-content left">
-                                            <i class=" material-icons ">folder</i><a
-                                                href="{% url 'detail_repo2' owner=repo.owner name=repo.name subpath=curDir|add:"/"|add:item  %}"> {{ item }}</a>
+                                            <i class=" material-icons ">folder</i>
+                                                {% if curDir != '' %}
+                                               <a href="{% url 'detail_repo2' owner=repo.owner name=repo.name subpath=curDir|add:"/"|add:item  %}"> {{ item }}</a>
+                                                {% else %}
+                                                    <a href="{% url 'detail_repo2' owner=repo.owner name=repo.name subpath=curDir|add:item  %}"> {{ item }}</a>
+                                            {% endif %}
                                         </div>
                                         <div class="center-align">First Commit</div>
                                        <div class="right-align">69 days ago</div>
