@@ -3,20 +3,33 @@
 {% block title %}
     Profile-{{ user }}
 {% endblock %}
+{% block css %}
+    <style>
+    body{
+        {#background-color:#2E3138;#}
+    }
+        #profilePageImage {
+            width: 370px;
+            height: 370px;
+            overflow-y: hidden;
+            overflow-x: hidden;
+            border-radius: 50%;
+        }
+
+        #main {
+            margin-top: 30px;
+        }
+
+        #rightSection {
+            margin-top: 30px;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
     <nav class=" red darken-3">
         <div class="nav-wrapper">
-            <a href="#" class="brand-logo center">ChapaHuaGit</a>
-
-            {#        <ul id="nav-mobile" class="right hide-on-med-and-down">#}
-            {#            {% if user.is_authenticated %}#}
-            {#                <li><a href="{% url 'profile' user %}">#}
-            {#                    <button class="btn purple lighten-1" type="submit">Profile</button>#}
-            {#                </a>#}
-            {#                </li>#}
-            {#            {% endif %}#}
-            {##}
+            <a href="#" class="brand-logo center">Secure Hub</a>
             <ul class="right">
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'signout' %}">
@@ -27,41 +40,65 @@
             </ul>
         </div>
     </nav>
-    <div class="row">
-        <div class="col s3">
-            {#            <div class="container">#}
-            <div class="section-title">
-                <div class="justify-content-center d-flex">
-                    <h2>Personal Details</h2>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <p>Username:{{ user.username }}</p>
-                </div>
-                <div class="card-footer">
-                    <button class="btn btn-primary">follow</button>
-                </div>
-            </div>
+    <div id="main" class="row">
+        <div class="col s10 offset-s1 row">
+            <div class="col s4">
+                <div class="card z-depth-0">
+                    <div class="card-image">
+                        <img id="profilePageImage" src="https://www.vangoghgallery.com/img/starry_night_full.jpg">
 
-            {#            </div>#}
-        </div>
-        <div class="col s6">
-            <div class="section-title">
-                <div class="justify-content-center d-flex">
-                    <h2>Activiy</h2>
+                    </div>
+                    {#                     <span class="card-title">Card Title</span>#}
+                    <div class="card-content">
+                        <span class="card-title">{{ user.username }}</span>
+                        <p>I am a very simple card. I am good at containing small bits of information.
+                            I am convenient because I require little markup to use effectively.</p>
+                    </div>
+                    <div class="card-action">
+                        <a href="#">This is a link</a>
+                    </div>
                 </div>
-            </div>
+                <div class="card">
+                    <div class="card-body">
+                        <p>Username:</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary">follow</button>
+                    </div>
+                </div>
 
-        </div>
-        <div class="col s3">
-            <div class="section-title">
-                <div class="justify-content-center d-flex">
-                    <h2>Recent</h2>
+                {#            </div>#}
+            </div>
+            <div class="col s8">
+                <div id="rightSection">
+                    <div class="row ">
+                        <div class="col s12">
+                            <ul class="tabs  ">
+                                <li class="tab col s3 purple-text " ><a  class="active  purple-text " href="#test1">OverView</a></li>
+                                <li class="tab col s3"><a class="  purple-text "  href="#test2">Repositories</a></li>
+                                <li class="tab col s3 "><a class="  purple-text "  href="#test3">Projects </a></li>
+                                <li class="tab col s3"><a class="  purple-text "  href="#test4">Packages</a></li>
+                            </ul>
+                        </div>
+                        <div id="test1" class="col s12">Test 1</div>
+                        <div id="test2" class="col s12">Test 2</div>
+                        <div id="test3" class="col s12">Test 3</div>
+                        <div id="test4" class="col s12">Test 4</div>
+                    </div>
                 </div>
+
+
             </div>
 
         </div>
     </div>
 
+
+{% endblock %}
+{% block script %}
+    <script>
+        $(document).ready(function () {
+            $('.tabs').tabs();
+        });
+    </script>
 {% endblock %}

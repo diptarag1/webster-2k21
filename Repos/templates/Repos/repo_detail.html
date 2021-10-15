@@ -24,6 +24,7 @@
                     <div class="col right" id="star-section">
                         {% include 'Repos/star-section.html' %}
                     </div>
+
                     <a class="col right" href="{% url 'profile' user %}">
                         <button class="btn purple lighten-1" type="submit">Profile</button>
                     </a>
@@ -71,17 +72,17 @@
                                                 href="#!"> {{ item }}</a>
                                         </div>
                                         <div class="center-align">First Commit</div>
-                                       <div class="right-align">69 days ago</div>
+                                        <div class="right-align">69 days ago</div>
                                     </li>
                                 {% endfor %}
-                             {% for item in fileContents %}
+                                {% for item in fileContents %}
                                     <li class="collection-item">
                                         <div class="secondary-content left">
                                             <i class=" material-icons ">folder</i><a
                                                 href="#!"> {{ item }}</a>
                                         </div>
                                         <div class="center-align">First Commit</div>
-                                       <div class="right-align">69 days ago</div>
+                                        <div class="right-align">69 days ago</div>
                                     </li>
                                 {% endfor %}
                             </div>
