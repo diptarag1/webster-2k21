@@ -3,12 +3,9 @@
 {% endblock %}
 {% block content %}
     {% include 'navBar.html' %}
-
-    <main role="main" class="container p-3">
-        <div class="row">
-            <div class="col-2">
-                <div class="content-section">
-                    <h3>Welcome,{{ user }}</h3>
+ <div class="row">
+        <div class="col s3">
+            <h3>Welcome,{{ user }}</h3>
                     <a href="{% url 'initrepo' %}"><button class="btn btn-primary">Create New Repository</button></a>
                     <p class='text-muted'>List of your repositories.
                     <ul class="list-group">
@@ -17,6 +14,27 @@
                         {% endfor %}
                     </ul>
                     </p>
+        </div>
+        <div class="col s6">    <div class="section-title">
+                    <div class="justify-content-center d-flex">
+                        <h2>Activiy</h2>
+                    </div>
+                </div>
+
+</div>
+        <div class="col s3">    <div class="section-title">
+                    <div class="justify-content-center d-flex">
+                        <h2>Recent</h2>
+                    </div>
+                </div>
+
+</div>
+    </div>
+    <main role="main" class="container p-3">
+        <div class="row">
+            <div class="col-2">
+                <div class="content-section">
+
                 </div>
             </div>
             <div class="col-6">
