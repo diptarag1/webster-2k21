@@ -4,8 +4,8 @@ from .models import Repo,Issue
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.http import JsonResponse
-
-
+import os
+from .serverLocation import rw_dir
 
 # Create your views here.
 def init_Repo(request):
@@ -21,10 +21,20 @@ def init_Repo(request):
     return render(request, 'Repos/repoCreate.html', {'form': form})
 
 
-def detail_repo(request, name, owner):
+def detail_repo(request, name, owner, **kwargs):
     context = {}
     repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
     context['repo'] = repo
+    if('subpath' in kwargs.keys()):
+        allContents = os.listdir(os.path.join(rw_dir, owner, name, kwargs['subpath']))
+    else:
+        allContents = os.listdir(os.path.join(rw_dir, owner, name))
+    contents = []
+    for f in allContents:
+        print(f)
+        if not str(f).endswith('.git'):
+            contents.append(f)
+    context['contents'] = contents
     return render(request, 'Repos/repo_detail.html', context=context)
 
 

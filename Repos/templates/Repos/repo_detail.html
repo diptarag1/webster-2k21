@@ -6,8 +6,10 @@
     {{ repo.name }}
     <!-- Modal Trigger -->
     <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Delete Repository</a>
-    <a class="waves-effect waves-light btn modal-trigger" href="{% url 'issue_list' owner=repo.owner name=repo.name %}">Issues List</a>
-    <a class="waves-effect waves-light btn modal-trigger" href="{% url 'create_issue' owner=repo.owner name=repo.name %}">Create new Issue</a>
+    <a class="waves-effect waves-light btn modal-trigger" href="{% url 'issue_list' owner=repo.owner name=repo.name %}">Issues
+        List</a>
+    <a class="waves-effect waves-light btn modal-trigger"
+       href="{% url 'create_issue' owner=repo.owner name=repo.name %}">Create new Issue</a>
     <div id="star-section">
         {% include 'Repos/star-section.html' %}
     </div>
@@ -32,6 +34,12 @@
                 <button class="btn" disabled="disabled" id="delete_btn"> Delete</button>
             </a>
         </div>
+    </div>
+
+    <div id="body">
+        {% for item in contents %}
+            {{ item }} <br>
+        {% endfor %}
     </div>
 {% endblock %}
 
