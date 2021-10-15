@@ -1,16 +1,110 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
-
+{% load materializecss %}
 {% block title %}
     SignUp
 {% endblock %}
 {% block content %}
-    <h2>Sign up</h2>
-    <div class="container">
-        <form method="post">
+    <style>
+
+    .thinText3{
+        font-weight: 200;
+    }
+
+    </style>
+<div class="container row " id="myFormContainer">
+    <div class="col s6 offset-s3">
+        <h2 class="deep-purple-text thinText3 center">Please Sign Up</h2>
+    <div class="form-container">
+        <form method="POST">
             {% csrf_token %}
-            {{ form|crispy }}
-            <button type="submit">Sign up</button>
-    </form>
-    </div>
-{% endblock %}
+            <fieldset class=" blackShade1trans form-group">
+                <legend class="border-bottom mb-4"> Register</legend>
+
+                <div class="input-field col s12 black-text ">
+
+                    <input type="text" name="username" maxlength="150" autofocus class="  validate" required
+                        id="id_username">
+
+                    <label class="" for="id_username">Username</label>
+
+                    <p>
+                        Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+                    </p>
+
+                </div>
+
+
+                <div class="input-field col s12  ">
+
+                    <input type="text" name="first_name" maxlength="150" class=" validate" id="id_first_name">
+
+                    <label class="" for="id_first_name">First name</label>
+
+                </div>
+
+
+                <div class="input-field col s12  ">
+
+                    <input type="text" name="last_name" maxlength="150" class=" validate" id="id_last_name">
+
+                    <label class="" for="id_last_name">Last name</label>
+
+                </div>
+
+
+                <div class="input-field col s12  ">
+
+                    <input type="email" name="email" class=" validate" required id="id_email">
+
+                    <label class="" for="id_email">Email</label>
+
+                </div>
+
+                <div class="input-field col s12  ">
+
+                    <input type="password" name="password1" autocomplete="new-password" class=" validate" required
+                        id="id_password1">
+
+                    <label class="" for="id_password1">Password</label>
+
+                    <p>
+                    <ul>
+                        <li>Your password can’t be too similar to your other personal information.</li>
+                        <li>Your password must contain at least 8 characters.</li>
+                        <li>Your password can’t be a commonly used password.</li>
+                        <li>Your password can’t be entirely numeric.</li>
+                    </ul>
+                    </p>
+
+                </div>
+
+                <div class="input-field col s12  ">
+
+                    <input type="password" name="password2" autocomplete="new-password" class=" validate" required
+                        id="id_password2">
+
+                    <label class="" for="id_password2">Password confirmation</label>
+
+                    <p>
+                        Enter the same password as before, for verification.
+                    </p>
+
+                </div>
+
+                <div class="form-group">
+                    <a>
+                           <button class="btn btn-outline-info col s8 offset-s2 deep-purple darken-1" type="submit"> Sign Up </button>
+
+                    </a>
+                </div>
+                <a href="{%url 'signin' %}">
+                    <button class="btn btn-small  col s8 offset-s2 deep-purple darken-1"> Have an Account!? </button>
+                </a>
+            </fieldset>
+
+        </form>
+
+    </div></div>
+</div>
+
+{% endblock content %}

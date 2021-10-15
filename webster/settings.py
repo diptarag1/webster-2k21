@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'user',
     'Repos',
     'crispy_forms',
+    'materializecssform',
 ]
 
 MIDDLEWARE = [
