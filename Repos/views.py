@@ -8,7 +8,7 @@ def init_Repo(request):
     if request.method == 'POST':
         form = RepoCreateForm(request.POST)
         if form.is_valid():
-            new_repo = Repo(owner = request.user, repoURL = form.cleaned_data['rname'])
+            new_repo = Repo(owner = request.user, repoURL = form.cleaned_data['rname'],name=form.cleaned_data['rname'])
             new_repo.repoURL = str(new_repo.owner) + '/' + new_repo.repoURL
             new_repo.save()
             return redirect('home') #for now
@@ -16,6 +16,17 @@ def init_Repo(request):
         form = RepoCreateForm()
     return render(request, 'Repos/repoCreate.html', {'form': form})
 
+def detail_repo(request,name,owner):
+    context={}
+    repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
+    context['repo']=repo
+    return render(request,'Repos/repo_detail.html',context=context)
+
+def delete_repo(request,name,owner):
+    context={}
+    repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
+    repo.delete()
+    return redirect('home')
 
 def add_remove_collaborator(request, ownerUsername, repoName):
     rName = str(ownerUsername) + '/' + repoName

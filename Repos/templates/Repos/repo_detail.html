@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    {{ repo.name }}
+    <!-- Modal Trigger -->
+    <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
+
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h4>Delete Repository</h4>
+            <p>Once deleted you can not undo it</p>
+            <p>Type "{{ repo.owner }}/{{ repo.name }}/" to confirm delete</p>
+            <input type="text" placeholder="Type here" id="delete_box">
+        </div>
+        <div class="modal-footer">
+            <a href="{% url 'delete_repo' owner=repo.owner name=repo.name  %}"><button class="btn" disabled="disabled" id="delete_btn"> Delete</button></a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(document).ready(function () {
+            $('.modal').modal();
+        });
+    </script>
+    <script>
+    $(document).ready(function () {
+        $('#delete_box').keyup(function () {
+            var btnSubmit = $("#delete_btn");
+            var text="{{ repo.owner }}/{{ repo.name }}/";
+            if ($(this).val() === text) {
+                btnSubmit.removeAttr("disabled");
+            } else {
+                btnSubmit.attr("disabled", "disabled");
+            }
+        })
+    });
+    </script>
+{% endblock %}

@@ -13,7 +13,7 @@
                     <p class='text-muted'>List of your repositories.
                     <ul class="list-group">
                         {% for repo in repos %}
-                        <li class="list-group-item list-group-item-light">{{ repo.name }}</li>
+                            <a href="{% url 'detail_repo' owner=repo.owner name=repo.name %}"><li class="list-group-item list-group-item-light">{{ repo.name }}</li></a>
                         {% endfor %}
                     </ul>
                     </p>
