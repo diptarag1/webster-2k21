@@ -66,10 +66,10 @@ def star(request):
     html = render_to_string('Repos/star-section.html', context, request=request)
     return JsonResponse({'html': html})
 
-def forkg(request,id):
-    print(id)
-    # parent=Repo.objects.get(id=id)
-    # print(id)
-    # new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name)
-    # new_repo.save()
-    return HttpResponse("hi")
+def fork(request,id):
+    parent=Repo.objects.get(id=id)
+    child=Repo.objects.filter(name=parent.name,owner=request.user)
+    if(child.count()==0):
+        new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name)
+        new_repo.save()
+    return redirect('home')

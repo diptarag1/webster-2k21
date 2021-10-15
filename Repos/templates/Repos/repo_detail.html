@@ -8,9 +8,12 @@
     <div id="star-section">
         {% include 'Repos/star-section.html' %}
     </div>
-    {{ repo.pk }}
-    {% if repo.owner is not user %}
-    <a class="waves-effect waves-light btn modal-trigger" href="{% url 'forkg' repo.pk %}">Fork Repository</a>
+    {% if repo.parent %}
+        <p>This repo is forked from</p>
+        <a class="waves-effect waves-light modal-trigger" href="{% url 'detail_repo' owner=repo.parent.owner name=repo.name %}">{{ repo.parent.owner }}/{{ repo.name }}/</a>
+    {% endif %}
+    {% if repo.owner != request.user %}
+    <a class="waves-effect waves-light btn modal-trigger" href="{% url 'fork' repo.pk %}">Fork Repository</a>
     {% endif %}
     <!-- Modal Structure -->
     <div id="modal1" class="modal">
