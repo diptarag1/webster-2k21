@@ -1,8 +1,27 @@
 {% extends 'base.html' %}
-
+{% block css %}
+{% endblock %}
 {% block content %}
-     {% include 'navBar.html' %}
-    <div class="container">
-      Hello!
-    </div>
+    {% include 'navBar.html' %}
+
+    <main role="main" class="container p-3">
+        <div class="row">
+            <div class="col-2">
+                <div class="content-section">
+                    <h3>Welcome,{{ user }}</h3>
+                    <a href="{% url 'initrepo' %}"><button class="btn btn-primary">Create New Repository</button></a>
+                    <p class='text-muted'>List of your repositories.
+                    <ul class="list-group">
+                        {% for repo in repos %}
+                        <li class="list-group-item list-group-item-light">{{ repo.name }}</li>
+                        {% endfor %}
+                    </ul>
+                    </p>
+                </div>
+            </div>
+            <div class="col-6">
+                following activities
+            </div>
+        </div>
+    </main>
 {% endblock %}
