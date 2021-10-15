@@ -4,8 +4,14 @@
 {% block content %}
     {{ repo.name }}
     <!-- Modal Trigger -->
-    <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
-
+    <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Delete Repository</a>
+    <div id="star-section">
+        {% include 'Repos/star-section.html' %}
+    </div>
+    {{ repo.pk }}
+    {% if repo.owner is not user %}
+    <a class="waves-effect waves-light btn modal-trigger" href="{% url 'forkg' repo.pk %}">Fork Repository</a>
+    {% endif %}
     <!-- Modal Structure -->
     <div id="modal1" class="modal">
         <div class="modal-content">
@@ -38,5 +44,27 @@
             }
         })
     });
+    </script>
+    <script>
+    $(document).ready(function () {
+        $(document).on('click', '#starbtn', function (event) {
+                event.preventDefault()
+                var iid = {{ repo.pk }}
+                $.ajax({
+                    url: '{% url "star" %}',
+                    type: 'post',
+                    data: {
+                        csrfmiddlewaretoken: "{{csrf_token}}",
+                        id: iid,
+                    },
+                    success: function (data) {
+                        $('#star-section').html(data['html'])
+                    },
+                    error: function (data) {
+                        $("#errorToast").toast("show");
+                    }
+                })
+            })
+    })
     </script>
 {% endblock %}
