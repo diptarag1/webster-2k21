@@ -9,8 +9,10 @@ def init_Repo(request):
         form = RepoCreateForm(request.POST)
         if form.is_valid():
             new_repo = Repo(owner = request.user, repoURL = form.cleaned_data['rname'])
-            new_repo.repoURL = str(new_repo.owner) + '/' + new_repo.repoURL
+            # print("repoURL=",form.cleaned_data['rname'])
+            new_repo.repoURL = "/Users/siddheshpatil/Desktop/cc/gitrepo/"+str(new_repo.owner) + '/' + new_repo.repoURL
             new_repo.save()
+            # new_repo.
             return redirect('home') #for now
     else:
         form = RepoCreateForm()
