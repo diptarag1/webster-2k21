@@ -25,16 +25,30 @@ def detail_repo(request, name, owner, **kwargs):
     context = {}
     repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
     context['repo'] = repo
+
+    context['name'] = name
+    context['owner'] = owner
+    
+    curDir = os.path.join(rw_dir, owner, name)
     if('subpath' in kwargs.keys()):
-        allContents = os.listdir(os.path.join(rw_dir, owner, name, kwargs['subpath']))
-    else:
-        allContents = os.listdir(os.path.join(rw_dir, owner, name))
-    contents = []
+        curDir = os.path.join(curDir, kwargs['subpath'])
+        context['subpath'] = kwargs['subpath']
+
+    allContents = os.listdir(curDir)
+    fileContents = []
+    dirContents = []
+
     for f in allContents:
         print(f)
         if not str(f).endswith('.git'):
-            contents.append(f)
-    context['contents'] = contents
+            print(f)
+            if(os.path.isfile(os.path.join(curDir, str(f)))):
+                fileContents.append(f)
+            else:
+                dirContents.append(f)
+
+    context['fileContents'] = fileContents
+    context['dirContents'] = dirContents
     return render(request, 'Repos/repo_detail.html', context=context)
 
 

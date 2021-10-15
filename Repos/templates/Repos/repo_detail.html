@@ -57,8 +57,11 @@
     </div>
 
     <div id="body">
-        {% for item in contents %}
+        {% for item in fileContents %}
             {{ item }} <br>
+        {% endfor %}
+        {% for item in dirContents %}
+           <a> {{item}} </a> <br>
         {% endfor %}
     </div>
 {% endblock %}
