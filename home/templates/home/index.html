@@ -1,45 +1,182 @@
 {% extends 'base.html' %}
 {% block css %}
+    <style>
+        #leftSection {
+            overflow-y: hidden;
+            overflow-x: hidden;
+            position: relative;
+
+        }
+
+        #leftSection-internal {
+            overflow-y: hidden;
+            overflow-x: hidden;
+            height: 100%;
+            overflow-y: hidden;
+            position: relative;
+        }
+
+        .repoName {
+            font-size: 1.5rem;
+        }
+
+        .thinText {
+            font-weight: 200;
+        }
+    </style>
 {% endblock %}
 {% block content %}
     {% include 'navBar.html' %}
- <div class="row">
+
+    <div class=" row full-height">
+        <div id="leftSection" class="col s3 card full-height">
+            <div id="leftSection-internal">
+                <h3>{{ user }}</h3>
+                <div class="row">
+                    <div class="col s9">
+                        <form>
+                            <div class="input-field">
+                                <input id="search" type="search" required>
+                                <label class="label-icon" for="search"></label>
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col s3">
+                        <a href="{% url 'initrepo' %}">
+                            <button class="btn btn-primary">New</button>
+                        </a>
+                    </div>
+                </div>
+
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>List of your repositories.</h4></li>
+                    {% for repo in repos %}
+                        <li class="collection-item repoName thinText"><a
+                                href="{% url 'detail_repo' owner=repo.owner name=repo.name %}">
+                            {{ user }}/{{ repo.name }}
+                        </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                </p>
+            </div>
+        </div>
+        <div class="col s6">
+            <div class="section-title">
+                <div class="justify-content-center d-flex">
+                    <h2>Activiy</h2>
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="card horizontal">
+                                <div class="card-image">
+                                    {#                                    <img src="https://lorempixel.com/100/190/nature/6">#}
+                                </div>
+                                <div class="card-stacked">
+                                    <div class="card-content">
+                                        <p>I am a very simple card. I am good at containing small bits of
+                                            information.</p>
+                                    </div>
+                                    <div class="card-action">
+                                        <a href="#">This is a link</a>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+
+                            </div>
+                            <div class="divider"></div>
+                        </div>
+                        <div class="col s12">
+                            <div class="card horizontal">
+                                <div class="card-image">
+                                    {#                                    <img src="https://lorempixel.com/100/190/nature/6">#}
+                                </div>
+                                <div class="card-stacked">
+                                    <div class="card-content">
+                                        <p>I am a very simple card. I am good at containing small bits of
+                                            information.</p>
+                                    </div>
+                                    <div class="card-action">
+                                        <a href="#">This is a link</a>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+
+                            </div>
+                            <div class="divider"></div>
+                        </div>
+                        <div class="col s12">
+                            <div class="card horizontal">
+                                <div class="card-image">
+                                    {#                                    <img src="https://lorempixel.com/100/190/nature/6">#}
+                                </div>
+                                <div class="card-stacked">
+                                    <div class="card-content">
+                                        <p>I am a very simple card. I am good at containing small bits of
+                                            information.</p>
+                                    </div>
+                                    <div class="card-action">
+                                        <a href="#">This is a link</a>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+
+                            </div>
+                            <div class="divider"></div>
+                        </div>
+                        <div class="col s12">
+                            <div class="card horizontal">
+                                <div class="card-image">
+                                    {#                                    <img src="https://lorempixel.com/100/190/nature/6">#}
+                                </div>
+                                <div class="card-stacked">
+                                    <div class="card-content">
+                                        <p>I am a very simple card. I am good at containing small bits of
+                                            information.</p>
+                                    </div>
+                                    <div class="card-action">
+                                        <a href="#">This is a link</a>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+
+                            </div>
+                            <div class="divider"></div>
+                        </div>
+                        <div class="col s12">
+                            <div class="card horizontal">
+                                <div class="card-image">
+                                    {#                                    <img src="https://lorempixel.com/100/190/nature/6">#}
+                                </div>
+                                <div class="card-stacked">
+                                    <div class="card-content">
+                                        <p>I am a very simple card. I am good at containing small bits of
+                                            information.</p>
+                                    </div>
+                                    <div class="card-action">
+                                        <a href="#">This is a link</a>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+
+                            </div>
+                            <div class="divider"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
         <div class="col s3">
-            <h3>Welcome,{{ user }}</h3>
-                    <a href="{% url 'initrepo' %}"><button class="btn btn-primary">Create New Repository</button></a>
-                    <p class='text-muted'>List of your repositories.
-                    <ul class="list-group">
-                        {% for repo in repos %}
-                            <a href="{% url 'detail_repo' owner=repo.owner name=repo.name %}"><li class="list-group-item list-group-item-light">{{ repo.name }}</li></a>
-                        {% endfor %}
-                    </ul>
-                    </p>
+            <div class="section-title">
+                <div class="justify-content-center d-flex">
+                    <h2>Explore</h2>
+                </div>
+            </div>
+
         </div>
-        <div class="col s6">    <div class="section-title">
-                    <div class="justify-content-center d-flex">
-                        <h2>Activiy</h2>
-                    </div>
-                </div>
-
-</div>
-        <div class="col s3">    <div class="section-title">
-                    <div class="justify-content-center d-flex">
-                        <h2>Recent</h2>
-                    </div>
-                </div>
-
-</div>
     </div>
-    <main role="main" class="container p-3">
-        <div class="row">
-            <div class="col-2">
-                <div class="content-section">
 
-                </div>
-            </div>
-            <div class="col-6">
-                following activities
-            </div>
-        </div>
-    </main>
 {% endblock %}
