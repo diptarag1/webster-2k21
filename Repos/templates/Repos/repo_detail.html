@@ -2,18 +2,22 @@
 
 
 {% block content %}
+    {% include 'navBar.html' %}
     {{ repo.name }}
     <!-- Modal Trigger -->
     <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Delete Repository</a>
+    <a class="waves-effect waves-light btn modal-trigger" href="{% url 'issue_list' owner=repo.owner name=repo.name %}">Issues List</a>
+    <a class="waves-effect waves-light btn modal-trigger" href="{% url 'create_issue' owner=repo.owner name=repo.name %}">Create new Issue</a>
     <div id="star-section">
         {% include 'Repos/star-section.html' %}
     </div>
     {% if repo.parent %}
         <p>This repo is forked from</p>
-        <a class="waves-effect waves-light modal-trigger" href="{% url 'detail_repo' owner=repo.parent.owner name=repo.name %}">{{ repo.parent.owner }}/{{ repo.name }}/</a>
+        <a class="waves-effect waves-light modal-trigger"
+           href="{% url 'detail_repo' owner=repo.parent.owner name=repo.name %}">{{ repo.parent.owner }}/{{ repo.name }}/</a>
     {% endif %}
     {% if repo.owner != request.user %}
-    <a class="waves-effect waves-light btn modal-trigger" href="{% url 'fork' repo.pk %}">Fork Repository</a>
+        <a class="waves-effect waves-light btn modal-trigger" href="{% url 'fork' repo.pk %}">Fork Repository</a>
     {% endif %}
     <!-- Modal Structure -->
     <div id="modal1" class="modal">
@@ -24,7 +28,9 @@
             <input type="text" placeholder="Type here" id="delete_box">
         </div>
         <div class="modal-footer">
-            <a href="{% url 'delete_repo' owner=repo.owner name=repo.name  %}"><button class="btn" disabled="disabled" id="delete_btn"> Delete</button></a>
+            <a href="{% url 'delete_repo' owner=repo.owner name=repo.name %}">
+                <button class="btn" disabled="disabled" id="delete_btn"> Delete</button>
+            </a>
         </div>
     </div>
 {% endblock %}
@@ -36,38 +42,38 @@
         });
     </script>
     <script>
-    $(document).ready(function () {
-        $('#delete_box').keyup(function () {
-            var btnSubmit = $("#delete_btn");
-            var text="{{ repo.owner }}/{{ repo.name }}/";
-            if ($(this).val() === text) {
-                btnSubmit.removeAttr("disabled");
-            } else {
-                btnSubmit.attr("disabled", "disabled");
-            }
-        })
-    });
+        $(document).ready(function () {
+            $('#delete_box').keyup(function () {
+                var btnSubmit = $("#delete_btn");
+                var text = "{{ repo.owner }}/{{ repo.name }}/";
+                if ($(this).val() === text) {
+                    btnSubmit.removeAttr("disabled");
+                } else {
+                    btnSubmit.attr("disabled", "disabled");
+                }
+            })
+        });
     </script>
     <script>
-    $(document).ready(function () {
-        $(document).on('click', '#starbtn', function (event) {
+        $(document).ready(function () {
+            $(document).on('click', '#starbtn', function (event) {
                 event.preventDefault()
                 var iid = {{ repo.pk }}
-                $.ajax({
-                    url: '{% url "star" %}',
-                    type: 'post',
-                    data: {
-                        csrfmiddlewaretoken: "{{csrf_token}}",
-                        id: iid,
-                    },
-                    success: function (data) {
-                        $('#star-section').html(data['html'])
-                    },
-                    error: function (data) {
-                        $("#errorToast").toast("show");
-                    }
-                })
+                    $.ajax({
+                        url: '{% url "star" %}',
+                        type: 'post',
+                        data: {
+                            csrfmiddlewaretoken: "{{csrf_token}}",
+                            id: iid,
+                        },
+                        success: function (data) {
+                            $('#star-section').html(data['html'])
+                        },
+                        error: function (data) {
+                            $("#errorToast").toast("show");
+                        }
+                    })
             })
-    })
+        })
     </script>
 {% endblock %}
