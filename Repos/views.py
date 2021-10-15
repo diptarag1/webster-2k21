@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect,HttpResponse
-from .forms import RepoCreateForm, AddCollaboratorForm
-from .models import Repo
+from .forms import RepoCreateForm, AddCollaboratorForm,IssueCreateForm
+from .models import Repo,Issue
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.http import JsonResponse
@@ -83,3 +83,23 @@ def fork(request,id):
         new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name)
         new_repo.save()
     return redirect('home')
+
+
+def create_issue(request,owner,name):
+    context={}
+    if request.method=='GET':
+        context['form']=IssueCreateForm()
+    else:
+        form=IssueCreateForm(request.POST)
+        form.instance.author=request.user
+        form.instance.repo=Repo.objects.get(owner__username=owner,name=name)
+        form.save()
+        return redirect('detail_repo',owner=owner,name=name)
+    return render(request,'Repos/issue_create_form.html',context=context)
+
+def issue_list(request,owner,name):
+    context={}
+    repo=Repo.objects.get(owner__username=owner,name=name)
+    issues=Issue.objects.filter(repo=repo)
+    context['issues']=issues
+    return render(request,'Repos/issues_list.html',context=context)

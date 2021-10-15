@@ -43,8 +43,11 @@ INSTALLED_APPS = [
     'home',
     'user',
     'Repos',
+
+    #third party
     'crispy_forms',
     'materializecssform',
+    'taggit',
 ]
 
 MIDDLEWARE = [

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from git import Repo as gitRepo
 import os
+from taggit.managers import TaggableManager
 
 rw_dir = '~/git_test_repos'
 
@@ -22,4 +23,12 @@ class Repo(models.Model):
         self.repoURL=str(self.owner) + '/' + self.name
         super().save(*args, **kwargs)
 
-    
+class Issue(models.Model):
+    author = models.ForeignKey(User,on_delete=models.CASCADE,related_name='author')
+    repo = models.ForeignKey(Repo,on_delete=models.CASCADE,related_name='repot')
+    topic = models.CharField(max_length=120)
+    description = models.TextField()
+    tags = TaggableManager()
+
+    def __str__(self):
+        return self.topic

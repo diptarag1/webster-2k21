@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from .forms import SignUpForm
 from django.contrib.auth.models import User
 from  django.http import HttpResponse
+from Repos.models import Repo
 # Create your views here.
 
 def signup(request):
@@ -46,6 +47,7 @@ def profile(request,uname):
     context={}
     user=User.objects.get(username=uname)
     context['user']=user
+    context['repos']=Repo.objects.filter(owner=request.user)
     return render(request,'user/profile.html',context=context)
 
 def follow(request):
