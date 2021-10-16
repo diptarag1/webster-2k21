@@ -18,7 +18,7 @@ def init_Repo(request):
             return redirect('home')  # for now
     else:
         form = RepoCreateForm()
-    return render(request, 'Repos/repoCreate.html', {'form': form})
+    return render(request, 'Repos/repoCreate.html', {'form': form,'randomUniqueName':"newDivaniRepo"})
 
 
 def detail_repo(request, name, owner, **kwargs):
