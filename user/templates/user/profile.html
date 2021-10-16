@@ -5,9 +5,10 @@
 {% endblock %}
 {% block css %}
     <style>
-    body{
+        body {
         {#background-color:#2E3138;#}
-    }
+        }
+
         #profilePageImage {
             width: 370px;
             height: 370px;
@@ -22,6 +23,13 @@
 
         #rightSection {
             margin-top: 30px;
+        }
+
+        .repoSearchButtons {
+            margin-top: 20px;
+            margin-left: 5px;
+            margin-right: 5px;
+        {# margin: 3px;#}
         }
     </style>
 {% endblock %}
@@ -74,20 +82,97 @@
                     <div class="row ">
                         <div class="col s12">
                             <ul class="tabs  ">
-                                <li class="tab col s3 purple-text " ><a  class="active  purple-text " href="#test1">OverView</a></li>
-                                <li class="tab col s3"><a class="  purple-text "  href="#test2">Repositories</a></li>
-                                <li class="tab col s3 "><a class="  purple-text "  href="#test3">Projects </a></li>
-                                <li class="tab col s3"><a class="  purple-text "  href="#test4">Packages</a></li>
+                                <li class="tab col s2 purple-text "><a class="active  purple-text " href="#test1">OverView</a>
+                                </li>
+                                <li class="tab col s3"><a class="  purple-text " href="#test2">Repositories</a></li>
+                                <li class="tab col s2 "><a class="  purple-text " href="#test3">Projects </a></li>
+                                <li class="tab col s2"><a class="  purple-text " href="#test4">Packages</a></li>
                             </ul>
                         </div>
-                        <div id="test1" class="col s12">Test 1</div>
-                        <div id="test2" class="col s12">Test 2</div>
+                        <div id="test1" class="col s12">
+                            <div class="row">
+
+                                {% for repo in repos %}
+                                    <div class="col s6">
+                                        {% include "Repos/repoCardMini.html" %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div id="test2" class="col s12">
+                            <div class="row">
+                                <div class="col s5">
+                                    <form>
+                                        <div class="input-field">
+                                            <input id="search" type="search" required>
+                                            {#                                            <label class="label-icon" for="search"><i class="material-icons">search</i></label>#}
+                                            <i class="material-icons">close</i>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col s7">
+                                    <div class="row">
+                                        <div class="input-field col s3">
+                                            <select >
+                                                <option  value="" disabled selected>Type</option>
+                                                <option  value="1">Public</option>
+                                                <option value="2">Private</option>
+                                                <option value="3">Archived</option>
+                                                <option value="4">Sources</option>
+                                                <option value="5">Forked</option>
+                                                <option value="6">Mirrors</option>
+                                            </select>
+                                            <label>Repo Type</label>
+                                        </div>
+                                        <div class="input-field col s4">
+                                            <select>
+                                                <option value="" disabled selected>Language</option>
+                                                <option value="1">Any</option>
+                                                <option value="2">C++</option>
+                                                <option value="3">Java</option>
+                                                <option value="4">Python</option>
+                                                <option value="5">Javascript</option>
+                                                <option value="6">Swift></option>
+                                            </select>
+                                            <label>Language</label>
+                                        </div>
+                                        <div class="input-field col s3 ">
+                                            <select>
+                                                <option value="" disabled selected>Sort</option>
+                                                <option value="1">Name</option>
+                                                <option value="2">Date</option>
+                                                <option value="3">Archived</option>
+                                            </select>
+                                            <label>Sort</label>
+                                        </div>
+                                        <a class=" btn-floating btn-large waves-effect waves-light red"><i
+                                                class="material-icons">add</i></a>
+
+                                    </div>
+                                    {#                                    <span>#}
+                                    {#                                       #}
+                                    {##}
+                                    {#                                    </span>#}
+                                    {#                                    <span class=""> <a class="purple lighten-1  waves-effect waves-light btn repoSearchButtons">Button</a><a#}
+                                    {#                                            class=" purple lighten-1  waves-effect waves-light btn repoSearchButtons">Button</a><a#}
+                                    {#                                            class=" purple lighten-1  waves-effect waves-light btn repoSearchButtons">Button</a></span>#}
+
+                                </div>
+
+
+                            </div>
+                            <div class="row">
+                                {% for repo in repos %}
+                                    <div class="col s12">
+                                        {% include "Repos/repoCardMini.html" %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
                         <div id="test3" class="col s12">Test 3</div>
                         <div id="test4" class="col s12">Test 4</div>
                     </div>
                 </div>
-
-
             </div>
 
         </div>
@@ -99,6 +184,8 @@
     <script>
         $(document).ready(function () {
             $('.tabs').tabs();
+            $('select').formSelect();
         });
+
     </script>
 {% endblock %}
