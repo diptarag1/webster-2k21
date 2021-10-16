@@ -1,32 +1,51 @@
 <nav class=" red darken-3">
     <div class="nav-wrapper">
-        <a href="#" class="brand-logo center">Secure Hub</a>
-{#        <ul>#}
-{#            <li>#}
-{##}
-{#                    <form >#}
-{#                        <div class="input-field">#}
-{#                            <input id="search" type="search" required>#}
-{#                            <label class="label-icon" for="search"><i class="material-icons">search</i></label>#}
-{#                            <i class="material-icons">close</i>#}
-{#                        </div>#}
-{#                    </form>#}
-{##}
-{#                #}
-{#            </li>#}
-{#        </ul>#}
+        <a href="{% url 'home' %}" class="brand-logo center">Secure Hub</a>
+        {#        <ul>#}
+        {#            <li>#}
+        {##}
+        {#                    <form >#}
+        {#                        <div class="input-field">#}
+        {#                            <input id="search" type="search" required>#}
+        {#                            <label class="label-icon" for="search"><i class="material-icons">search</i></label>#}
+        {#                            <i class="material-icons">close</i>#}
+        {#                        </div>#}
+        {#                    </form>#}
+        {##}
+        {#                #}
+        {#            </li>#}
+        {#        </ul>#}
         <ul id="nav-mobile" class="right hide-on-med-and-down">
-            {% if user.is_authenticated %}
-                <li><a href="{% url 'profile' user %}">
-                    <button class="btn purple lighten-1" type="submit">Profile</button>
-                </a>
-                </li>
-            {% endif %}
 
             {% if user.is_authenticated %}
-                <li><a href="{% url 'signout' %}">
-                    <button class="btn purple lighten-1" type="submit">Logout</button>
-                </a></li>
+                <div class="chip dropdown-trigger purple lighten-1  white-text" href='#' data-target='dropdown1'>
+                    <img  class="responsive-img" src="https://www.vangoghgallery.com/img/starry_night_full.jpg">
+               {{ user }}
+
+                </div>
+                {#                <a class='dropdown-trigger purple lighten-1 btn-large' href='#' data-target='dropdown1'>Drop Me!</a>#}
+
+                <!-- Dropdown Structure -->
+                <ul id='dropdown1' class='dropdown-content'>
+                    <li><a href="{% url 'profile' user %}">Signed in as {{ user }}</a></li>
+
+                    <li class="divider" tabindex="-1"></li>
+                    <li><a href="#!">Your Profile</a></li>
+                    <li><a href="#!">Your repositories</a></li>
+                    <li><a href="#!">Your Projects</a></li>
+                    <li><a href="#!">Your Stars</a></li>
+                    <li><a href="#!">Your repositories</a></li>
+                    <li class="divider" tabindex="-1"></li>
+                    <li><a href="#!">Help</a></li>
+
+                    <li><a href="#!">Settings</a></li>
+                    <li class="divider" tabindex="-1"></li>
+                    <li><a href="{% url 'signout' %}">Signout</a></li>
+                </ul>
+                {##}
+                {#                <li><a href="{% url 'signout' %}">#}
+                {#                    <button class="btn purple lighten-1" type="submit">Logout</button>#}
+                {#                </a></li>#}
             {% else %}
                 <li><a href="{% url 'signin' %}">
                     <button class="btn purple lighten-1" type="submit">Login</button>

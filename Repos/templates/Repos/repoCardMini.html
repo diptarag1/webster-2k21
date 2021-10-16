@@ -2,8 +2,8 @@
     <div class="card-stacked">
         <div class="card-content">
           <span class="card-title  grey-text text-darken-4">
-                                                        <a href="{% url 'detail_repo' owner=repo.owner name=repo.name %}">{{ repo.name }}</a>
-                                                      <div class="chip right">
+                    <a style="font-weight:500;" class="purple-text text-darken-2 " href="{% url 'detail_repo' owner=repo.owner name=repo.name %}">{{ repo.name }}</a>
+                                   <div class="chip right">
                                                        Public
                                                       </div>
                                                     </span>

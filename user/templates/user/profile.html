@@ -10,11 +10,11 @@
         }
 
         #profilePageImage {
-            width: 370px;
-            height: 370px;
-            overflow-y: hidden;
-            overflow-x: hidden;
-            border-radius: 50%;
+            {#width: 370px;#}
+            {#height: 370px;#}
+            {#overflow-y: hidden;#}
+            {#overflow-x: hidden;#}
+            {#border-radius: 50%;#}
         }
 
         #main {
@@ -35,19 +35,20 @@
 {% endblock %}
 
 {% block content %}
-    <nav class=" red darken-3">
-        <div class="nav-wrapper">
-            <a href="#" class="brand-logo center">Secure Hub</a>
-            <ul class="right">
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'signout' %}">
-                        <button class="btn purple lighten-1" type="submit">Logout</button>
-                    </a></li>
-
-                {% endif %}
-            </ul>
-        </div>
-    </nav>
+{#    <nav class=" red darken-3">#}
+{#        <div class="nav-wrapper">#}
+{#            <a href="#" class="brand-logo center">Secure Hub</a>#}
+{#            <ul class="right">#}
+{#                {% if user.is_authenticated %}#}
+{#                    <li><a href="{% url 'signout' %}">#}
+{#                        <button class="btn purple lighten-1" type="submit">Logout</button>#}
+{#                    </a></li>#}
+{##}
+{#                {% endif %}#}
+{#            </ul>#}
+{#        </div>#}
+{#    </nav>#}
+    {% include 'navBar.html' %}
     <div id="main" class="row">
         <div class="col s10 offset-s1 row">
             <div class="col s4">
@@ -58,7 +59,7 @@
                     </div>
                     {#                     <span class="card-title">Card Title</span>#}
                     <div class="card-content">
-                        <span class="card-title">{{ user.username }}</span>
+                        <span class="card-title"><a href="{% url 'profile' user %}"> {{ user.username }}</a></span>
                         <p>I am a very simple card. I am good at containing small bits of information.
                             I am convenient because I require little markup to use effectively.</p>
                     </div>
