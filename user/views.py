@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth import login, authenticate,logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
@@ -48,6 +50,9 @@ def profile(request,uname):
     user=User.objects.get(username=uname)
     context['user']=user
     context['repos']=Repo.objects.filter(owner=request.user)
+    context['mostPopularRepos']=Repo.objects.filter(owner=request.user)[0:6]
+    context['activity'] = [2 for i in range(45*7)]
+
     return render(request,'user/profile.html',context=context)
 
 def follow(request):
