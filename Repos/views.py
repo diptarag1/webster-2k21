@@ -30,8 +30,10 @@ def detail_repo(request, name, owner, **kwargs):
     context['owner'] = owner
     
     curDir = os.path.join(rw_dir, owner, name)
+    teDir=''
     if('subpath' in kwargs.keys()):
         curDir = os.path.join(curDir, kwargs['subpath'])
+        teDir=teDir+kwargs['subpath']
         context['subpath'] = kwargs['subpath']
 
     allContents = os.listdir(curDir)
@@ -49,6 +51,7 @@ def detail_repo(request, name, owner, **kwargs):
 
     context['fileContents'] = fileContents
     context['dirContents'] = dirContents
+    context['curDir'] = teDir
     return render(request, 'Repos/repo_detail.html', context=context)
 
 
