@@ -52,6 +52,7 @@ def detail_repo(request, name, owner, **kwargs):
     context['fileContents'] = fileContents
     context['dirContents'] = dirContents
     context['curDir'] = teDir
+    context['forkedChild']=Repo.objects.filter(parent=repo)
     return render(request, 'Repos/repo_detail.html', context=context)
 
 
