@@ -49,8 +49,8 @@ def profile(request,uname):
     context={}
     user=User.objects.get(username=uname)
     context['user']=user
-    context['repos']=Repo.objects.filter(owner=request.user)
-    context['mostPopularRepos']=Repo.objects.filter(owner=request.user)[0:6]
+    context['repos']=Repo.objects.filter(owner__username=uname)
+    context['mostPopularRepos']=Repo.objects.filter(owner__username=uname)[0:6]
     context['activity'] = [2 for i in range(45*7)]
 
     return render(request,'user/profile.html',context=context)

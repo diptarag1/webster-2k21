@@ -97,7 +97,7 @@ def fork(request,id):
     parent=Repo.objects.get(id=id)
     child=Repo.objects.filter(name=parent.name,owner=request.user)
     if(child.count()==0):
-        new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name)
+        new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name,is_private=False)
         new_repo.save()
     return redirect('home')
 

@@ -4,7 +4,7 @@ from git import Repo as gitRepo
 import os
 from taggit.managers import TaggableManager
 
-rw_dir = '~/git_test_repos'
+from .serverLocation import rw_dir
 
 # Create your models here.
 class Repo(models.Model):
@@ -14,6 +14,7 @@ class Repo(models.Model):
     collaborators = models.ManyToManyField(User, related_name='collaborators',blank=True)
     repoURL = models.CharField(max_length=30) #ownerName/repoName
     star = models.ManyToManyField(User,related_name='star',blank=True)
+    is_private = models.BooleanField(default=False)
 
     def __str__(self):
         return self.repoURL 
