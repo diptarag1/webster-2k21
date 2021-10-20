@@ -1,5 +1,7 @@
 {% if request.user in repo.star.all %}
-<a class="waves-effect waves-light btn modal-trigger  purple lighten-1" id="starbtn" href="#modal2">Star {{ repo.star.all.count }}</a>
+    <a class="waves-effect waves-light btn btn-small modal-trigger  purple lighten-1" id="starbtn"
+       href="#modal2">Star {{ repo.star.all.count }}</a>
 {% else %}
-    <a class="waves-effect waves-light btn modal-trigger  purple lighten-1" id="starbtn" href="#modal2">Star {{ repo.star.all.count }}</a>
+    <a class="waves-effect waves-light btn btn-small modal-trigger  purple lighten-1" id="starbtn"
+       href="#modal2">Star {{ repo.star.all.count }}</a>
 {% endif %}
