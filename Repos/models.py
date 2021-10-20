@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from git import Repo as gitRepo
-import os
+import os, shutil
 from taggit.managers import TaggableManager
 
 from .serverLocation import rw_dir
@@ -23,6 +23,15 @@ class Repo(models.Model):
         gitRepo.init(os.path.join(rw_dir, self.repoURL))
         self.repoURL=str(self.owner) + '/' + self.name
         super().save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        shutil.rmtree(os.path.join(rw_dir, self.repoURL))
+        super().delete(*args, **kwargs)
+
+    def create_fork(self, parent):
+        parentGitRepo = gitRepo(os.path.join(rw_dir, parent.repoURL))
+        curRepo = parentGitRepo.clone(os.path.join(rw_dir, self.repoURL))
+        curRepo.delete_remote('origin') #deleting origin remote which is automatically created
 
 class Issue(models.Model):
     author = models.ForeignKey(User,on_delete=models.CASCADE,related_name='author')

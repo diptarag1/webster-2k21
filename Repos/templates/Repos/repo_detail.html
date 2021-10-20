@@ -4,33 +4,58 @@
         #theButtonContainer {
             margin-top: 10px;
         }
+
+        #allTabsContainer div {
+        {#min-height:60vh;#}
+        }
+
+        .tabDetails {
+            min-height: 60vh;
+        }
     </style>
 {% endblock %}
 
 {% block content %}
     {% include 'navBar.html' %}
     <div class="row">
-        <div class="col s8">
+        <div class="col s9">
 
             <h4><a href="">{{ user }} </a>/<a
                     href="{% url 'detail_repo' owner=repo.owner name=repo.name %}">{{ repo.name }}</a></h4>
+            <div class="row">
+                <div class="col s12">
+                    <ul class="tabs">
+                        <li class="tab col s2"><a class="active" href="#test1">Code</a></li>
+                        <li class="tab col s2"><a href="#test2">Issues</a></li>
+                        <li class="tab col s2 "><a href="#test3">Pull request</a></li>
+                        <li class="tab col s2"><a href="#test4">Security</a></li>
+                        <li class="tab col s2"><a href="#test5">Settings</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
             <!-- Modal Trigger -->
-            <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Delete Repository</a>
 
         </div>
-        <div class="col s4">
-            <div id="theButtonContainer" class="container">
+        <div class="col s3">
+            <div id="theButtonContainer">
                 <div class="row">
-                    <div class="col right" id="star-section">
+                    <div class=" col" id="star-section">
                         {% include 'Repos/star-section.html' %}
                     </div>
+                    <div class="col">
+                        <a class=" btn btn-small purple lighten-1 " href="{% url 'profile' user %}">
+                            Profile
+                        </a>
+                    </div>
 
-                    <a class="col right" href="{% url 'profile' user %}">
-                        <button class="btn purple lighten-1" type="submit">Profile</button>
-                    </a>
-                    <a class="col right" href="{% url 'profile' user %}">
-                        <button class="btn purple lighten-1" type="submit">Watch</button>
-                    </a>
+                    <div class="col">
+                        <a class=" col btn btn-small purple lighten-1 " href="{% url 'profile' user %}">
+                            Watch
+                        </a>
+                    </div>
+
 
                     {% if repo.parent %}
                         <p>This repo is forked from</p>
@@ -48,57 +73,26 @@
         </div>
     </div>
     <div class="row">
-        <div class="col s8">
-            <div class="row">
-                <div class="col s10 offset-s2">
-
+        <div class="col s9">
+            <div id="codeTab" class="row">
+                <div class="col s11 offset-s1">
                     <div class="row">
-                        <div class="col s12">
-                            <div class="card-panel teal">
-        <span class="white-text">I am a very simple card. I am good at containing small bits of information.
-        I am convenient because I require little markup to use effectively. I am similar to what is called a panel in other frameworks.
-        </span>
-                            </div>
-                            <div class="card-panel purple">
-        <span class="white-text">I am a very simple card. I am good at containing small bits of information.
-        I am convenient because I require little markup to use effectively. I am similar to what is called a panel in other frameworks.
-        </span>
-                            </div>
+                        <div class="row">
+
+                            <div id="test1" class="col s12">   {% include 'Repos/codeTab.html' %}#}</div>
+                            <div id="test2" class="col s12"> {% include 'Repos/issueTab.html' %}</div>
+                            <div id="test3" class="col s12">{% include 'Repos/pullRequestTab.html' %}</div>
+                            <div id="test4" class="col s12"> {% include 'Repos/securityTab.html' %}</div>
+                            <div id="test5" class="col s12">{% include 'Repos/settingsTab.html' %}</div>
                         </div>
-                        <div id="body" class="col s12">
-                            <div class="collection">
-                                {% for item in dirContents %}
-                                    <li class="collection-item">
-                                        <div class="secondary-content left">
-                                            <i class=" material-icons ">folder</i>
-                                                {% if curDir != '' %}
-                                               <a href="{% url 'detail_repo2' owner=repo.owner name=repo.name subpath=curDir|add:"/"|add:item  %}"> {{ item }}</a>
-                                                {% else %}
-                                                    <a href="{% url 'detail_repo2' owner=repo.owner name=repo.name subpath=curDir|add:item  %}"> {{ item }}</a>
-                                            {% endif %}
-                                        </div>
-                                        <div class="center-align">First Commit</div>
-                                        <div class="right-align">69 days ago</div>
-                                    </li>
-                                {% endfor %}
-                                {% for item in fileContents %}
-                                    <li class="collection-item">
-                                        <div class="secondary-content left">
-                                            <i class=" material-icons ">folder</i><a
-                                                href="#!"> {{ item }}</a>
-                                        </div>
-                                        <div class="center-align">First Commit</div>
-                                        <div class="right-align">69 days ago</div>
-                                    </li>
-                                {% endfor %}
-                            </div>
-                        </div>
+
                     </div>
+
                 </div>
             </div>
         </div>
-        <div class="col s4 " style="background-color:red;">
-
+        <div class="col s3 " style="background-color:red;">
+            sfdsfsd
         </div>
     </div>
     <!-- Modal Structure -->
@@ -135,11 +129,6 @@
 {% block script %}
     <script>
         $(document).ready(function () {
-            $('.modal').modal();
-        });
-    </script>
-    <script>
-        $(document).ready(function () {
             $('#delete_box').keyup(function () {
                 var btnSubmit = $("#delete_btn");
                 var text = "{{ repo.owner }}/{{ repo.name }}/";
@@ -153,6 +142,10 @@
     </script>
     <script>
         $(document).ready(function () {
+            $('.modal').modal();
+            $('select').formSelect();
+            $('.tabs').tabs();
+
             $(document).on('click', '#starbtn', function (event) {
                 event.preventDefault()
                 var iid = {{ repo.pk }}

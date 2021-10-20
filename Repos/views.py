@@ -94,12 +94,13 @@ def star(request):
     html = render_to_string('Repos/star-section.html', context, request=request)
     return JsonResponse({'html': html})
 
-def fork(request,id):
-    parent=Repo.objects.get(id=id)
-    child=Repo.objects.filter(name=parent.name,owner=request.user)
-    if(child.count()==0):
-        new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name,is_private=False)
-        new_repo.save()
+def fork(request,owner,name):
+    parent = Repo.objects.get(owner__username=owner, name=name)
+
+    new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name,is_private=False)
+    new_repo.create_fork(parent)
+    new_repo.save()
+
     return redirect('home')
 
 
