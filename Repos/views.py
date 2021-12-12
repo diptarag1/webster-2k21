@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect,HttpResponse
 from .forms import RepoCreateForm, AddCollaboratorForm,IssueCreateForm
-from .models import Repo,Issue
+from .models import Repo, Issue, Activity
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.http import JsonResponse
@@ -15,6 +15,9 @@ def init_Repo(request):
             new_repo = Repo(owner=request.user, repoURL=form.cleaned_data['rname'], name=form.cleaned_data['rname'])
             new_repo.repoURL = str(new_repo.owner) + '/' + new_repo.name
             new_repo.save()
+            activity=Activity.createdRepo(request.user,new_repo)
+            activity.save()
+            print(activity)
             return redirect('home')  # for now
     else:
         form = RepoCreateForm()
@@ -86,9 +89,13 @@ def star(request):
         repo.star.remove(request.user)
     else:
         repo.star.add(request.user)
+        activity = Activity.starredRepo(request.user,repo)
+        activity.save()
+        print(activity)
     context = {
         'repo': repo,
     }
+
     html = render_to_string('Repos/star-section.html', context, request=request)
     return JsonResponse({'html': html})
 
@@ -97,6 +104,9 @@ def fork(request,id):
     new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name,is_private=False)
     new_repo.create_fork(parent)
     new_repo.save()
+    activity = Activity.forkedRepo(request.user,parent.owner,parent)
+    activity.save()
+    print(activity)
 
     return redirect('home')
 
