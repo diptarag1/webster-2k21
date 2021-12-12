@@ -41,9 +41,7 @@ def detail_repo(request, name, owner, **kwargs):
     dirContents = []
 
     for f in allContents:
-        print(f)
         if not str(f).endswith('.git'):
-            print(f)
             if(os.path.isfile(os.path.join(curDir, str(f)))):
                 fileContents.append(f)
             else:
@@ -94,9 +92,8 @@ def star(request):
     html = render_to_string('Repos/star-section.html', context, request=request)
     return JsonResponse({'html': html})
 
-def fork(request,owner,name):
-    parent = Repo.objects.get(owner__username=owner, name=name)
-
+def fork(request,id):
+    parent = Repo.objects.get(id=id)
     new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name,is_private=False)
     new_repo.create_fork(parent)
     new_repo.save()
