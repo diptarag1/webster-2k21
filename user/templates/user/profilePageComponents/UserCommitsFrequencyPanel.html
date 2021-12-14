@@ -1,0 +1,21 @@
+<h4>Activity</h4>
+<div id="activityContainer">
+    <div id="content">
+
+        {% for i in activity %}
+            {% if i == 1 %}
+                <div class="" style="background-color:rgb(22,27,34)"></div>
+            {% elif i == 2 %}
+                <div class="purple lighten-1"></div>
+            {% elif i == 3 %}
+                <div class="light-green darken-3"></div>
+            {% elif i == 4 %}
+                <div class="light-green accent-4"></div>
+            {% endif %}
+
+        {% endfor %}
+
+
+    </div>
+
+</div>
