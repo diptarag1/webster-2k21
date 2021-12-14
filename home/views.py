@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from Repos.models import Repo, Activity
+from Repos.models import Repo
+from user.models import Activity
 
 
 # Create your views here.

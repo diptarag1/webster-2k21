@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect,HttpResponse
 from .forms import RepoCreateForm, AddCollaboratorForm,IssueCreateForm
-from .models import Repo, Issue, Activity
+from .models import Repo, Issue
+from user.models import Activity
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.http import JsonResponse

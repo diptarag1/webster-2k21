@@ -43,30 +43,39 @@
     </div>
     <div id="body" class="col s12">
         <div class="collection">
-            {% for item in dirContents %}
-                <li class="collection-item">
-                    <div class="secondary-content left">
-                        <i class=" material-icons ">folder</i>
-                        {% if curDir != '' %}
+
+            <style>
+                .collection .row {
+                    padding: 1% !important;
+                }
+
+                .collection .col {
+                {#padding: 0 !important;#}
+                }
+            </style>
+         {% for item in dirContents %}
+              <li class="collection-item row">
+                    <div class="col s6"><i class="material-icons">folder</i>
+                     {% if curDir != '' %}
                             <a href="{% url 'detail_repo2' owner=repo.owner name=repo.name subpath=curDir|add:"/"|add:item %}"> {{ item }}</a>
                         {% else %}
                             <a href="{% url 'detail_repo2' owner=repo.owner name=repo.name subpath=curDir|add:item %}"> {{ item }}</a>
                         {% endif %}
                     </div>
-                    <div class="center-align">First Commit</div>
-                    <div class="right-align">69 days ago</div>
+                    <div class="col s4">First Commit</div>
+                    <div class="col s2">{{item.date }}</div>
                 </li>
             {% endfor %}
             {% for item in fileContents %}
-                <li class="collection-item">
-                    <div class="secondary-content left">
-                        <i class=" material-icons ">folder</i><a
-                            href="#!"> {{ item }}</a>
-                    </div>
-                    <div class="center-align">First Commit</div>
-                    <div class="right-align">69 days ago</div>
+                <li class="collection-item row">
+                    <div class="col s6"><i class=" material-icons ">insert_drive_file</i><a
+                            href="#!"> {{ item }}</a></div>
+                    <div class="col s4">First Commit</div>
+                    <div class="col s2">69 days ago</div>
                 </li>
             {% endfor %}
+
+
         </div>
     </div>
 </div>
