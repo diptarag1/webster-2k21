@@ -1,0 +1,18 @@
+<div class="section-title">
+    <div class="justify-content-center d-flex activities">
+        <h2>Activity</h2>
+        {% for activity in activities %}
+            {% if activity.activity_type == 1 %}
+                {% include 'Repos/activity/createdRepo.html' %}
+            {% elif activity.activity_type == 2 %}
+                {% include 'Repos/activity/forkedRepo.html' %}
+            {% elif activity.activity_type == 3 %}
+                {% include 'Repos/activity/startedFollowing.html' %}
+            {% elif activity.activity_type == 4 %}
+                {% include 'Repos/activity/starredRepo.html' %}
+            {% endif %}
+
+
+        {% endfor %}
+
+    </div>
