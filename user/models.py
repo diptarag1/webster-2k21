@@ -14,8 +14,6 @@ class Profile(models.Model):
 # Activity model to store all kind of actions performed to be showed on main screen
 # example user forked react repo,user starred react repo,user followed other user
 
-
-
 class Activity(models.Model):
     Activity_types = (
         (1, "created repository"),
