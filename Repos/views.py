@@ -63,6 +63,15 @@ def delete_repo(request, name, owner):
     repo.delete()
     return redirect('home')
 
+def change_visibility(request,name,owner):
+    context={}
+    repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
+    if repo.is_private:
+        repo.is_private=False
+    else:
+        repo.is_private=True
+    repo.save()
+    return redirect('home')
 
 def add_remove_collaborator(request, ownerUsername, repoName):
     rName = str(ownerUsername) + '/' + repoName

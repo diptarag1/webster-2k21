@@ -30,7 +30,11 @@
                     <a class="repoName" href="">{{ user }} </a>&nbsp/&nbsp<a
                         class="repoName"
                         href="{% url 'detail_repo' owner=repo.owner name=repo.name %}"> {{ repo.name }}</a>
+                    {% if repo.is_private %}
                     <div id="repoTypeTag" class="chip">Private</div>
+                    {% else %}
+                        <div id="repoTypeTag" class="chip">Public</div>
+                    {% endif %}
                 </h4>
             <div class="row">
                 <div class="col s12">
@@ -102,7 +106,7 @@
             </div>
         </div>
         <div class="col s3 " style="background-color:red;">
-            sfdsfsd
+            Git URL:127.0.0.1:8000/repo/{{ repo.repoURL }}
         </div>
     </div>
     <!-- Modal Structure -->
