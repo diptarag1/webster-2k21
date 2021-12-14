@@ -105,7 +105,13 @@
                     </div>
 
                     <div class="row ">
+                        {% if request.user == user %}
                         <button href="" class="col s12 btn  purple ">Edit Profile</button>
+                        {% else %}
+                            <div id="follow-section">
+                            {% include 'user/follow_section.html' %}
+                            </div>
+                        {% endif %}
                     </div>
                     <div class="divider"></div>
                     <div class="row">
@@ -264,5 +270,26 @@
             $('select').formSelect();
         });
 
+    </script>
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            $(document).on('click', '#follow-button', function (event) {
+                event.preventDefault();
+                $.ajax({
+                    url: '{% url "follow" %}',
+                    type: 'post',
+                    data: {
+                        csrfmiddlewaretoken: "{{csrf_token}}",
+                        user: "{{ user.username }}",
+                    },
+                    success: function (data) {
+                        $('#follow-section').html(data['html']);
+                    },
+                    error: function () {
+                        $("#errorToast").toast("show");
+                    }
+                })
+            })
+        });
     </script>
 {% endblock %}

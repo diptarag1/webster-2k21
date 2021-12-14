@@ -1,0 +1,6 @@
+{% if request.user in user.profile.followers.all %}
+    {{ user.fo }}
+     <button id="follow-button" class="col s12 btn  purple ">UnFollow</button>
+{% else %}
+     <button id="follow-button" class="col s12 btn  purple ">Follow</button>
+{% endif %}
