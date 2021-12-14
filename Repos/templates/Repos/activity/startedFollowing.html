@@ -1,14 +1,16 @@
-<div class="card horizontal">
-
+<div class="card horizontal z-depth-1">
     <div class="card-stacked">
         <div class="card-content">
-            <p>{{ activity.thisGuy }} started following  {{ activity.thatGuy }}</p>
-        </div>
-        <div class="card-action">
-            <a href="#">This is a link</a>
+            <span class="card-title"> <p>
+                <a class= "repoName thinText" href="{% url 'profile' uname=activity.thisGuy %}">{{ activity.thisGuy }}</a>
+                started following
+                <a class= "repoName thinText" href="{% url 'profile' uname=activity.thatGuy %}">{{ activity.thatGuy }}</a>
+
+            </p></span>
+
+            <div class="divider"></div>
+
         </div>
     </div>
-    <div class="divider"></div>
-
+    following card
 </div>
-<div class="divider"></div>

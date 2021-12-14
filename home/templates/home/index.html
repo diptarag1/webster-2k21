@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
+
 {% block css %}
     <style>
+
         #leftSection {
             overflow-y: hidden;
             overflow-x: hidden;
             position: relative;
+            height: 100vh;
 
         }
 
@@ -23,60 +26,83 @@
         .thinText {
             font-weight: 200;
         }
+
+        .vertical {
+            {#border-left: 5px solid black;#}
+            {#height: 100%;#}
+        }
+
+        #middle-section {
+            border-left: 5px solid black;
+            padding :2%;
+        }
+
+        .activities .row {
+            padding: 0 !important;
+        }
+
+        .activities .col {
+            padding: 0 !important;
+        }
+        .activities .card{
+            {#padding: 0 !important;#}
+        }
+
     </style>
 {% endblock %}
 {% block content %}
     {% include 'navBar.html' %}
 
     <div class=" row full-height">
-        <div id="leftSection" class="col s3 card full-height">
-            <div id="leftSection-internal">
-                <h3>{{ user }}</h3>
-                <div class="row">
-                    <div class="col s9">
-                        <form>
-                            <div class="input-field">
-                                <input id="search" type="search" required>
-                                <label class="label-icon" for="search"></label>
+        <div id="leftSection" class="col s3 card">
+            <div class="">
+                <div id="leftSection-internal">
+                    <h3>{{ user }}</h3>
+                    <div class="row">
+                        <div class="col s9">
+                            <form>
+                                <div class="input-field">
+                                    <input id="search" type="search" required>
+                                    <label class="label-icon" for="search"></label>
 
-                            </div>
-                        </form>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col s3">
+                            <a href="{% url 'initrepo' %}">
+                                <button class="btn btn-primary">New</button>
+                            </a>
+                        </div>
                     </div>
-                    <div class="col s3">
-                        <a href="{% url 'initrepo' %}">
-                            <button class="btn btn-primary">New</button>
-                        </a>
-                    </div>
+
+
+                    <ul class="collection with-header">
+                        <li class="collection-header"><h5 class="">Repositories</h5></li>
+                        {% for repo in repos %}
+                            <li class="collection-item repoName thinText"><a
+                                    href="{% url 'detail_repo' owner=repo.owner name=repo.name %}">
+                                {{ repo.owner }}/{{ repo.name }}
+                            </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    </p>
                 </div>
-
-
-                <ul class="collection with-header">
-                    <li class="collection-header"><h4>List of your repositories.</h4></li>
-                    {% for repo in repos %}
-                        <li class="collection-item repoName thinText"><a
-                                href="{% url 'detail_repo' owner=repo.owner name=repo.name %}">
-                            {{ user }}/{{ repo.name }}
-                        </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-                </p>
             </div>
         </div>
-        <div class="col s6">
+        <div id="middle-section" class="col s6">
             <div class="section-title">
-                <div class="justify-content-center d-flex">
+                <div class="justify-content-center d-flex activities">
                     <h2>Activiy</h2>
                     {% for activity in activities %}
                         {% if activity.activity_type == 1 %}
                             {% include 'Repos/activity/createdRepo.html' %}
                         {% elif activity.activity_type == 2 %}
-                              {% include 'Repos/activity/forkedRepo.html' %}
+                            {% include 'Repos/activity/forkedRepo.html' %}
                         {% elif activity.activity_type == 3 %}
-                              {% include 'Repos/activity/startedFollowing.html' %}
+                            {% include 'Repos/activity/startedFollowing.html' %}
                         {% elif activity.activity_type == 4 %}
-                              {% include 'Repos/activity/starredRepo.html' %}
-
+                            {% include 'Repos/activity/starredRepo.html' %}
                         {% endif %}
 
 
@@ -95,5 +121,5 @@
 
         </div>
     </div>
-
+{% include 'footer.html' %}
 {% endblock %}

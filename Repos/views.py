@@ -104,7 +104,7 @@ def star(request):
     context = {
         'repo': repo,
     }
-
+    print("repo has been strarred")
     html = render_to_string('Repos/star-section.html', context, request=request)
     return JsonResponse({'html': html})
 

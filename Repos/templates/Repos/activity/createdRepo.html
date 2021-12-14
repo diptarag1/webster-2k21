@@ -1,14 +1,15 @@
-<div class="card horizontal">
-
+<div class="card horizontal z-depth-1">
     <div class="card-stacked">
         <div class="card-content">
+            <span class="card-title"> <p>
+                <a class= "repoName thinText" href="{% url 'profile' uname=activity.thisGuy %}">{{ activity.thisGuy }}</a>
+
+                created a repository  <a class= "repoName thinText" href="{% url 'detail_repo' owner=activity.thisGuy name=activity.thatRepo.name %}">{{ activity.thisGuy }}/{{ activity.thatRepo.name }}</a></p></span>
+
+
+            <div class="divider"></div>
+
             <p>{{ activity.thisGuy }} created {{ activity.thatRepo }}</p>
         </div>
-        <div class="card-action">
-            <a href="#">This is a link</a>
-        </div>
     </div>
-    <div class="divider"></div>
-
 </div>
-<div class="divider"></div>

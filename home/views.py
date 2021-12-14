@@ -8,7 +8,7 @@ def index(request):
     if request.user.is_authenticated:
         context={}
         repos=Repo.objects.filter(owner=request.user)
-        activities=Activity.objects.all()
+        activities=Activity.objects.all().order_by('-time')
         context['repos']=repos
         context['activities'] = activities
         return render(request,'home/index.html',context=context)
