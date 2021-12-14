@@ -1,14 +1,14 @@
-<div class="card horizontal">
 
+<div class="card horizontal z-depth-1">
     <div class="card-stacked">
         <div class="card-content">
-            <p>{{ activity.thisGuy }} forked {{ activity.thatRepo }}</p>
-        </div>
-        <div class="card-action">
-            <a href="#">This is a link</a>
+            <span class="card-title"> <p>
+                <a class= "repoName thinText" href="{% url 'profile' uname=activity.thisGuy %}">{{ activity.thisGuy }}</a>
+
+                forked   <a class= "repoName thinText" href="{% url 'detail_repo' owner=activity.thisGuy name=activity.thatRepo.name %}">{{ activity.thisGuy }}/{{ activity.thatRepo.name }}</a>
+                from <a class= "repoName thinText" href="{% url 'detail_repo' owner=activity.thatGuy name=activity.thatRepo.name %}">{{ activity.thatGuy }}/{{ activity.thatRepo.name }}</a>
+            </p></span>
+            <div class="divider"></div>
         </div>
     </div>
-    <div class="divider"></div>
-
 </div>
-<div class="divider"></div>

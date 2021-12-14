@@ -27,7 +27,7 @@
     <div class="row">
         <div class="col s9">
                 <h4>
-                    <a class="repoName" href="">{{ user }} </a>&nbsp/&nbsp<a
+                    <a class="repoName" href="">{{ repo.owner }} </a>&nbsp/&nbsp<a
                         class="repoName"
                         href="{% url 'detail_repo' owner=repo.owner name=repo.name %}"> {{ repo.name }}</a>
                     {% if repo.is_private %}
@@ -55,17 +55,17 @@
         <div class="col s3">
             <div id="theButtonContainer">
                 <div class="row">
-                    <div class=" col" id="star-section">
+                    <div class=" " id="star-section">
                         {% include 'Repos/star-section.html' %}
                     </div>
-                    <div class="col">
-                        <a class=" btn btn-small purple lighten-1 " href="{% url 'profile' user %}">
+                    <div class="">
+                        <a class="col s4 btn btn-small purple lighten-1 " href="{% url 'profile' user %}">
                             Profile
                         </a>
                     </div>
 
-                    <div class="col">
-                        <a class=" col btn btn-small purple lighten-1 " href="{% url 'profile' user %}">
+                    <div class="">
+                        <a class=" col s4 btn btn-small purple lighten-1 " href="{% url 'profile' user %}">
                             Watch
                         </a>
                     </div>
