@@ -32,11 +32,18 @@ def detail_repo(request, name, owner,branch="master", **kwargs):
 
     # To handle branching
     _repo=_Repo(rw_dir+repo.repoURL)
+    print("trying to access branch with name " + branch)
+    print("available branches are ",_repo.heads)
     if branch not in _repo.heads:
         print("tried to checkout to branch which doesnt exist")
         print("redirecting to default branch")
-        _repo.heads[0].checkout()
-        branch=_repo.heads[0].name
+        # if there are multiple branches
+        if len( _repo.heads)>0:
+            _repo.heads[0].checkout()
+            branch=_repo.heads[0].name
+        # if there is only one branch
+        else:
+            branch="master"
     else:
         _repo.heads[branch].checkout()
         print("repo {} has been checked out to {}".format(name,branch))
