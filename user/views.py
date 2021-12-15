@@ -10,7 +10,7 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from  django.http import HttpResponse
 from Repos.models import Repo
-from .models import Profile
+from .models import Profile,Activity
 # Create your views here.
 
 def signup(request):
@@ -69,10 +69,16 @@ def follow(request):
     if request.user in profile.followers.all():
         profile.followers.remove(request.user)
         cprofile.following.remove(pro_user)
+        activity=Activity.objects.filter(activity_type=4,user=request.user,targetUser=pro_user)
+        if len(activity)>0:
+            activity[0].delete()
         message="Unfollowed Successfully"
     else:
         profile.followers.add(request.user)
         cprofile.following.add(pro_user)
+        activity=Activity.objects.create(activity_type=4,user=request.user,targetUser=pro_user,targetRepo=None)
+        # print(activity)
+        activity.save()
         message="Followed Successfully"
     html = render_to_string('user/follow_section.html', context, request=request)
     return JsonResponse({'html': html, 'message': message})
