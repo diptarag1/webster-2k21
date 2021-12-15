@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.http import JsonResponse
 import os
 from .serverLocation import rw_dir
+from git import Git,Repo as _Repo
 
 # Create your views here.
 def init_Repo(request):
@@ -25,13 +26,33 @@ def init_Repo(request):
     return render(request, 'Repos/repoCreate.html', {'form': form,'randomUniqueName':"newDivaniRepo"})
 
 
-def detail_repo(request, name, owner, **kwargs):
+def detail_repo(request, name, owner,branch="master", **kwargs):
     context = {}
     repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
-    context['repo'] = repo
 
+    # To handle branching
+    _repo=_Repo(rw_dir+repo.repoURL)
+    print("trying to access branch with name " + branch)
+    print("available branches are ",_repo.heads)
+    if branch not in _repo.heads:
+        print("tried to checkout to branch which doesnt exist")
+        print("redirecting to default branch")
+        # if there are multiple branches
+        if len( _repo.heads)>0:
+            _repo.heads[0].checkout()
+            branch=_repo.heads[0].name
+        # if there is only one branch
+        else:
+            branch="master"
+    else:
+        _repo.heads[branch].checkout()
+        print("repo {} has been checked out to {}".format(name,branch))
+
+    context['repo'] = repo
+    context['repo_heads'] =_repo.branches
     context['name'] = name
     context['owner'] = owner
+    context['current_branch'] = branch
     
     curDir = os.path.join(rw_dir, owner, name)
     teDir=''
