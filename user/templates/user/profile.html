@@ -3,22 +3,200 @@
 {% block title %}
     Profile-{{ user }}
 {% endblock %}
+{% block css %}
+    <style>
+        body {
+        {#background-color:#2E3138;#}
+        }
+
+        #profilePageImage {
+        {#width: 370px;#}{#height: 370px;#}{#overflow-y: hidden;#}{#overflow-x: hidden;#}{#border-radius: 50%;#}
+        }
+
+        #main {
+            margin-top: 30px;
+        }
+
+        #rightSection {
+            margin-top: 30px;
+        }
+
+        .repoSearchButtons {
+            margin-top: 20px;
+            margin-left: 5px;
+            margin-right: 5px;
+        {# margin: 3px;#}
+        }
+
+        #activityContainer {
+        {#border: 6px;#}
+
+        }
+
+        #content {
+            margin-top: 10px;
+            border: 3px solid #161B33;
+            border-radius: 12px;
+            padding: 8px;
+            margin-left: auto;
+            margin-right: auto;
+            overflow-x: hidden;
+            display: grid;
+            --squareSide: 17px;
+            grid-template-columns: repeat(45, var(--squareSide));
+            grid-template-rows: repeat(7, var(--squareSide));
+        {#grid-gap: 0px;#}
+        }
+
+        @media (min-width: 450px) {
+            SquareGrid {
+                --columns: 2;
+            }
+        }
+
+        @media (min-width: 750px) {
+            SquareGrid {
+                --columns: 3;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            SquareGrid {
+                --columns: 4;
+            }
+        }
+
+        #content div {
+            margin: 1px;
+            border-radius: 20%;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="section-title">
-            <div class="justify-content-center d-flex">
-                <h2>Personal Details</h2>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <p>Username:{{ user.username }}</p>
-            </div>
-            <div class="card-footer">
-                <button class="btn btn-primary">follow</button>
-            </div>
-        </div>
+    {#    <nav class=" red darken-3">#}
+    {#        <div class="nav-wrapper">#}
+    {#            <a href="#" class="brand-logo center">Secure Hub</a>#}
+    {#            <ul class="right">#}
+    {#                {% if user.is_authenticated %}#}
+    {#                    <li><a href="{% url 'signout' %}">#}
+    {#                        <button class="btn purple lighten-1" type="submit">Logout</button>#}
+    {#                    </a></li>#}
+    {##}
+    {#                {% endif %}#}
+    {#            </ul>#}
+    {#        </div>#}
+    {#    </nav>#}
+    {% include 'navBar.html' %}
+    <div id="main" class="row">
+        <div class="col s10 offset-s1 row">
+            <div class="col s4">
+                <div class="card z-depth-0">
+                    <div class="card-image">
+                        <img class="responsive-img" id="profilePageImage"
+                             src="https://www.vangoghgallery.com/img/starry_night_full.jpg">
 
+                    </div>
+                    {#                     <span class="card-title">Card Title</span>#}
+                    <div class="card-content">
+                        <span class="card-title"><a href="{% url 'profile' user %}"> {{ user.username }}</a></span>
+                        <p>I am a very simple card. I am good at containing small bits of information.
+                            I am convenient because I require little markup to use effectively.</p>
+
+                    </div>
+
+                    <div class="row ">
+                        {% if request.user == user %}
+                            <button href="" class="col s12 btn  purple ">Edit Profile</button>
+                        {% else %}
+                            <div id="follow-section">
+                                {% include 'user/follow_section.html' %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="divider"></div>
+                    <div class="row">
+                        <span class="card-title left">Achievements</span>
+                    </div>
+                    <div class="row">
+                        dsasd
+                    </div>
+                    <div class="card-action">
+                        {#                        <h4 class="card-title left">Achievements</h4>#}
+                        {#                        <a href="#">This is a link</a>#}
+                    </div>
+                </div>
+                {#                <div class="card">#}
+                {#                    <div class="card-body">#}
+                {#                        <p>Username:</p>#}
+                {#                    </div>#}
+                {#                    <div class="card-footer">#}
+                {#                        <button class="btn btn-primary">follow</button>#}
+                {#                    </div>#}
+                {#                </div>div#}
+
+                {#            </div>#}
+            </div>
+            <div class="col s8">
+                <div id="rightSection">
+                    <div class="row ">
+                        <div class="col s12">
+                            <ul class="tabs  ">
+                                <li class="tab col s2 purple-text "><a class="active  purple-text " href="#test1">OverView</a>
+                                </li>
+                                <li class="tab col s3"><a class="  purple-text " href="#test2">Repositories</a></li>
+                                <li class="tab col s2 "><a class="  purple-text " href="#test3">Projects </a></li>
+                                <li class="tab col s2"><a class="  purple-text " href="#test4">Packages</a></li>
+                            </ul>
+                        </div>
+                        <div id="test1" class="col s12">
+                            {% include "user/profilePageComponents/OverViewTab.html" %}
+                        </div>
+                        <div id="test2" class="col s12">
+                            {% include "user/profilePageComponents/AllRepositoriesTab.html" %}
+                        </div>
+                        <div id="test3" class="col s12">
+                            {% include "user/profilePageComponents/ProjectsTab.html" %}
+                        </div>
+                        <div id="test4" class="col s12">
+                            {% include "user/profilePageComponents/PackagesTab.html" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
+
+
+{% endblock %}
+{% block script %}
+    <script>
+        $(document).ready(function () {
+            $('.tabs').tabs();
+            $('select').formSelect();
+        });
+
+    </script>
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            $(document).on('click', '#follow-button', function (event) {
+                event.preventDefault();
+                $.ajax({
+                    url: '{% url "follow" %}',
+                    type: 'post',
+                    data: {
+                        csrfmiddlewaretoken: "{{csrf_token}}",
+                        user: "{{ user.username }}",
+                    },
+                    success: function (data) {
+                        $('#follow-section').html(data['html']);
+                    },
+                    error: function () {
+                        $("#errorToast").toast("show");
+                    }
+                })
+            })
+        });
+    </script>
 {% endblock %}

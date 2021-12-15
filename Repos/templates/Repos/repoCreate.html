@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    SignUp
+{% endblock %}
+{% block css %}
+    <style>
+        #createRepo {
+            margin-top: 2%;
+        }
+
+        #id_rname {
+        {#font-size: 3rem;#}
+        }
+
+        #ownerName {
+            font-size: 1.5rem;
+            font-color: black;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    {% include 'navBar.html' %}
+
+    <div id="createRepo" class="container ">
+        <div class="row">
+            <div class="col s8 offset-s2">
+                <h4>Create repository</h4>
+                <div class="divider"></div>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="input-field col s3 ">
+                            <div>
+                                <label>
+                                    <h6 class="purple-text">Owner *</h6>
+                                </label>
+                                <div class="black-text">
+                                    <a class="waves-effect waves-light btn-large red lighten-1">{{ user }}</a>
+                                </div>
+                            </div>
+                        </div>
+                        <h1 class="col">/</h1>
+                        <div class="input-field col s6">
+                            <div id="div_id_rname" class="form-group">
+                                <label for="id_rname" class=" requiredField">
+                                    <h6 class="purple-text">Repository Name *</h6>
+                                </label>
+                                <div class="">
+                                    <input type="text" name="rname" maxlength="30"
+                                           class="textinput textInput form-control" required id="id_rname">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12">
+                            <p class="left">How about a Random unique name
+                                <a id="newRepoNameButton" href="#" class="flow-text">{{ randomUniqueName }}</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <textarea id="textarea1" class="materialize-textarea"></textarea>
+                            <label for="textarea1">Description</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <p>
+                            <label>
+                                <input  class="active checked" name="group1" type="radio" checked/>
+                                <span>Private</span>
+                            </label>
+                        </p>
+                    </div>
+
+                    <div class="row">
+                        <p>
+                            <label>
+                                <input name="group1" type="radio" />
+                                <span>Public </span>
+                            </label>
+                        </p>
+                    </div>
+                    <button  type="submit" class="waves-effect waves-light btn-large purple lighten-1">Create repository</button>
+
+
+                </form>
+
+            </div>
+
+
+        </div>
+    </div>
+
+{% endblock %}
+{% block script %}
+    <script>
+
+        $(document).ready(function () {
+            M.updateTextFields();
+            $('#newRepoNameButton').on('click', function (e) {
+                e.preventDefault();
+                console.log("button clicked");
+                $('#id_rname').val("{{ randomUniqueName }}");
+
+            });
+        });
+
+
+    </script>
+{% endblock %}

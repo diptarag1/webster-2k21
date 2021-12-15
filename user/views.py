@@ -1,9 +1,16 @@
+import random
+
 from django.contrib.auth import login, authenticate,logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from .forms import SignUpForm
+from django.template.loader import render_to_string
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import JsonResponse
 from django.contrib.auth.models import User
 from  django.http import HttpResponse
+from Repos.models import Repo
+from .models import Profile,Activity
 # Create your views here.
 
 def signup(request):
@@ -28,14 +35,14 @@ def signin(request):
         cuser = User.objects.filter(username=username)
         if len(cuser) == 1:
             if not cuser[0].is_active:
-                return HttpResponse("hi")
+                return HttpResponse("not active")
             elif user is not None:
                 login(request, user)
                 return redirect('home')
             else:
-                return HttpResponse("hi")
+                return HttpResponse("password incorrect")
         else:
-            return HttpResponse("hi")
+            return HttpResponse("username does not exist")
     return render(request, 'user/signin.html')
 
 def signout(request):
@@ -46,10 +53,35 @@ def profile(request,uname):
     context={}
     user=User.objects.get(username=uname)
     context['user']=user
+    context['repos']=Repo.objects.filter(owner__username=uname)
+    context['mostPopularRepos']=Repo.objects.filter(owner__username=uname)[0:6]
+    context['activity'] = [2 for i in range(45*7)]
+
     return render(request,'user/profile.html',context=context)
 
 def follow(request):
-    pass
+    pro_user=request.POST.get('user')
+    profile= Profile.objects.get(user__username=pro_user)
+    cprofile=Profile.objects.get(user=request.user)
+    pro_user=User.objects.get(username=pro_user)
+    context={}
+    context['user']=pro_user
+    if request.user in profile.followers.all():
+        profile.followers.remove(request.user)
+        cprofile.following.remove(pro_user)
+        activity=Activity.objects.filter(activity_type=4,user=request.user,targetUser=pro_user)
+        if len(activity)>0:
+            activity[0].delete()
+        message="Unfollowed Successfully"
+    else:
+        profile.followers.add(request.user)
+        cprofile.following.add(pro_user)
+        activity=Activity.objects.create(activity_type=4,user=request.user,targetUser=pro_user,targetRepo=None)
+        # print(activity)
+        activity.save()
+        message="Followed Successfully"
+    html = render_to_string('user/follow_section.html', context, request=request)
+    return JsonResponse({'html': html, 'message': message})
 
 def following(request):
     pass

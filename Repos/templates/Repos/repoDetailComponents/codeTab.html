@@ -1,0 +1,88 @@
+<div class="row">
+    <div class="row">
+        <!-- Dropdown Trigger -->
+        <div class="valign-wrapper col s3">
+            <a class='right purple dropdown-trigger btn' href='#' data-target='branchSelector'>
+                {{ current_branch }} <i class="large material-icons">arrow_drop_down</i>
+            </a>
+            <!-- Dropdown Structure -->
+            <ul id='branchSelector' class='dropdown-content'>
+                {% for branch in repo_heads %}
+                    <li>
+                        <a href="{% url 'detail_repo' owner=repo.owner name=repo.name branch=branch %}">
+                        {{ branch }}
+                    </a>
+                    </li>
+                {% endfor %}
+                {#                <li><a href="#!" class="active">Branch 1</a></li>#}
+                {#                <li><a href="#!">Branch 2</a></li>#}
+                {#                <li><a href="#!">Branch 3</a></li>#}
+            </ul>
+            {#        <div class="input-field col s2">#}
+            {#            <select>#}
+            {#                <option value="" disabled selected>Choose your option</option>#}
+            {#                <option value="1">Option 1</option>#}
+            {#                <option value="2">Option 2</option>#}
+            {#                <option value="3">Option 3</option>#}
+            {#            </select>#}
+            {#            <label>Materialize Select</label>#}
+            {#        </div>#}
+
+        </div>
+        <div class="col offset-s5">
+            <div class="row">
+                <div class="col ">
+                    <a class="  offset-s4 purple waves-effect waves-light btn-small">Go to File</a>
+
+                </div>
+                <div class="col">
+                    <a class=" purple waves-effect waves-light btn-small">Add File</a>
+
+                </div>
+                <div class="col">
+                    <a class="   purple waves-effect waves-light btn-small">Code</a>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div id="body" class="col s12">
+        <div class="collection">
+
+            <style>
+                .collection .row {
+                    padding: 1% !important;
+                }
+
+                .collection .col {
+                {#padding: 0 !important;#}
+                }
+            </style>
+            {% for item in dirContents %}
+                <li class="collection-item row">
+                    <div class="col s6"><i class="material-icons">folder</i>
+                        {% if curDir != '' %}
+                            <a href="{% url 'detail_repo2' owner=repo.owner name=repo.name subpath=curDir|add:"/"|add:item %}"> {{ item }}</a>
+                        {% else %}
+                            <a href="{% url 'detail_repo2' owner=repo.owner name=repo.name subpath=curDir|add:item %}"> {{ item }}</a>
+                        {% endif %}
+                    </div>
+                    <div class="col s4">First Commit</div>
+                    <div class="col s2">{{ item.date }}</div>
+                </li>
+            {% endfor %}
+            {% for item in fileContents %}
+                <li class="collection-item row">
+                    <div class="col s6"><i class=" material-icons ">insert_drive_file</i><a
+                            href="#!"> {{ item }}</a></div>
+                    <div class="col s4">First Commit</div>
+                    <div class="col s2">69 days ago</div>
+                </li>
+            {% endfor %}
+
+
+        </div>
+    </div>
+</div>

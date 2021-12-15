@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
-
 {% block title %}
     Sign In
 {% endblock %}
-
 {% block content %}
     <style>html,
     body {
@@ -63,7 +61,7 @@
 
 
     <main class="form-signin text-center">
-        <form class="box mx-auto" method="POST" action="">
+        <form class="box mx-auto" method="POST" action="{% url 'signin' %}">
             {% csrf_token %}
             <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 

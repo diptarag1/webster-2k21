@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% block css %}
+    <style>
+        #theButtonContainer {
+            margin-top: 10px;
+        }
+
+        #allTabsContainer div {
+        {#min-height:60vh;#}
+        }
+        #repoTypeTag{
+            transform:translateY(-14px);
+        }
+        .tabDetails {
+            height:800px;
+            {#min-height:60vh#}
+            {#min-height: 100vmax;#}
+        }
+        .repoName {
+            display: inline-block;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% include 'navBar.html' %}
+    <div class="row">
+        <div class="col s9">
+                <h4>
+                    <a class="repoName" href="">{{ repo.owner }} </a>&nbsp/&nbsp<a
+                        class="repoName"
+                        href="{% url 'detail_repo' owner=repo.owner name=repo.name %}"> {{ repo.name }}</a>
+                    {% if repo.is_private %}
+                    <div id="repoTypeTag" class="chip">Private</div>
+                    {% else %}
+                        <div id="repoTypeTag" class="chip">Public</div>
+                    {% endif %}
+                </h4>
+            <div class="row">
+                <div class="col s12">
+                    <ul class="tabs">
+                        <li class="tab col s2"><a class="active" href="#test1">Code</a></li>
+                        <li class="tab col s2"><a href="#test2">Issues</a></li>
+                        <li class="tab col s2 "><a href="#test3">Pull request</a></li>
+                        <li class="tab col s2"><a href="#test4">Security</a></li>
+                        <li class="tab col s2"><a href="#test5">Settings</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Modal Trigger -->
+
+        </div>
+        <div class="col s3">
+            <div id="theButtonContainer">
+                <div class="row">
+                    <div class=" " id="star-section">
+                        {% include 'Repos/star-section.html' %}
+                    </div>
+                    <div class="">
+                        <a class="col s4 btn btn-small purple lighten-1 " href="{% url 'profile' user %}">
+                            Profile
+                        </a>
+                    </div>
+
+                    <div class="">
+                        <a class=" col s4 btn btn-small purple lighten-1 " href="{% url 'profile' user %}">
+                            Watch
+                        </a>
+                    </div>
+
+
+                    {% if repo.parent %}
+                        <p>This repo is forked from</p>
+                        <a class="waves-effect waves-light modal-trigger"
+                           href="{% url 'detail_repo' owner=repo.parent.owner name=repo.name %}">{{ repo.parent.owner }}/{{ repo.name }}/</a>
+                    {% endif %}
+                    {% if repo.owner != request.user %}
+                        <a class="waves-effect waves-light btn modal-trigger" href="{% url 'fork' repo.pk %}">Fork
+                            Repository</a>
+                    {% endif %}
+                        <a class="waves-effect waves-light btn modal-trigger" href="#forkedChild">Fork
+                            Count:{{ forkedChild.count }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s9">
+            <div id="codeTab" class="row">
+                <div class="col s11 offset-s1">
+                    <div class="row">
+                        <div class="row">
+
+                            <div id="test1" class="tabDetails  col s12">   {% include 'Repos/repoDetailComponents/codeTab.html' %}</div>
+                            <div id="test2" class="tabDetails col s12"> {% include 'Repos/repoDetailComponents/issueTab.html' %}</div>
+                            <div id="test3" class="tabDetails col s12">{% include 'Repos/repoDetailComponents/pullRequestTab.html' %}</div>
+                            <div id="test4" class="tabDetails col s12"> {% include 'Repos/repoDetailComponents/securityTab.html' %}</div>
+                            <div id="test5" class="tabDetails col s12">{% include 'Repos/repoDetailComponents/settingsTab.html' %}</div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col s3 " style="background-color:red;">
+            Git URL:127.0.0.1:8000/repo/{{ repo.repoURL }}
+        </div>
+    </div>
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h4>Delete Repository</h4>
+            <p>Once deleted you can not undo it</p>
+            <p>Type "{{ repo.owner }}/{{ repo.name }}/" to confirm delete</p>
+            <input type="text" placeholder="Type here" id="delete_box">
+        </div>
+        <div class="modal-footer">
+            <a href="{% url 'delete_repo' owner=repo.owner name=repo.name %}">
+                <button class="btn" disabled="disabled" id="delete_btn"> Delete</button>
+            </a>
+        </div>
+    </div>
+     <div id="forkedChild" class="modal">
+        <div class="modal-content">
+            <h4>List of all Fork</h4>
+        <ul>
+            {% for fork in forkedChild %}
+                <li><a href="{% url 'detail_repo' owner=fork.owner name=fork.name %}">{{ fork.repoURL }}</a></li>
+            {% endfor %}
+        </ul>
+        </div>
+        <div class="modal-footer">
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(document).ready(function () {
+            $('#delete_box').keyup(function () {
+                var btnSubmit = $("#delete_btn");
+                var text = "{{ repo.owner }}/{{ repo.name }}/";
+                if ($(this).val() === text) {
+                    btnSubmit.removeAttr("disabled");
+                } else {
+                    btnSubmit.attr("disabled", "disabled");
+                }
+            })
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.modal').modal();
+            $('select').formSelect();
+            $('.tabs').tabs();
+
+            $(document).on('click', '#starbtn', function (event) {
+                event.preventDefault()
+                var iid = {{ repo.pk }}
+                    $.ajax({
+                        url: '{% url "star" %}',
+                        type: 'post',
+                        data: {
+                            csrfmiddlewaretoken: "{{csrf_token}}",
+                            id: iid,
+                        },
+                        success: function (data) {
+                            $('#star-section').html(data['html'])
+                        },
+                        error: function (data) {
+                            $("#errorToast").toast("show");
+                        }
+                    })
+            })
+        })
+    </script>
+{% endblock %}

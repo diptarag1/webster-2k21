@@ -1,51 +1,58 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        Dropdown
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled">Disabled</a>
-                </li>
-            </ul>
+<nav class=" red darken-3">
+    <div class="nav-wrapper">
+        <a href="{% url 'home' %}" class="brand-logo center">Secure Hub</a>
+        {#        <ul>#}
+        {#            <li>#}
+        {##}
+        {#                    <form >#}
+        {#                        <div class="input-field">#}
+        {#                            <input id="search" type="search" required>#}
+        {#                            <label class="label-icon" for="search"><i class="material-icons">search</i></label>#}
+        {#                            <i class="material-icons">close</i>#}
+        {#                        </div>#}
+        {#                    </form>#}
+        {##}
+        {#                #}
+        {#            </li>#}
+        {#        </ul>#}
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+
             {% if user.is_authenticated %}
-                <a href="{% url 'profile' user%}">
-                    <button class="btn btn-outline-success" type="submit">Profile</button>
-                </a>
-            {% endif %}
-            <button class="btn btn-outline-success" type="submit">Register</button>
-            {% if user.is_authenticated %}
-                <a href="{% url 'signout' %}">
-                    <button class="btn btn-outline-success" type="submit">Logout</button>
-                </a>
+                <div class="chip dropdown-trigger purple lighten-1  white-text" href='#' data-target='dropdown1'>
+                    <img  class="responsive-img" src="https://www.vangoghgallery.com/img/starry_night_full.jpg">
+               {{ user }}
+
+                </div>
+                {#                <a class='dropdown-trigger purple lighten-1 btn-large' href='#' data-target='dropdown1'>Drop Me!</a>#}
+
+                <!-- Dropdown Structure -->
+                <ul id='dropdown1' class='dropdown-content'>
+                    <li><a href="{% url 'profile' user %}">Signed in as {{ user }}</a></li>
+                    <li class="divider" tabindex="-1"></li>
+                    <li><a href="#!">Profile</a></li>
+                    <li><a href="#!">Repositories</a></li>
+                    <li><a href="#!">Projects</a></li>
+                    <li><a href="#!">Stars</a></li>
+                    <li class="divider" tabindex="-1"></li>
+                    <li><a href="#!">Help</a></li>
+
+                    <li><a href="#!">Settings</a></li>
+                    <li class="divider" tabindex="-1"></li>
+                    <li><a href="{% url 'signout' %}">Signout</a></li>
+                </ul>
+                {##}
+                {#                <li><a href="{% url 'signout' %}">#}
+                {#                    <button class="btn purple lighten-1" type="submit">Logout</button>#}
+                {#                </a></li>#}
             {% else %}
-                <a href="{% url 'signin' %}">
-                    <button class="btn btn-outline-success" type="submit">Login</button>
-                </a>
+                <li><a href="{% url 'signin' %}">
+                    <button class="btn purple lighten-1" type="submit">Login</button>
+                </a></li>
+                <li><a href="{% url 'signup' %}">
+                    <button class="btn purple lighten-1" type="submit">Register</button>
+                </a></li>
+
             {% endif %}
-        </div>
+        </ul>
     </div>
 </nav>

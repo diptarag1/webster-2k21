@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% include 'navBar.html' %}
+    {% for issue in issues %}
+        <p>{{ issue.topic }}</p>
+        <p>{{ issue.description }}</p>
+        <br>
+        <br>
+    {% endfor %}
+{% endblock %}

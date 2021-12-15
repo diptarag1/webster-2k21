@@ -1,0 +1,16 @@
+<div class="card horizontal">
+    <div class="card-stacked">
+        <div class="card-content">
+          <span class="card-title  grey-text text-darken-4">
+                    <a style="font-weight:500;" class="purple-text text-darken-2 " href="{% url 'detail_repo' owner=repo.owner name=repo.name %}">{{ repo.name }}</a>
+                                   <div class="chip right">
+                                                       Public
+                                                      </div>
+                                                    </span>
+            <p class="left">Here goes the description of repo</p>
+        </div>
+        <div class="card-action">
+            <a href="#">C++</a>
+        </div>
+    </div>
+</div>

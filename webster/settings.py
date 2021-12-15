@@ -42,7 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home',
     'user',
+    'Repos',
+
+    #third party
     'crispy_forms',
+    'materializecssform',
+    'taggit',
 ]
 
 MIDDLEWARE = [
