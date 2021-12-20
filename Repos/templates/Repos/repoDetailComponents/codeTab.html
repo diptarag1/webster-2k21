@@ -9,7 +9,7 @@
             <ul id='branchSelector' class='dropdown-content'>
                 {% for branch in repo_heads %}
                     <li>
-                        <a href="{% url 'detail_repo' owner=repo.owner name=repo.name branch=branch %}">
+                        <a href="{% url 'detail_repo1' owner=repo.owner name=repo.name branch=branch %}">
                         {{ branch }}
                     </a>
                     </li>
@@ -63,10 +63,10 @@
             {% for item in dirContents %}
                 <li class="collection-item row">
                     <div class="col s6"><i class="material-icons">folder</i>
-                        {% if curDir != '' %}
-                            <a href="{% url 'detail_repo2' owner=repo.owner name=repo.name subpath=curDir|add:"/"|add:item %}"> {{ item }}</a>
+                        {% if curDir == '' %}
+                            <a href="{% url 'detail_repo2' owner=owner name=repo.name subpath=item branch=current_branch %}"> {{ item }}</a>
                         {% else %}
-                            <a href="{% url 'detail_repo2' owner=repo.owner name=repo.name subpath=curDir|add:item %}"> {{ item }}</a>
+                            <a href="{% url 'detail_repo2' owner=owner name=repo.name subpath=curDir|add:'/'|add:item branch=current_branch %}"> {{ item }}</a>
                         {% endif %}
                     </div>
                     <div class="col s4">First Commit</div>

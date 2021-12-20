@@ -5,5 +5,5 @@
 </div>
 <div id="collab-section">
     <input type="text" placeholder="Enter username">
-    <a class="waves-effect waves-light btn modal-trigger" href="{% url 'add-remove-collaborator'  %}">Add Collaborator</a>
+    <a class="waves-effect waves-light btn modal-trigger" href="{% url 'add-remove-collaborator' ownerUsername=owner repoName=repo.name  %}">Add Collaborator</a>
 </div>
