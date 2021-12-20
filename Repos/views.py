@@ -124,7 +124,8 @@ def star(request):
         repo.star.remove(request.user)
         activity = Activity.objects.filter(user=request.user,targetRepo=repo)
         if len(activity)>0:
-            activity[0].delete()
+            for ac in activity:
+                ac.delete()
     else:
         repo.star.add(request.user)
         activity = Activity.starredRepo(request.user,repo)
@@ -138,11 +139,12 @@ def star(request):
 
 def fork(request,id):
     parent = Repo.objects.get(id=id)
-    new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name,is_private=False)
-    new_repo.create_fork(parent)
-    new_repo.save()
-    activity = Activity.forkedRepo(request.user,parent.owner,parent)
-    activity.save()
+    if not Repo.objects.filter(owner=request.user).filter(name=parent.name).exists():
+        new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name,is_private=False)
+        new_repo.create_fork(parent)
+        new_repo.save()
+        activity = Activity.forkedRepo(request.user,parent.owner,parent)
+        activity.save()
     return redirect('home')
 
 
