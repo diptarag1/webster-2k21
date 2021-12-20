@@ -82,6 +82,10 @@ def detail_repo(request, name, owner,branch="master", **kwargs):
 def delete_repo(request, name, owner):
     context = {}
     repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
+    activity = Activity.objects.filter(user=request.user, targetRepo=repo)
+    if len(activity)>0:
+        for ac in activity:
+            ac.delete()
     repo.delete()
     return redirect('home')
 
@@ -118,6 +122,9 @@ def star(request):
     repo = Repo.objects.get(id=id)
     if request.user in repo.star.all():
         repo.star.remove(request.user)
+        activity = Activity.objects.filter(user=request.user,targetRepo=repo)
+        if len(activity)>0:
+            activity[0].delete()
     else:
         repo.star.add(request.user)
         activity = Activity.starredRepo(request.user,repo)
@@ -137,8 +144,6 @@ def fork(request,id):
     new_repo.save()
     activity = Activity.forkedRepo(request.user,parent.owner,parent)
     activity.save()
-    print(activity)
-
     return redirect('home')
 
 
@@ -160,3 +165,32 @@ def issue_list(request,owner,name):
     issues=Issue.objects.filter(repo=repo)
     context['issues']=issues
     return render(request,'Repos/issues_list.html',context=context)
+
+def manage_collaborators(request):
+    type=request.POST.get('type')
+    repoId=request.POST.get('id')
+    username=request.POST.get('username')
+
+    users=User.objects.filter(username=username)
+    context={}
+    if len(users) == 0:
+        context['error']='User does not exist'
+        return JsonResponse({'data': context})
+    user=users.first()
+    repo=Repo.objects.get(id=repoId)
+    if type=='0':
+        if user in repo.collaborators.all():
+            context['message']='User already added'
+        else:
+            repo.collaborators.add(user)
+            context['message']='User added successfully'
+
+    if type=='1':
+        if user not in repo.collaborators.all():
+            context['message']='User is not added'
+        else:
+            repo.collaborators.remove(user)
+            context['message']='User removed successfully'
+
+    repo.save()
+    return JsonResponse({'data':context})
