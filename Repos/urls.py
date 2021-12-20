@@ -16,4 +16,5 @@ urlpatterns = [
     path('<owner>/<name>/', views.detail_repo, name='detail_repo'),
     re_path(r'^(?P<owner>[^/]+)/(?P<name>[^/]+)/(?P<subpath>)/$', views.detail_repo, name='detail_repo1'),
     path('<owner>/<name>/<path:subpath>/', views.detail_repo, name='detail_repo2'),
+    path('manage-collaborators/',views.manage_collaborators,name='manage_collaborators'),
 ]

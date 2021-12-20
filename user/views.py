@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from  django.http import HttpResponse
 from Repos.models import Repo
 from .models import Profile,Activity
+from .userAdd import add_user
 # Create your views here.
 
 def signup(request):
@@ -20,6 +21,7 @@ def signup(request):
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
+            # add_user(username=username,password=raw_password)
             user = authenticate(username=username, password=raw_password)
             login(request, user)
             return redirect('home')
