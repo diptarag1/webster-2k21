@@ -17,6 +17,8 @@ def init_Repo(request):
             new_repo = Repo(owner=request.user, repoURL=form.cleaned_data['rname'], name=form.cleaned_data['rname'])
             new_repo.repoURL = str(new_repo.owner) + '/' + new_repo.name
             new_repo.save()
+            new_repo.collaborators.add(request.user)
+            new_repo.save()
             activity=Activity.createdRepo(request.user,new_repo)
             activity.save()
             print(activity)
@@ -112,6 +114,9 @@ def detail_file(request, name, owner, branch="master", **kwargs):
 def delete_repo(request, name, owner):
     context = {}
     repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
+    activities = Activity.objects.filter(user=request.user, targetRepo=repo)
+    for activity in activities:
+        activity.delete()
     repo.delete()
     return redirect('home')
 
@@ -148,6 +153,10 @@ def star(request):
     repo = Repo.objects.get(id=id)
     if request.user in repo.star.all():
         repo.star.remove(request.user)
+        activity = Activity.objects.filter(user=request.user,targetRepo=repo)
+        if len(activity)>0:
+            for ac in activity:
+                ac.delete()
     else:
         repo.star.add(request.user)
         activity = Activity.starredRepo(request.user,repo)
@@ -156,19 +165,19 @@ def star(request):
     context = {
         'repo': repo,
     }
-    print("repo has been strarred")
     html = render_to_string('Repos/star-section.html', context, request=request)
     return JsonResponse({'html': html})
 
 def fork(request,id):
     parent = Repo.objects.get(id=id)
-    new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name,is_private=False)
-    new_repo.create_fork(parent)
-    new_repo.save()
-    activity = Activity.forkedRepo(request.user,parent.owner,parent)
-    activity.save()
-    print(activity)
-
+    if not Repo.objects.filter(owner=request.user).filter(name=parent.name).exists():
+        new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name,is_private=False)
+        new_repo.create_fork(parent)
+        new_repo.save()
+        new_repo.collaborators.add(request.user)
+        new_repo.save()
+        activity = Activity.forkedRepo(request.user,parent.owner,parent)
+        activity.save()
     return redirect('home')
 
 
@@ -190,3 +199,33 @@ def issue_list(request,owner,name):
     issues=Issue.objects.filter(repo=repo)
     context['issues']=issues
     return render(request,'Repos/issues_list.html',context=context)
+
+def manage_collaborators(request):
+    type=request.POST.get('type')
+    repoId=request.POST.get('id')
+    username=request.POST.get('username')
+
+    users=User.objects.filter(username=username)
+    context={}
+    if len(users) == 0:
+        context['error']='User does not exist'
+        return JsonResponse({'data': context})
+    user=users.first()
+    repo=Repo.objects.get(id=repoId)
+    if type=='0':
+        if user in repo.collaborators.all():
+            context['message']='User already added'
+        else:
+            repo.collaborators.add(user)
+            context['message']='User added successfully'
+
+    if type=='1':
+        if user not in repo.collaborators.all():
+            context['message']='User is not added'
+        else:
+            repo.collaborators.remove(user)
+            context['message']='User removed successfully'
+
+    repo.save()
+    html = render_to_string('Repos/repoDetailComponents/collaboratorList.html', {'repo': repo}, request=request)
+    return JsonResponse({'data':context,'html':html})

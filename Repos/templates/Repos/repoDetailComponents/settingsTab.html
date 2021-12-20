@@ -4,6 +4,10 @@
     <a class="waves-effect waves-light btn modal-trigger" href="{% url 'change_visibility' owner=repo.owner name=repo.name %}">Change Visibility</a>
 </div>
 <div id="collab-section">
-    <input type="text" placeholder="Enter username">
-    <a class="waves-effect waves-light btn modal-trigger" href="{% url 'add-remove-collaborator' ownerUsername=owner repoName=repo.name  %}">Add Collaborator</a>
+    <input type="text" id="manage-collab-form" placeholder="Enter username">
+    <a class="waves-effect waves-light btn modal-trigger"  id="manage-collaboratorbtn" type="0">Add Collaborator</a>
+    <a class="waves-effect waves-light btn modal-trigger"  id="manage-collaboratorbtn" type="1">Remove Collaborator</a>
+</div>
+<div id="collaborator-list" class="container">
+    {% include 'Repos/repoDetailComponents/collaboratorList.html' %}
 </div>
