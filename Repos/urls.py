@@ -12,9 +12,13 @@ urlpatterns = [
     path('<owner>/<name>/issues/new/', views.create_issue, name='create_issue'),
     path('<ownerUsername>/<repoName>/addremovecollaborator/', views.add_remove_collaborator,
          name='add-remove-collaborator'),
+         
+    path('<owner>/<name>/view/<branch>/<path:subpath>/', views.detail_file, name='detail_file'),
 
     path('<owner>/<name>/', views.detail_repo, name='detail_repo'),
     path('<owner>/<name>/<branch>/', views.detail_repo, name='detail_repo1'),
     path('<owner>/<name>/<branch>/<path:subpath>/', views.detail_repo, name='detail_repo2'),
     #re_path(r'^(?P<owner>[^/]+)/(?P<name>[^/]+)/(?P<subpath>)/$', views.detail_repo, name='detail_repo1'),
+
+    
 ]
