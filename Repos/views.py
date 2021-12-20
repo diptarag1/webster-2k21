@@ -28,9 +28,10 @@ def init_Repo(request):
     return render(request, 'Repos/repoCreate.html', {'form': form,'randomUniqueName':"newDivaniRepo"})
 
 
-def detail_repo(request, name, owner,branch="master", **kwargs):
-    context = {}
-    repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
+
+def prepare_context(name, owner, branch, repo):
+
+    context = { }
 
     # To handle branching
     _repo=_Repo(rw_dir+repo.repoURL)
@@ -54,14 +55,25 @@ def detail_repo(request, name, owner,branch="master", **kwargs):
     context['repo_heads'] =_repo.branches
     context['name'] = name
     context['owner'] = owner
-    context['current_branch'] = branch
+    context['current_branch'] = branch  
+
+    return context
+
+
+def detail_repo(request, name, owner, branch="master", **kwargs):
+    repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
     
+    
+    context = prepare_context(name, owner, branch, repo)
     curDir = os.path.join(rw_dir, owner, name)
     teDir=''
     if('subpath' in kwargs.keys()):
         curDir = os.path.join(curDir, kwargs['subpath'])
         teDir=teDir+kwargs['subpath']
         context['subpath'] = kwargs['subpath']
+
+    context['curDir'] = teDir
+    context['forkedChild']=Repo.objects.filter(parent=repo)
 
     allContents = os.listdir(curDir)
     fileContents = []
@@ -73,11 +85,29 @@ def detail_repo(request, name, owner,branch="master", **kwargs):
                 fileContents.append(f)
             else:
                 dirContents.append(f)
+        print(f)
 
     context['fileContents'] = fileContents
     context['dirContents'] = dirContents
-    context['curDir'] = teDir
-    context['forkedChild']=Repo.objects.filter(parent=repo)
+    context['file_view'] = False
+    
+    return render(request, 'Repos/repo_detail.html', context=context)
+
+
+def detail_file(request, name, owner, branch="master", **kwargs):
+    repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
+
+    context = prepare_context(rw_dir, owner, branch, repo)
+    curDir = os.path.join(rw_dir, owner, name)
+    fileDir = os.path.join(curDir, kwargs['subpath'])
+
+    file = open(fileDir)
+
+    context['file_content'] = file.read()
+    context['file_view'] = True
+
+    file.close()
+
     return render(request, 'Repos/repo_detail.html', context=context)
 
 
