@@ -202,7 +202,8 @@
                             type: type,
                         },
                         success: function (data) {
-                            console.log(data['data'])
+                            console.log(data['data']['message'])
+                            $('#collaborator-list').html(data['html'])
                         },
                         error: function (data) {
                             $("#errorToast").toast("show");
