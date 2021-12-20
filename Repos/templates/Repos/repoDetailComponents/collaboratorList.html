@@ -1,0 +1,8 @@
+<h4 class="row-justify-center">List of collaborators</h4>
+<div>
+    {% for collaborator in repo.collaborators.all %}
+        <ul>
+            <a href="{% url 'profile' uname=collaborator %}"><li>{{ collaborator }}</li></a>
+        </ul>
+    {% endfor %}
+</div>

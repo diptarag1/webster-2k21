@@ -190,6 +190,7 @@
                 event.preventDefault()
                 var iid = {{ repo.pk }}
                 var username = $('#manage-collab-form').val()
+                $('#manage-collab-form').val('')
                 var type = $(this).attr('type')
                     $.ajax({
                         url: '{% url "manage_collaborators" %}',
