@@ -8,6 +8,7 @@ from django.http import JsonResponse
 import os
 from .serverLocation import rw_dir
 from git import Git,Repo as _Repo
+import git
 
 # Create your views here.
 def init_Repo(request):
@@ -19,6 +20,7 @@ def init_Repo(request):
             new_repo.save()
             new_repo.collaborators.add(request.user)
             new_repo.save()
+            git.Git(rw_dir+request.user.username).clone("http://kali:kali@127.0.0.1/"+new_repo.repoURL)
             activity=Activity.createdRepo(request.user,new_repo)
             activity.save()
             print(activity)
@@ -61,11 +63,14 @@ def prepare_context(name, owner, branch, repo):
 
 
 def detail_repo(request, name, owner, branch="master", **kwargs):
-    repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
-    
-    
-    context = prepare_context(name, owner, branch, repo)
     curDir = os.path.join(rw_dir, owner, name)
+    g = git.Git(curDir)
+    g.pull('origin',branch)
+    repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
+    #repo.pull('origin',branch)
+    # o = repo.remotes.origin
+    # o.pull()
+    context = prepare_context(name, owner, branch, repo)
     teDir=''
     if('subpath' in kwargs.keys()):
         curDir = os.path.join(curDir, kwargs['subpath'])
