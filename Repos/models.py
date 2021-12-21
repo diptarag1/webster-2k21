@@ -1,9 +1,10 @@
+from datetime import time, timezone
+
 from django.db import models
 from django.contrib.auth.models import User
 from git import Repo as gitRepo
 import os, shutil
 from taggit.managers import TaggableManager
-
 from .serverLocation import rw_dir,new_dir
 
 
@@ -40,9 +41,18 @@ class Issue(models.Model):
     repo = models.ForeignKey(Repo, on_delete=models.CASCADE, related_name='repot')
     topic = models.CharField(max_length=120)
     description = models.TextField()
+    posted_on = models.DateTimeField(auto_now_add=True)
+
     tags = TaggableManager()
 
     def __str__(self):
         return self.topic
+class IssueComment(models.Model):
+    author = models.ForeignKey(User,null=False, on_delete=models.CASCADE, related_name='comment_author')
+    issue = models.ForeignKey(Issue,null=False, on_delete=models.CASCADE, related_name='comment_issue')
+    data = models.TextField()
+    posted_on=models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return " "
 
 

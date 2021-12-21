@@ -95,10 +95,10 @@
                     <div class="row">
                         <div class="row">
 
-                            <div id="test1" class="tabDetails  col s12">   {% include 'Repos/repoDetailComponents/codeTab.html' %}</div>
-                            <div id="test2" class="tabDetails col s12"> {% include 'Repos/repoDetailComponents/issueTab.html' %}</div>
-                            <div id="test3" class="tabDetails col s12">{% include 'Repos/repoDetailComponents/pullRequestTab.html' %}</div>
-                            <div id="test4" class="tabDetails col s12"> {% include 'Repos/repoDetailComponents/securityTab.html' %}</div>
+                            <div id="test1" class="tabDetails  col s12"  href="#codeTab">   {% include 'Repos/repoDetailComponents/codeTab.html' %}</div>
+                            <div id="test2" class="tabDetails col s12"  href="#issueTab"> {% include 'Repos/repoDetailComponents/issueTab.html' %}</div>
+                            <div id="test3" class="tabDetails col s12"  href="#pullRequestTab">{% include 'Repos/repoDetailComponents/pullRequestTab.html' %}</div>
+                            <div id="test4" class="tabDetails col s12"  href="#securityTab"> {% include 'Repos/repoDetailComponents/securityTab.html' %}</div>
                             {% if repo.owner == request.user %}
                             <div id="test5" class="tabDetails col s12">{% include 'Repos/repoDetailComponents/settingsTab.html' %}</div>
                             {% endif %}

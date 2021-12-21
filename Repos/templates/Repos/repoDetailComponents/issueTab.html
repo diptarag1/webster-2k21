@@ -1,5 +1,45 @@
-{% if request.user in repo.collaborators.all %}
-<div>
- <a class="waves-effect waves-light btn modal-trigger" href="{% url 'create_issue' owner=repo.owner name=repo.name %}">Create New Issue</a>
+<div id="issueTabSection">
+    <div class="row">
+    <form class="col s9">
+        <div class="input-field">
+            <input id="search" type="search" required>
+            <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+            <i class="material-icons">close</i>
+        </div>
+    </form>
+    {% if request.user in repo.collaborators.all %}
+        <div class="col s3">
+            <a class="waves-effect waves-light btn modal-trigger"
+               href="{% url 'create_issue' owner=repo.owner name=repo.name %}">Create New Issue</a>
+        </div>
+    {% endif %}
 </div>
-{% endif %}
+
+
+<div>
+
+    <ul id="issuesList" class="collection">
+        <style>
+            #issuesList * {
+                padding-top: 5px;
+                padding-bottom: 0;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+        </style>
+        {% for issue in issues %}
+            <a class="collection-item ">
+                {#               <i class="left material-icons">grade</i>#}
+                <a href="{% url 'detail_issue' owner=repo.owner name=repo.name issue_id=issue.id %}"><span class="title"><h5>{{ issue.topic }}</h5></span></a>
+                <p>{{ issue.description }}</p>
+                {#                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>#}
+            </a>
+
+        {% endfor %}
+
+
+    </ul>
+
+</div>
+
+</div>
