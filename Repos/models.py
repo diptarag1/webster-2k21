@@ -21,7 +21,7 @@ class Repo(models.Model):
         return self.repoURL
 
     def save(self, *args, **kwargs):
-        gitRepo.init(os.path.join(new_dir, self.repoURL),bare=True)
+        gitRepo.init(os.path.join(new_dir, self.repoURL)+".git",bare=True)
         self.repoURL = str(self.owner) + '/' + self.name
         super().save(*args, **kwargs)
 

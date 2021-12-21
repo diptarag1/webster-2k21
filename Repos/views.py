@@ -20,7 +20,7 @@ def init_Repo(request):
             new_repo.save()
             new_repo.collaborators.add(request.user)
             new_repo.save()
-            git.Git(rw_dir+request.user.username).clone("http://kali:kali@127.0.0.1/"+new_repo.repoURL)
+            git.Git(rw_dir+request.user.username).clone(rw_dir+new_repo.repoURL+".git")
             activity=Activity.createdRepo(request.user,new_repo)
             activity.save()
             print(activity)
@@ -64,8 +64,11 @@ def prepare_context(name, owner, branch, repo):
 
 def detail_repo(request, name, owner, branch="master", **kwargs):
     curDir = os.path.join(rw_dir, owner, name)
-    g = git.Git(curDir)
-    g.pull('origin',branch)
+    try:
+        g = git.Git(curDir)
+        g.pull('origin',branch)
+    except:
+        print('error')
     repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
     #repo.pull('origin',branch)
     # o = repo.remotes.origin
