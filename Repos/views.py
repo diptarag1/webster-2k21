@@ -9,7 +9,7 @@ import os
 from .serverLocation import rw_dir
 from git import Git,Repo as _Repo
 import git
-
+import subprocess
 # Create your views here.
 def init_Repo(request):
     if request.method == 'POST':
@@ -20,6 +20,7 @@ def init_Repo(request):
             new_repo.save()
             new_repo.collaborators.add(request.user)
             new_repo.save()
+            subprocess.call(['chmod','-R','777',rw_dir+new_repo.repoURL+".git"])
             git.Git(rw_dir+request.user.username).clone(rw_dir+new_repo.repoURL+".git")
             activity=Activity.createdRepo(request.user,new_repo)
             activity.save()
@@ -64,11 +65,12 @@ def prepare_context(name, owner, branch, repo):
 
 def detail_repo(request, name, owner, branch="master", **kwargs):
     curDir = os.path.join(rw_dir, owner, name)
+    isEmpty=False
+    g = git.Git(curDir)
     try:
-        g = git.Git(curDir)
         g.pull('origin',branch)
     except:
-        print('error')
+        isEmpty=True
     repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
     #repo.pull('origin',branch)
     # o = repo.remotes.origin
@@ -82,7 +84,7 @@ def detail_repo(request, name, owner, branch="master", **kwargs):
 
     context['curDir'] = teDir
     context['forkedChild']=Repo.objects.filter(parent=repo)
-
+    context['isEmpty']=isEmpty
     allContents = os.listdir(curDir)
     fileContents = []
     dirContents = []

@@ -60,6 +60,17 @@
                 {#padding: 0 !important;#}
                 }
             </style>
+            {% if isEmpty %}
+                <ol>
+                <li>This is empty git repository</li>
+                    <li>Create a folder ,add some files and through cmd enter <b>git init</b></li>
+                    <li>git add .</li>
+                    <li>git commit -m "first commit"</li>
+                    <li>git remote add origin http://192.168.249.129/{{ repo.repoURL }}.git</li>
+                    <li>git push -u origin</li>
+                    <li>And done!! Congratulations you have pushed your files onto our servers</li>
+                </ol>
+            {% endif %}
             {% if not file_view %}
                 {% for item in dirContents %}
                     <li class="collection-item row">
