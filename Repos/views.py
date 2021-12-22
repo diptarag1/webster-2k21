@@ -215,15 +215,17 @@ def fork(request,id):
 
 
 def create_issue(request,owner,name):
-    context={}
-    if request.method=='GET':
-        context['form']=IssueCreateForm()
-    else:
+    context={"owner":owner,"name":name}
+    if request.method=='POST':
+        print( request.POST)
         form=IssueCreateForm(request.POST)
         form.instance.author=request.user
         form.instance.repo=Repo.objects.get(owner__username=owner,name=name)
-        form.save()
-        return redirect('detail_repo',owner=owner,name=name)
+        issue=form.save()
+        print("issue.id "+str(issue.id))
+        return JsonResponse({"issue_id":issue.id,"owner":owner,"name":name})
+            # redirect('detail_issue', owner=owner, name=name,issue_id=issue.id)
+        # return redirect('detail_repo',owner=owner,name=name)
     return render(request,'Repos/issue_create_form.html',context=context)
 def create_issue_comment(request,owner,name,issue_id):
     context={}

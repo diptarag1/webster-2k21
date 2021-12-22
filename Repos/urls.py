@@ -8,9 +8,11 @@ urlpatterns = [
     path('delete/<owner>/<name>/', views.delete_repo, name='delete_repo'),
     path('change_visibility/<owner>/<name>/',views.change_visibility,name='change_visibility'),
     path('star/', views.star, name='star'),
+
     path('<owner>/<name>/issues/<issue_id>/comment/new/', views.create_issue_comment, name='create_issue_comment'),
-    path('<owner>/<name>/issues/', views.issue_list, name='issue_list'),
     path('<owner>/<name>/issues/<issue_id>', views.detail_issue, name='detail_issue'),
+    path('<owner>/<name>/issues/', views.issue_list, name='issue_list'),
+
     path('<owner>/<name>/issues/new/', views.create_issue, name='create_issue'),
 
     path('<ownerUsername>/<repoName>/addremovecollaborator/', views.add_remove_collaborator,

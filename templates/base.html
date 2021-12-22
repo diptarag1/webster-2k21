@@ -30,6 +30,36 @@
 
 <script>
     $('.dropdown-trigger').dropdown();
+    $('.chips').chips();
+
+        $('.chips-placeholder').chips({
+            placeholder: 'Enter a tag',
+            secondaryPlaceholder: '+Tag',
+        });
+        $('.chips-autocomplete').chips({
+            autocompleteOptions: {
+                data: {
+                    'avishkar': null,
+                    'csgo': null,
+                    'genshin': null,
+                    'avishkar': null,
+                    'divani': null,
+                    'dipti': null,
+                    'siddhi': null,
+                    'komi': null,
+                    'taiga': null,
+                    'yuno': null,
+                    'aoe': null,
+                    'webster': null,
+                    'insomnia': null,
+
+                },
+                limit: Infinity,
+                minLength: 1
+            }
+        });
+        M.updateTextFields();
+
 </script>
 
 </body>
