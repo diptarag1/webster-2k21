@@ -182,7 +182,10 @@ def fork(request,id):
     parent = Repo.objects.get(id=id)
     if not Repo.objects.filter(owner=request.user).filter(name=parent.name).exists():
         new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name,is_private=False)
-        new_repo.create_fork(parent)
+        # new_repo.create_fork(parent)
+        subprocess.call(['git','-C',rw_dir+request.user.username ,'clone', '--bare', rw_dir + parent.repoURL + ".git"])
+        subprocess.call(['chmod', '-R', '777', rw_dir + new_repo.repoURL + ".git"])
+        git.Git(rw_dir + request.user.username).clone(rw_dir + new_repo.repoURL + ".git")
         new_repo.save()
         new_repo.collaborators.add(request.user)
         new_repo.save()
