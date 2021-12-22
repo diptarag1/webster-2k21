@@ -38,27 +38,38 @@ def prepare_context(name, owner, branch, repo):
     context = {}
     # To handle branching
     _repo = _Repo(rw_dir + repo.repoURL)
+    bare_repo = _Repo(rw_dir + repo.repoURL + ".git")
+
     print("trying to access branch with name " + branch)
-    print("available branches are ", _repo.heads)
-    if branch not in _repo.heads:
+    print("available branches are ", bare_repo.heads)
+
+    isEmpty = False
+
+    if branch not in bare_repo.heads:
         print("tried to checkout to branch which doesnt exist")
         print("redirecting to default branch")
-        # if there are multiple branches
-        if len(_repo.heads) > 0:
-            _repo.heads[0].checkout()
-            branch = _repo.heads[0].name
-        # if there is only one branch
+        if len(bare_repo.heads) == 0:
+            isEmpty = True
         else:
             branch = "master"
     else:
-        _repo.heads[branch].checkout()
-        print("repo {} has been checked out to {}".format(name, branch))
+        print(branch)
+        try:
+            _repo.heads[branch].checkout()
+            print("repo {} has been checked out to {}".format(name, branch))
+        except:
+            _repo.git.checkout('-b', branch)
+            print("repo {} has been -b checked out to {}".format(name, branch))
+
+    g = git.Git(os.path.join(rw_dir, owner, name))
+    g.pull('origin',branch)
 
     context['repo'] = repo
-    context['repo_heads'] = _repo.branches
+    context['repo_heads'] = bare_repo.branches
     context['name'] = name
     context['owner'] = owner
     context['current_branch'] = branch
+    context['isEmpty'] = isEmpty
     return context
 
 
@@ -83,12 +94,8 @@ def detail_issue(request, name, owner, issue_id, **kwargs):
 
 def detail_repo(request, name, owner, branch="master", **kwargs):
     curDir = os.path.join(rw_dir, owner, name)
-    isEmpty=False
     g = git.Git(curDir)
-    try:
-        subprocess.call(['git','-C',curDir,'pull'])
-    except:
-        isEmpty=True
+    
     repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
     #repo.pull('origin',branch)
     # o = repo.remotes.origin
@@ -102,7 +109,7 @@ def detail_repo(request, name, owner, branch="master", **kwargs):
 
     context['curDir'] = teDir
     context['forkedChild']=Repo.objects.filter(parent=repo)
-    context['isEmpty']=isEmpty
+    
     allContents = os.listdir(curDir)
     fileContents = []
     dirContents = []
@@ -127,7 +134,7 @@ def detail_repo(request, name, owner, branch="master", **kwargs):
 def detail_file(request, name, owner, branch="master", **kwargs):
     repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
 
-    context = prepare_context(rw_dir, owner, branch, repo)
+    context = prepare_context(name, owner, branch, repo)
     curDir = os.path.join(rw_dir, owner, name)
     fileDir = os.path.join(curDir, kwargs['subpath'])
 
