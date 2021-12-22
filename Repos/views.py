@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect,HttpResponse
-from .forms import RepoCreateForm, AddCollaboratorForm,IssueCreateForm
-from .models import Repo, Issue
+from .forms import RepoCreateForm, AddCollaboratorForm,IssueCreateForm,IssueCommentCreateForm
+from .models import Repo, Issue, IssueComment
 from user.models import Activity
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
@@ -10,6 +10,8 @@ from .serverLocation import rw_dir
 from git import Git,Repo as _Repo
 import git
 import subprocess
+import datetime
+
 # Create your views here.
 def init_Repo(request):
     if request.method == 'POST':
@@ -60,6 +62,25 @@ def prepare_context(name, owner, branch, repo):
     return context
 
 
+def detail_issue(request, name, owner, issue_id, **kwargs):
+    context = {}
+    issue=Issue.objects.filter(id=issue_id).first()
+    issue_comments= IssueComment.objects.filter(issue=issue)
+    issue_comment_create_form=IssueCommentCreateForm()
+    repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
+
+
+
+
+
+    context['issue'] = issue
+    context['issue_comments'] =issue_comments
+    context['current_user'] = request.user.username
+    context['issue_comment_create_form'] =issue_comment_create_form
+    context['repo'] = repo
+    return render(request, 'Repos/issue_detail.html', context=context)
+
+
 def detail_repo(request, name, owner, branch="master", **kwargs):
     curDir = os.path.join(rw_dir, owner, name)
     isEmpty=False
@@ -97,7 +118,9 @@ def detail_repo(request, name, owner, branch="master", **kwargs):
     context['fileContents'] = fileContents
     context['dirContents'] = dirContents
     context['file_view'] = False
-    
+
+    context['issues'] = Issue.objects.all()
+
     return render(request, 'Repos/repo_detail.html', context=context)
 
 
@@ -192,16 +215,28 @@ def fork(request,id):
 
 
 def create_issue(request,owner,name):
-    context={}
-    if request.method=='GET':
-        context['form']=IssueCreateForm()
-    else:
+    context={"owner":owner,"name":name}
+    if request.method=='POST':
+        print( request.POST)
         form=IssueCreateForm(request.POST)
         form.instance.author=request.user
         form.instance.repo=Repo.objects.get(owner__username=owner,name=name)
-        form.save()
-        return redirect('detail_repo',owner=owner,name=name)
+        issue=form.save()
+        print("issue.id "+str(issue.id))
+        return JsonResponse({"issue_id":issue.id,"owner":owner,"name":name})
+            # redirect('detail_issue', owner=owner, name=name,issue_id=issue.id)
+        # return redirect('detail_repo',owner=owner,name=name)
     return render(request,'Repos/issue_create_form.html',context=context)
+
+def create_issue_comment(request,owner,name,issue_id):
+    context={}
+    if request.method=='POST':
+        form=IssueCommentCreateForm(request.POST)
+        form.instance.author=request.user
+        form.instance.issue=Issue.objects.filter(id=issue_id).first()
+        form.save()
+
+        return redirect('detail_repo',owner=owner,name=name)
 
 def issue_list(request,owner,name):
     context={}
