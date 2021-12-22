@@ -1,13 +1,16 @@
 from django.shortcuts import get_object_or_404, render, redirect,HttpResponse
-from .forms import RepoCreateForm, AddCollaboratorForm,IssueCreateForm
-from .models import Repo, Issue
+from .forms import RepoCreateForm, AddCollaboratorForm,IssueCreateForm,IssueCommentCreateForm
+from .models import Repo, Issue, IssueComment
 from user.models import Activity
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 import os
 from .serverLocation import rw_dir
 from git import Git,Repo as _Repo
+import git
+import subprocess
+import datetime
 
 # Create your views here.
 def init_Repo(request):
@@ -19,6 +22,8 @@ def init_Repo(request):
             new_repo.save()
             new_repo.collaborators.add(request.user)
             new_repo.save()
+            subprocess.call(['chmod','-R','777',rw_dir+new_repo.repoURL+".git"])
+            git.Git(rw_dir+request.user.username).clone(rw_dir+new_repo.repoURL+".git")
             activity=Activity.createdRepo(request.user,new_repo)
             activity.save()
             print(activity)
@@ -30,42 +35,65 @@ def init_Repo(request):
 
 
 def prepare_context(name, owner, branch, repo):
-
-    context = { }
-
+    context = {}
     # To handle branching
-    _repo=_Repo(rw_dir+repo.repoURL)
+    _repo = _Repo(rw_dir + repo.repoURL)
     print("trying to access branch with name " + branch)
-    print("available branches are ",_repo.heads)
+    print("available branches are ", _repo.heads)
     if branch not in _repo.heads:
         print("tried to checkout to branch which doesnt exist")
         print("redirecting to default branch")
         # if there are multiple branches
-        if len( _repo.heads)>0:
+        if len(_repo.heads) > 0:
             _repo.heads[0].checkout()
-            branch=_repo.heads[0].name
+            branch = _repo.heads[0].name
         # if there is only one branch
         else:
-            branch="master"
+            branch = "master"
     else:
         _repo.heads[branch].checkout()
-        print("repo {} has been checked out to {}".format(name,branch))
+        print("repo {} has been checked out to {}".format(name, branch))
 
     context['repo'] = repo
-    context['repo_heads'] =_repo.branches
+    context['repo_heads'] = _repo.branches
     context['name'] = name
     context['owner'] = owner
-    context['current_branch'] = branch  
-
+    context['current_branch'] = branch
     return context
 
 
-def detail_repo(request, name, owner, branch="master", **kwargs):
+def detail_issue(request, name, owner, issue_id, **kwargs):
+    context = {}
+    issue=Issue.objects.filter(id=issue_id).first()
+    issue_comments= IssueComment.objects.filter(issue=issue)
+    issue_comment_create_form=IssueCommentCreateForm()
     repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
-    
-    
-    context = prepare_context(name, owner, branch, repo)
+
+
+
+
+
+    context['issue'] = issue
+    context['issue_comments'] =issue_comments
+    context['current_user'] = request.user.username
+    context['issue_comment_create_form'] =issue_comment_create_form
+    context['repo'] = repo
+    return render(request, 'Repos/issue_detail.html', context=context)
+
+
+def detail_repo(request, name, owner, branch="master", **kwargs):
     curDir = os.path.join(rw_dir, owner, name)
+    isEmpty=False
+    g = git.Git(curDir)
+    try:
+        subprocess.call(['git','-C',curDir,'pull'])
+    except:
+        isEmpty=True
+    repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
+    #repo.pull('origin',branch)
+    # o = repo.remotes.origin
+    # o.pull()
+    context = prepare_context(name, owner, branch, repo)
     teDir=''
     if('subpath' in kwargs.keys()):
         curDir = os.path.join(curDir, kwargs['subpath'])
@@ -74,7 +102,7 @@ def detail_repo(request, name, owner, branch="master", **kwargs):
 
     context['curDir'] = teDir
     context['forkedChild']=Repo.objects.filter(parent=repo)
-
+    context['isEmpty']=isEmpty
     allContents = os.listdir(curDir)
     fileContents = []
     dirContents = []
@@ -90,7 +118,9 @@ def detail_repo(request, name, owner, branch="master", **kwargs):
     context['fileContents'] = fileContents
     context['dirContents'] = dirContents
     context['file_view'] = False
-    
+
+    context['issues'] = Issue.objects.all()
+
     return render(request, 'Repos/repo_detail.html', context=context)
 
 
@@ -172,7 +202,10 @@ def fork(request,id):
     parent = Repo.objects.get(id=id)
     if not Repo.objects.filter(owner=request.user).filter(name=parent.name).exists():
         new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name,is_private=False)
-        new_repo.create_fork(parent)
+        # new_repo.create_fork(parent)
+        subprocess.call(['git','-C',rw_dir+request.user.username ,'clone', '--bare', rw_dir + parent.repoURL + ".git"])
+        subprocess.call(['chmod', '-R', '777', rw_dir + new_repo.repoURL + ".git"])
+        git.Git(rw_dir + request.user.username).clone(rw_dir + new_repo.repoURL + ".git")
         new_repo.save()
         new_repo.collaborators.add(request.user)
         new_repo.save()
@@ -182,16 +215,28 @@ def fork(request,id):
 
 
 def create_issue(request,owner,name):
-    context={}
-    if request.method=='GET':
-        context['form']=IssueCreateForm()
-    else:
+    context={"owner":owner,"name":name}
+    if request.method=='POST':
+        print( request.POST)
         form=IssueCreateForm(request.POST)
         form.instance.author=request.user
         form.instance.repo=Repo.objects.get(owner__username=owner,name=name)
-        form.save()
-        return redirect('detail_repo',owner=owner,name=name)
+        issue=form.save()
+        print("issue.id "+str(issue.id))
+        return JsonResponse({"issue_id":issue.id,"owner":owner,"name":name})
+            # redirect('detail_issue', owner=owner, name=name,issue_id=issue.id)
+        # return redirect('detail_repo',owner=owner,name=name)
     return render(request,'Repos/issue_create_form.html',context=context)
+
+def create_issue_comment(request,owner,name,issue_id):
+    context={}
+    if request.method=='POST':
+        form=IssueCommentCreateForm(request.POST)
+        form.instance.author=request.user
+        form.instance.issue=Issue.objects.filter(id=issue_id).first()
+        form.save()
+
+        return redirect('detail_repo',owner=owner,name=name)
 
 def issue_list(request,owner,name):
     context={}

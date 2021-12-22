@@ -1,11 +1,12 @@
+from datetime import time, timezone
+
 from django.db import models
 from django.contrib.auth.models import User
 from git import Repo as gitRepo
 import os, shutil
 from taggit.managers import TaggableManager
-
-from .serverLocation import rw_dir
-
+from .serverLocation import rw_dir,new_dir
+import subprocess
 
 # Create your models here.
 class Repo(models.Model):
@@ -21,7 +22,7 @@ class Repo(models.Model):
         return self.repoURL
 
     def save(self, *args, **kwargs):
-        gitRepo.init(os.path.join(rw_dir, self.repoURL))
+        gitRepo.init(os.path.join(new_dir, self.repoURL)+".git",bare=True)
         self.repoURL = str(self.owner) + '/' + self.name
         super().save(*args, **kwargs)
 
@@ -31,8 +32,9 @@ class Repo(models.Model):
 
     def create_fork(self, parent):
         parentGitRepo = gitRepo(os.path.join(rw_dir, parent.repoURL))
-        curRepo = parentGitRepo.clone(os.path.join(rw_dir, self.repoURL))
-        curRepo.delete_remote('origin')  # deleting origin remote which is automatically created
+        subprocess.call(['git', 'clone', '--bare', rw_dir + parent.repoURL + ".git"])
+        # curRepo = parentGitRepo.clone(os.path.join(rw_dir, self.repoURL))
+        # curRepo.delete_remote('origin')  # deleting origin remote which is automatically created
 
 
 class Issue(models.Model):
@@ -40,9 +42,18 @@ class Issue(models.Model):
     repo = models.ForeignKey(Repo, on_delete=models.CASCADE, related_name='repot')
     topic = models.CharField(max_length=120)
     description = models.TextField()
+    posted_on = models.DateTimeField(auto_now_add=True)
+
     tags = TaggableManager()
 
     def __str__(self):
         return self.topic
+class IssueComment(models.Model):
+    author = models.ForeignKey(User,null=False, on_delete=models.CASCADE, related_name='comment_author')
+    issue = models.ForeignKey(Issue,null=False, on_delete=models.CASCADE, related_name='comment_issue')
+    data = models.TextField()
+    posted_on=models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return " "
 
 

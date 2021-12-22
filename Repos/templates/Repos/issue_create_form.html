@@ -1,12 +1,120 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
+{% load materializecss %}
 {% block content %}
     {% include 'navBar.html' %}
-    <div class="container">
-        <form method="post">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <button class="btn" type="submit">Create Issue</button>
-        </form>
+    <style>
+        #issue_create_form {
+            border: 2px solid black;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 10px;
+        }
+    </style>
+    <div class="row">
+        <div class="col s12 l10 offset-l1">
+            <div class="row">
+                <div class="col s12 m9 ">
+
+                    {#                    <form id="issue_create_form" method="post">#}
+                    {#                        {% csrf_token %}#}
+                    {#                        {{ form|materializecss }}#}
+                    {#                        <button class="btn" type="submit">Create Issue</button>#}
+                    {#                    </form>#}
+
+                    <form id="issue_create_form" method="post">
+                        {% csrf_token %}
+
+
+                        <div class="input-field col s12  ">
+
+                            <input type="text" name="topic" maxlength="120" class=" validate" required id="id_topic">
+
+                            <label class="" for="id_topic">Topic</label>
+
+
+                        </div>
+
+
+                        <div class="input-field col s12  ">
+
+            <textarea id="id_description" class="materialize-textarea" name="description"
+
+                      cols="40"
+
+
+                      rows="10"
+
+
+                      class=" validate"
+
+
+            ></textarea>
+
+                            <label class="" for="id_description">Description</label>
+
+
+                        </div>
+
+
+                        <div class="input-field col s12  ">
+
+                            {#                            <label class="" for="id_tags" style="">Tags</label>#}
+
+                            <div type="text" name="tags" required id="id_tags"
+                                 class="chips chips-autocomplete chips-placeholder"></div>
+
+
+                        </div>
+
+
+                        <button id="issue_submit_btn" class="btn" type="submit">Create Issue</button>
+                        <script>
+                            $(document).ready(function () {
+                                $(document).on('submit', function (event) {
+                                    event.preventDefault();
+                                    {#console.log($('.chips'));#}
+                                    tag_list = new Array();
+                                    $(".chip").each(function (index) {
+                                        {#console.log($(this).text());#}
+                                        tag_list.push($(this).text().slice(0, -5));
+                                    });
+                                    tag_list = tag_list.slice(1, tag_list.length)
+                                    tag_list_as_string = "";
+                                    tag_list.forEach(function (value) {
+                                        tag_list_as_string += value + ",";
+                                    });
+                                    tag_list_as_string=tag_list_as_string.slice(0,-1);
+                                    console.log(tag_list);
+                                    console.log("topic is " +$('#id_topic').text());
+                                    console.log("description is "+ $('#id_description').val());
+                                    {#id_topic#}
+                                    $.ajax({
+                                        url: window.location.pathname,
+                                        type: 'post',
+                                        data: {
+                                            csrfmiddlewaretoken: "{{csrf_token}}",
+                                            topic: $('#id_topic').val(),
+                                            description: $('#id_description').val(),
+                                            tags: tag_list_as_string,
+                                        },
+                                        success: function (data) {
+                                            {#console.log(data);#}
+                                            {#window.location.pathname={% url 'detail_repo' owner=owner name=name %}#}
+                                        },
+                                        error: function (data) {
+
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+                    </form>
+
+                </div>
+            </div>
+        </div>
     </div>
-{%  endblock %}
+
+{% endblock %}
+
+
