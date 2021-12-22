@@ -44,18 +44,15 @@ def prepare_context(name, owner, branch, repo):
     print("available branches are ",_repo.heads)
     if branch not in _repo.heads:
         print("tried to checkout to branch which doesnt exist")
-        print("redirecting to default branch")
-        # if there are multiple branches
-        if len( _repo.heads)>0:
-            _repo.heads[0].checkout()
-            branch=_repo.heads[0].name
-        # if there is only one branch
-        else:
-            branch="master"
+        return HttpResponseRedirect("Branch NOT FOUND")
     else:
-        _repo.heads[branch].checkout()
+        g = git.Git(os.path.expanduser(rw_dir + repo.repoURL))
+        result = g.execute(["git", "checkout", branch])
+        # this is done to make sure our local branch is same as the remote branch
+        # resetting the branch removes any uncommited changes which
+        # happened during checking out
+        result = g.execute(["git", "reset","--hard", "origin/"+branch])
         print("repo {} has been checked out to {}".format(name,branch))
-
     context['repo'] = repo
     context['repo_heads'] =_repo.branches
     context['name'] = name
@@ -205,7 +202,10 @@ def fork(request,id):
     parent = Repo.objects.get(id=id)
     if not Repo.objects.filter(owner=request.user).filter(name=parent.name).exists():
         new_repo=Repo.objects.create(parent=parent,owner=request.user,name=parent.name,is_private=False)
-        new_repo.create_fork(parent)
+        # new_repo.create_fork(parent)
+        subprocess.call(['git','-C',rw_dir+request.user.username ,'clone', '--bare', rw_dir + parent.repoURL + ".git"])
+        subprocess.call(['chmod', '-R', '777', rw_dir + new_repo.repoURL + ".git"])
+        git.Git(rw_dir + request.user.username).clone(rw_dir + new_repo.repoURL + ".git")
         new_repo.save()
         new_repo.collaborators.add(request.user)
         new_repo.save()

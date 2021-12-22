@@ -6,7 +6,7 @@ from git import Repo as gitRepo
 import os, shutil
 from taggit.managers import TaggableManager
 from .serverLocation import rw_dir,new_dir
-
+import subprocess
 
 # Create your models here.
 class Repo(models.Model):
@@ -32,8 +32,9 @@ class Repo(models.Model):
 
     def create_fork(self, parent):
         parentGitRepo = gitRepo(os.path.join(rw_dir, parent.repoURL))
-        curRepo = parentGitRepo.clone(os.path.join(rw_dir, self.repoURL))
-        curRepo.delete_remote('origin')  # deleting origin remote which is automatically created
+        subprocess.call(['git', 'clone', '--bare', rw_dir + parent.repoURL + ".git"])
+        # curRepo = parentGitRepo.clone(os.path.join(rw_dir, self.repoURL))
+        # curRepo.delete_remote('origin')  # deleting origin remote which is automatically created
 
 
 class Issue(models.Model):
