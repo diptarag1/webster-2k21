@@ -123,7 +123,7 @@
         </div>
         <div class="modal-footer">
             <a href="{% url 'delete_repo' owner=repo.owner name=repo.name %}">
-                <button class="btn" disabled="disabled" id="delete_btn"> Delete</button>
+                <button onclick="M.toast({html: 'repo deleted successfully', classes: 'light-green darken-2'})" class="btn" disabled="disabled" id="delete_btn"> Delete</button>
             </a>
         </div>
     </div>
