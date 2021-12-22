@@ -61,8 +61,9 @@ def prepare_context(name, owner, branch, repo):
             _repo.git.checkout('-b', branch)
             print("repo {} has been -b checked out to {}".format(name, branch))
 
-    g = git.Git(os.path.join(rw_dir, owner, name))
-    g.pull('origin',branch)
+    if not isEmpty:
+        g = git.Git(os.path.join(rw_dir, owner, name))
+        g.pull('origin',branch)
 
     context['repo'] = repo
     context['repo_heads'] = bare_repo.branches
@@ -109,7 +110,7 @@ def detail_repo(request, name, owner, branch="master", **kwargs):
 
     context['curDir'] = teDir
     context['forkedChild']=Repo.objects.filter(parent=repo)
-    
+
     allContents = os.listdir(curDir)
     fileContents = []
     dirContents = []
