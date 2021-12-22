@@ -33,30 +33,30 @@ def init_Repo(request):
 
 
 def prepare_context(name, owner, branch, repo):
-
-    context = { }
-
+    context = {}
     # To handle branching
-    _repo=_Repo(rw_dir+repo.repoURL)
+    _repo = _Repo(rw_dir + repo.repoURL)
     print("trying to access branch with name " + branch)
-    print("available branches are ",_repo.heads)
+    print("available branches are ", _repo.heads)
     if branch not in _repo.heads:
         print("tried to checkout to branch which doesnt exist")
-        return HttpResponseRedirect("Branch NOT FOUND")
+        print("redirecting to default branch")
+        # if there are multiple branches
+        if len(_repo.heads) > 0:
+            _repo.heads[0].checkout()
+            branch = _repo.heads[0].name
+        # if there is only one branch
+        else:
+            branch = "master"
     else:
-        g = git.Git(os.path.expanduser(rw_dir + repo.repoURL))
-        result = g.execute(["git", "checkout", branch])
-        # this is done to make sure our local branch is same as the remote branch
-        # resetting the branch removes any uncommited changes which
-        # happened during checking out
-        result = g.execute(["git", "reset","--hard", "origin/"+branch])
-        print("repo {} has been checked out to {}".format(name,branch))
+        _repo.heads[branch].checkout()
+        print("repo {} has been checked out to {}".format(name, branch))
+
     context['repo'] = repo
-    context['repo_heads'] =_repo.branches
+    context['repo_heads'] = _repo.branches
     context['name'] = name
     context['owner'] = owner
-    context['current_branch'] = branch  
-
+    context['current_branch'] = branch
     return context
 
 
@@ -65,7 +65,7 @@ def detail_repo(request, name, owner, branch="master", **kwargs):
     isEmpty=False
     g = git.Git(curDir)
     try:
-        g.pull('origin',branch)
+        subprocess.call(['git','-C',curDir,'pull'])
     except:
         isEmpty=True
     repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
