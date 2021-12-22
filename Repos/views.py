@@ -4,7 +4,7 @@ from .models import Repo, Issue
 from user.models import Activity
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 import os
 from .serverLocation import rw_dir
 from git import Git,Repo as _Repo
@@ -42,18 +42,15 @@ def prepare_context(name, owner, branch, repo):
     print("available branches are ",_repo.heads)
     if branch not in _repo.heads:
         print("tried to checkout to branch which doesnt exist")
-        print("redirecting to default branch")
-        # if there are multiple branches
-        if len( _repo.heads)>0:
-            _repo.heads[0].checkout()
-            branch=_repo.heads[0].name
-        # if there is only one branch
-        else:
-            branch="master"
+        return HttpResponseRedirect("Branch NOT FOUND")
     else:
-        _repo.heads[branch].checkout()
+        g = git.Git(os.path.expanduser(rw_dir + repo.repoURL))
+        result = g.execute(["git", "checkout", branch])
+        # this is done to make sure our local branch is same as the remote branch
+        # resetting the branch removes any uncommited changes which
+        # happened during checking out
+        result = g.execute(["git", "reset","--hard", "origin/"+branch])
         print("repo {} has been checked out to {}".format(name,branch))
-
     context['repo'] = repo
     context['repo_heads'] =_repo.branches
     context['name'] = name
