@@ -12,6 +12,8 @@ from  django.http import HttpResponse
 from Repos.models import Repo
 from .models import Profile,Activity
 from .userAdd import add_user
+from os import mkdir
+from Repos.serverLocation import rw_dir
 # Create your views here.
 
 def signup(request):
@@ -21,6 +23,10 @@ def signup(request):
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
+            try:
+                mkdir(rw_dir+username)
+            except:
+                print("could not make directory")
             # add_user(username=username,password=raw_password)
             user = authenticate(username=username, password=raw_password)
             login(request, user)

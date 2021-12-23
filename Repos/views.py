@@ -26,7 +26,6 @@ def init_Repo(request):
             git.Git(rw_dir+request.user.username).clone(rw_dir+new_repo.repoURL+".git")
             activity=Activity.createdRepo(request.user,new_repo)
             activity.save()
-            print(activity)
             return redirect('home')  # for now
     else:
         form = RepoCreateForm()
