@@ -21,6 +21,10 @@
     </title>
 </head>
 <body>
+
+
+</style>
+
 {% block content %}
 {% endblock %}
 {% block script %}
@@ -29,36 +33,49 @@
 {% endblock script %}
 
 <script>
+    M.Toast.dismissAll();
     $('.dropdown-trigger').dropdown();
     $('.chips').chips();
 
-        $('.chips-placeholder').chips({
-            placeholder: 'Enter a tag',
-            secondaryPlaceholder: '+Tag',
-        });
-        $('.chips-autocomplete').chips({
-            autocompleteOptions: {
-                data: {
-                    'avishkar': null,
-                    'csgo': null,
-                    'genshin': null,
-                    'avishkar': null,
-                    'divani': null,
-                    'dipti': null,
-                    'siddhi': null,
-                    'komi': null,
-                    'taiga': null,
-                    'yuno': null,
-                    'aoe': null,
-                    'webster': null,
-                    'insomnia': null,
+    $('.chips-placeholder').chips({
+        placeholder: 'Enter a tag',
+        secondaryPlaceholder: '+Tag',
+    });
+    $('.chips-autocomplete').chips({
+        autocompleteOptions: {
+            data: {
+                'avishkar': null,
+                'csgo': null,
+                'genshin': null,
+                'avishkar': null,
+                'divani': null,
+                'dipti': null,
+                'siddhi': null,
+                'komi': null,
+                'taiga': null,
+                'yuno': null,
+                'aoe': null,
+                'webster': null,
+                'insomnia': null,
 
-                },
-                limit: Infinity,
-                minLength: 1
-            }
-        });
-        M.updateTextFields();
+            },
+            limit: Infinity,
+            minLength: 1
+        }
+    });
+    M.updateTextFields();
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                M.toast({html: 'ERROR : {{ message }}', classes: 'red'});
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                M.toast({html: 'SUCCESS : {{ message }}', classes: 'green'});
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+                M.toast({html: 'WARNING : {{ message }}', classes: 'orange'});
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
 
 </script>
 

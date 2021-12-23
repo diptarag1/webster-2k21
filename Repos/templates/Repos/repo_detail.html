@@ -8,14 +8,16 @@
         #allTabsContainer div {
         {#min-height:60vh;#}
         }
-        #repoTypeTag{
-            transform:translateY(-14px);
+
+        #repoTypeTag {
+            transform: translateY(-14px);
         }
+
         .tabDetails {
-            height:800px;
-            {#min-height:60vh#}
-            {#min-height: 100vmax;#}
+            height: 800px;
+        {#min-height:60vh#}{#min-height: 100vmax;#}
         }
+
         .repoName {
             display: inline-block;
         }
@@ -26,16 +28,20 @@
     {% include 'navBar.html' %}
     <div class="row">
         <div class="col s9">
-                <h4>
-                    <a class="repoName" href="">{{ repo.owner }} </a>&nbsp/&nbsp<a
-                        class="repoName"
-                        href="{% url 'detail_repo' owner=repo.owner name=repo.name %}"> {{ repo.name }}</a>
+            <h4>
+                <a class="repoName" href="">{{ repo.owner }} </a>&nbsp/&nbsp<a
+                    class="repoName"
+                    href="{% url 'detail_repo' owner=repo.owner name=repo.name %}"> {{ repo.name }}</a>
+
+                <div id="repoTypeTag" class="chip">
                     {% if repo.is_private %}
-                    <div id="repoTypeTag" class="chip">Private</div>
+                        Private
                     {% else %}
-                        <div id="repoTypeTag" class="chip">Public</div>
+                        Public
                     {% endif %}
-                </h4>
+                </div>
+
+            </h4>
             <div class="row">
                 <div class="col s12">
                     <ul class="tabs">
@@ -44,7 +50,7 @@
                         <li class="tab col s2 "><a href="#test3">Pull request</a></li>
                         <li class="tab col s2"><a href="#test4">Security</a></li>
                         {% if repo.owner == request.user %}
-                        <li class="tab col s2"><a href="#test5">Settings</a></li>
+                            <li class="tab col s2"><a href="#test5">Settings</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -82,8 +88,8 @@
                         <a class="waves-effect waves-light btn modal-trigger" href="{% url 'fork' repo.pk %}">Fork
                             Repository</a>
                     {% endif %}
-                        <a class="waves-effect waves-light btn modal-trigger" href="#forkedChild">Fork
-                            Count:{{ forkedChild.count }}</a>
+                    <a class="waves-effect waves-light btn modal-trigger" href="#forkedChild">Fork
+                        Count:{{ forkedChild.count }}</a>
                 </div>
             </div>
         </div>
@@ -95,12 +101,17 @@
                     <div class="row">
                         <div class="row">
 
-                            <div id="test1" class="tabDetails  col s12"  href="#codeTab">   {% include 'Repos/repoDetailComponents/codeTab.html' %}</div>
-                            <div id="test2" class="tabDetails col s12"  href="#issueTab"> {% include 'Repos/repoDetailComponents/issueTab.html' %}</div>
-                            <div id="test3" class="tabDetails col s12"  href="#pullRequestTab">{% include 'Repos/repoDetailComponents/pullRequestTab.html' %}</div>
-                            <div id="test4" class="tabDetails col s12"  href="#securityTab"> {% include 'Repos/repoDetailComponents/securityTab.html' %}</div>
+                            <div id="test1" class="tabDetails  col s12"
+                                 href="#codeTab">   {% include 'Repos/repoDetailComponents/codeTab.html' %}</div>
+                            <div id="test2" class="tabDetails col s12"
+                                 href="#issueTab"> {% include 'Repos/repoDetailComponents/issueTab.html' %}</div>
+                            <div id="test3" class="tabDetails col s12"
+                                 href="#pullRequestTab">{% include 'Repos/repoDetailComponents/pullRequestTab.html' %}</div>
+                            <div id="test4" class="tabDetails col s12"
+                                 href="#securityTab"> {% include 'Repos/repoDetailComponents/securityTab.html' %}</div>
                             {% if repo.owner == request.user %}
-                            <div id="test5" class="tabDetails col s12">{% include 'Repos/repoDetailComponents/settingsTab.html' %}</div>
+                                <div id="test5"
+                                     class="tabDetails col s12">{% include 'Repos/repoDetailComponents/settingsTab.html' %}</div>
                             {% endif %}
                         </div>
 
@@ -109,8 +120,9 @@
                 </div>
             </div>
         </div>
-        <div class="col s3 " style="background-color:red;">
-            Git URL:http://192.168.249.129/{{ repo.repoURL }}/.git
+        <div class="col s3 ">
+            {% include 'Repos/repoDetailComponents/right_section.html' %}
+
         </div>
     </div>
     <!-- Modal Structure -->
@@ -123,18 +135,18 @@
         </div>
         <div class="modal-footer">
             <a href="{% url 'delete_repo' owner=repo.owner name=repo.name %}">
-                <button onclick="M.toast({html: 'repo deleted successfully', classes: 'light-green darken-2'})" class="btn" disabled="disabled" id="delete_btn"> Delete</button>
+                <button class="btn" disabled="disabled" id="delete_btn"> Delete</button>
             </a>
         </div>
     </div>
-     <div id="forkedChild" class="modal">
+    <div id="forkedChild" class="modal">
         <div class="modal-content">
             <h4>List of all Fork</h4>
-        <ul>
-            {% for fork in forkedChild %}
-                <li><a href="{% url 'detail_repo' owner=fork.owner name=fork.name %}">{{ fork.repoURL }}</a></li>
-            {% endfor %}
-        </ul>
+            <ul>
+                {% for fork in forkedChild %}
+                    <li><a href="{% url 'detail_repo' owner=fork.owner name=fork.name %}">{{ fork.repoURL }}</a></li>
+                {% endfor %}
+            </ul>
         </div>
         <div class="modal-footer">
 
@@ -176,9 +188,15 @@
                         },
                         success: function (data) {
                             $('#star-section').html(data['html'])
+                            if (data['is_repo_starred']) {
+                                M.toast({html: 'SUCCESS : Repo has been starred', classes: 'green'});
+                            } else {
+                                M.toast({html: 'SUCCESS : Repo has been unstarred', classes: 'green'});
+                            }
+
                         },
                         error: function (data) {
-                            $("#errorToast").toast("show");
+                            M.toast({html: 'ERROR : ', classes: 'red'});
                         }
                     })
             })
@@ -188,27 +206,28 @@
         $(document).ready(function () {
             $(document).on('click', '#manage-collaboratorbtn', function (event) {
                 event.preventDefault()
-                var iid = {{ repo.pk }}
+                var iid =
+                {{ repo.pk }}
                 var username = $('#manage-collab-form').val()
                 $('#manage-collab-form').val('')
                 var type = $(this).attr('type')
-                    $.ajax({
-                        url: '{% url "manage_collaborators" %}',
-                        type: 'post',
-                        data: {
-                            csrfmiddlewaretoken: "{{csrf_token}}",
-                            id: iid,
-                            username: username,
-                            type: type,
-                        },
-                        success: function (data) {
-                            console.log(data['data']['message'])
-                            $('#collaborator-list').html(data['html'])
-                        },
-                        error: function (data) {
-                            $("#errorToast").toast("show");
-                        }
-                    })
+                $.ajax({
+                    url: '{% url "manage_collaborators" %}',
+                    type: 'post',
+                    data: {
+                        csrfmiddlewaretoken: "{{csrf_token}}",
+                        id: iid,
+                        username: username,
+                        type: type,
+                    },
+                    success: function (data) {
+                        console.log(data['data']['message'])
+                        $('#collaborator-list').html(data['html'])
+                    },
+                    error: function (data) {
+                        $("#errorToast").toast("show");
+                    }
+                })
             })
         })
     </script>

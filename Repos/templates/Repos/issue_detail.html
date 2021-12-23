@@ -34,7 +34,7 @@
                                   method="post" class="white-text">
                                 {% csrf_token %}
                                 {{ issue_comment_create_form|materializecss }}
-                                <button onclick="M.toast({html: 'comment created successfully', classes: 'light-green darken-2'})"
+                                <button
                                         class="btn" type="submit">Add Comment
                                 </button>
                             </form>
