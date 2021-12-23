@@ -1,7 +1,7 @@
 {% if request.user in repo.star.all %}
-    <a class=" col s4 waves-effect waves-light btn btn-small modal-trigger  purple lighten-1" id="starbtn"
-       href="#modal2">Star {{ repo.star.all.count }}</a>
+    <a onclick="M.toast({html: 'repo has been unstarred', classes: 'light-green darken-2'})" class=" col s4 waves-effect waves-light btn btn-small modal-trigger  purple lighten-1" id="starbtn"
+       href="#modal2">Stare {{ repo.star.all.count }}</a>
 {% else %}
-    <a class="col s4 waves-effect waves-light btn btn-small modal-trigger  purple lighten-1" id="starbtn"
+    <a onclick="M.toast({html: 'repo has been starred, classes: 'light-green darken-2'})" class="col s4 waves-effect waves-light btn btn-small modal-trigger  purple lighten-1" id="starbtn"
        href="#modal2">Star {{ repo.star.all.count }}</a>
 {% endif %}

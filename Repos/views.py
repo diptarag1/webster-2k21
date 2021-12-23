@@ -1,4 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect,HttpResponse
+from rest_framework import status
+
 from .forms import RepoCreateForm, AddCollaboratorForm,IssueCreateForm,IssueCommentCreateForm
 from .models import Repo, Issue, IssueComment
 from user.models import Activity
@@ -225,10 +227,13 @@ def create_issue(request,owner,name):
     context={"owner":owner,"name":name}
     if request.method=='POST':
         print( request.POST)
-        form=IssueCreateForm(request.POST)
-        form.instance.author=request.user
-        form.instance.repo=Repo.objects.get(owner__username=owner,name=name)
-        issue=form.save()
+        try:
+            form = IssueCreateForm(request.POST)
+            form.instance.author = request.user
+            form.instance.repo = Repo.objects.get(owner__username=owner, name=name)
+            issue = form.save()
+        except :
+            return JsonResponse({"message": "error"},status=status.HTTP_400_BAD_REQUEST)
         print("issue.id "+str(issue.id))
         return JsonResponse({"issue_id":issue.id,"owner":owner,"name":name})
             # redirect('detail_issue', owner=owner, name=name,issue_id=issue.id)
@@ -242,8 +247,7 @@ def create_issue_comment(request,owner,name,issue_id):
         form.instance.author=request.user
         form.instance.issue=Issue.objects.filter(id=issue_id).first()
         form.save()
-
-        return redirect('detail_repo',owner=owner,name=name)
+        return redirect('detail_issue',owner=owner,name=name,issue_id=issue_id)
 
 def issue_list(request,owner,name):
     context={}

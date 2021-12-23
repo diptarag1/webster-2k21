@@ -1,12 +1,12 @@
 <div>
     <h3>settings tab</h3>
     <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Delete Repository</a>
-    <a class="waves-effect waves-light btn modal-trigger" href="{% url 'change_visibility' owner=repo.owner name=repo.name %}">Change Visibility</a>
+    <a onclick="M.toast({html: 'visibility has been changed', classes: 'light-green darken-2'})" class="waves-effect waves-light btn modal-trigger" href="{% url 'change_visibility' owner=repo.owner name=repo.name %}">Change Visibility</a>
 </div>
 <div id="collab-section">
     <input type="text" id="manage-collab-form" placeholder="Enter username">
-    <a class="waves-effect waves-light btn modal-trigger"  id="manage-collaboratorbtn" type="0">Add Collaborator</a>
-    <a class="waves-effect waves-light btn modal-trigger"  id="manage-collaboratorbtn" type="1">Remove Collaborator</a>
+    <a onclick="M.toast({html: 'added collaborator', classes: 'light-green darken-2'})" class="waves-effect waves-light btn modal-trigger"  id="manage-collaboratorbtn" type="0">Add Collaborator</a>
+    <a onclick="M.toast({html: 'removed collaborator', classes: 'light-green darken-2'})" class="waves-effect waves-light btn modal-trigger"  id="manage-collaboratorbtn" type="1">Remove Collaborator</a>
 </div>
 <div id="collaborator-list" class="container">
     {% include 'Repos/repoDetailComponents/collaboratorList.html' %}

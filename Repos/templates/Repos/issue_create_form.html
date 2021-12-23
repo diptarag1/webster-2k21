@@ -98,11 +98,12 @@
                                             tags: tag_list_as_string,
                                         },
                                         success: function (data) {
+                                             M.toast({html: 'issue created successfully', classes: 'light-green darken-2'});
                                             {#console.log(data);#}
                                             {#window.location.pathname={% url 'detail_repo' owner=owner name=name %}#}
                                         },
                                         error: function (data) {
-
+                                             M.toast({html: 'ERROR while creating an issue', classes: 'red'});
                                         }
                                     });
                                 });
