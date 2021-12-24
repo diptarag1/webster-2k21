@@ -69,3 +69,27 @@
     </div>
     {% include 'footer.html' %}
 {% endblock %}
+{% block script %}
+ <script>
+        $(document).ready(function () {
+            $('#searchRepo').bind('input propertychange', function() {
+                event.preventDefault()
+                searchVal=$('#searchRepo').val()
+                $.ajax({
+                    url: '{% url "filter_repo" %}',
+                    type: 'post',
+                    data: {
+                        csrfmiddlewaretoken: "{{csrf_token}}",
+                        searchVal : searchVal
+                    },
+                    success: function (data) {
+                        $('#repoListArea').html(data['html'])
+                    },
+                    error: function (data) {
+                        $("#errorToast").toast("show");
+                    }
+                })
+            })
+        })
+    </script>
+{% endblock %}

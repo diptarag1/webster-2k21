@@ -5,4 +5,6 @@ from . import views
 
 urlpatterns=[
     path('',views.index,name='home'),
+    path('filterRepo/',views.filter_repo,name='filter_repo'),
+    path('filterUser/',views.filter_user,name='filter_user'),
 ]

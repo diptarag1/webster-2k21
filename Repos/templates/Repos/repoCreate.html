@@ -61,16 +61,16 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <textarea id="textarea1" class="materialize-textarea"></textarea>
-                            <label for="textarea1">Description</label>
-                        </div>
-                    </div>
+{#                    <div class="row">#}
+{#                        <div class="input-field col s12">#}
+{#                            <textarea id="textarea1" class="materialize-textarea"></textarea>#}
+{#                            <label for="textarea1">Description</label>#}
+{#                        </div>#}
+{#                    </div>#}
                     <div class="row">
                         <p>
                             <label>
-                                <input  class="active checked" name="group1" type="radio" checked/>
+                                <input  class="active checked" id="private" name="group1" value="private" type="radio" checked/>
                                 <span>Private</span>
                             </label>
                         </p>
@@ -79,7 +79,7 @@
                     <div class="row">
                         <p>
                             <label>
-                                <input name="group1" type="radio" />
+                                <input name="group1" id="public" type="radio" value="public"/>
                                 <span>Public </span>
                             </label>
                         </p>
