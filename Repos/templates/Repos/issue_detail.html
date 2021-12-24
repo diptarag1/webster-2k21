@@ -2,51 +2,255 @@
 {% load materializecss %}
 {% block css %}
     <style>
-        #id_data{
-            color:white;
+        #id_data {
+            color: white;
+        }
+
+        #topSection {
+            margin-left: 1%;
+            margin-right: 1%;
+
+        }
+
+        #issueTabMain {
+            margin-left: 5%;
+            margin-right: 5%;
+        }
+
+        #issue_id_number {
+        {#font-size: 1.5rem;#}
+        }
+
+        #issue_is_open {
+            font-size: 1.25rem;
+            font-weight: 300;
+
+        }
+
+        .compactDiv {
+            display: inline-block;
+        {#float: left;#}
+
+        }
+
+        .myRow {
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        #issue_heading_1 {
+            font-size: 1.5rem;
+        }
+
+        .issue_headings_2 {
+            font-size: 1.5rem;
+            font-weight: 200;
+        }
+
+        .issue_comment_data {
+            font-weight: 400;
+        }
+
+        .profilePic {
+            width: auto;
+            height: 110%;
+        }
+
+        .ratio {
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 0;
+            padding-bottom: 100%;
+            position: relative;
+            width: 100%;
+        }
+
+        .img-circle {
+            border-radius: 50%;
+        }
+
+        .img-responsive {
+            display: block;
+            height: auto;
+            max-width: 100%;
+        }
+
+        #issue_main_editing {
+        visibility:hidden;
         }
     </style>
 {% endblock %}
 {% block content %}
     {% include 'navBar.html' %}
-    <div class="row">
-        <div class="col m10 offset-m1">
-            <div class="row">
-                <h4>{{ issue.topic }}</h4>
-            </div>
-            <div class="divider"></div>
-            <div class="row">
-                <div class="col s9">
+    <div id="issueTabMain">
+
+        <div id="topSection">
+            <h3 id="issue_main_heading" class="myRow">
+                <div id="issue_heading_2" class="compactDiv ">  {{ issue.topic }} </div>
+                <div class="compactDiv ">
+                    # {{ issue.id }}
+                </div>
+                {% if request.user in repo.collaborators.all %}
+
+                    <div class="compactDiv right">
+                        <a class="waves-effect waves-light btn modal-trigger"
+                           href="{% url 'create_issue' owner=repo.owner name=repo.name %}">New Issue</a>
+                    </div>
+                    <div class="compactDiv right">
+                        <a id="edit_issue_btn" class="waves-effect waves-light btn modal-trigger"> Edit </a>
+                    </div>
+                {% endif %}
+            </h3>
+
+            {#            <p class=" compactDivmyRow flow-text ">#}
+            {#              #}
+            {##}
+            {#            </p>#}
+            {% if issue.is_open %}
+                <div id="issue_is_open" class="compactDiv chip green white-text ">
+                    Open
+                </div>
+            {% else %}
+                <div id="issue_is_open" class=" compactDiv compactDiv chip red white-text">
+                    Close
+                </div>
+            {% endif %}
+            <p id="issue_heading_1" class="compactDiv ">{{ issue.author }} opened this
+                issue {{ issue.posted_on|timesince }} ago</p>
+
+            {#            <div class="myRow">#}
+            {#                <p class="  flow-text">asdasdas</p>#}
+            {#                <p class=" myRow flow-text">asdasdas</p>#}
+            {#            </div>#}
+
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+            <div class="col s9">
+                <div class="row">
+
+
                     {% for comment in issue_comments %}
-                        <div class="card blue-grey darken-1">
+
+                        <div class="col s1 ">
+                            <div class="ratio img-responsive img-circle"
+                                 style="background-image:url('https://www.vangoghgallery.com/img/starry_night_full.jpg');"></div>
+
+                        </div>
+                        <div class="col s11 card blue-grey darken-1">
+
                             <div class="card-content white-text">
 
-                                <span class="card-title">{{ comment.author }} commented  {{ comment.posted_on|timesince }} ago</span>
-                                <p>{{ comment.data }} </p>
+                                {#                                <span class="card-title">#}
+                                <span class="card-title activator grey-text text-darken-4">  <a
+                                        href="{% url 'profile' uname=comment.author %}">
+                                    <h5 class="compactDiv">{{ comment.author }}</h5>
+                                </a>
+                                <p class="compactDiv issue_headings_2">commented {{ comment.posted_on|timesince }}
+                                    ago</p>
+                                    <i class="material-icons right">more_vert</i></span>
+
+                                {#                                </span>#}
+                                <p class=" issue_comment_data">{{ comment.data }} </p>
+                            </div>
+                            <div class="card-reveal">
+                                <span class="card-title grey-text text-darken-4">
+                                    <form method="POST" action="{% url 'issue_comment_delete' issue_comment_id=comment.id %}">
+                                         {% csrf_token %}
+                                        <button type="submit" class="red waves-effect waves-light btn">Delete</button>
+                                         <i class="material-icons right">close</i>
+                                    </form>
+                                </span>
+
                             </div>
                         </div>
                     {% endfor %}
+                </div>
 
-                    <div class="card blue-grey darken-1">
-                        <div class="card-content white-text">
-                            <span class="card-title">{{ current_user }} </span>
-                            <form action="{% url 'create_issue_comment' owner=repo.owner name=repo.name issue_id=issue.id %}"
-                                  method="post" class="white-text">
-                                {% csrf_token %}
-                                {{ issue_comment_create_form|materializecss }}
-                                <button
-                                        class="btn" type="submit">Add Comment
-                                </button>
-                            </form>
-                        </div>
+
+                <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title">{{ current_user }} </span>
+                        <form action="{% url 'create_issue_comment' issue_id=issue.id %}"
+                              method="post" class="white-text">
+                            {% csrf_token %}
+                            {{ issue_comment_create_form|materializecss }}
+                            <button
+                                    class="btn" type="submit">Add Comment
+                            </button>
+
+                        </form>
                     </div>
                 </div>
+            </div>
 
-                <div class="col s3">
-                    <h2>right side section for things like assigned to , get notified on updates </h2>
+            <div class="col s3">
+                <div class="myRow">
+                    <h5 class="compactDiv">Assignees</h5>
+                    <i class="compactDiv small material-icons right">settings</i>
+
+
                 </div>
+                <ul>
+                    {% for assignee in assignees %}
+                        <li>
+                            <a href="{% url 'profile' uname=assignee %}">
+                                <div class="chip   purple lighten-1  white-text">
+                                    <img class="responsive-img"
+                                         src="https://www.vangoghgallery.com/img/starry_night_full.jpg">
+                                    {{ assignee }}
+                                </div>
+                            </a>
+
+                        </li>
+                    {% endfor %}
+
+                </ul>
+                <div class="divider">
+                </div>
+                <div class="myRow">
+                    <h5 class="compactDiv">Labels</h5>
+                    <i class="compactDiv small material-icons right">settings</i>
+                </div>
+                <div class="divider">
+                </div>
+
+                <h2>right side section for things like assigned to , get notified on updates </h2>
             </div>
         </div>
 
+
     </div>
+    <div id="issue_main_editing">
+        <form method="POST" action="{% url 'issue_edit' issue_id=issue.id %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="input-field col s10">
+                    <input placeholder="{{ issue.topic }}" id="issue_edit_box" name="issue_edit_box" type="text"
+                           class="validate">
+                    <label for="issue_edit_box"></label>
+                </div>
+                <button id="issue_save_btn" class="col s1 btn" type="submit">Save</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $('#edit_issue_btn').on('click', function (e) {
+            e.preventDefault();
+            var string = '';
+            $('#issue_main_heading').html("");
+            {#$('#issue_main_heading').a#}
+            $('#issue_main_editing').appendTo('#issue_main_heading');
+            $('#issue_main_editing').css('visibility', 'visible');
+
+
+        });
+
+    </script>
 {% endblock %}

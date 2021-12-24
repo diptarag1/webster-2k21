@@ -99,12 +99,17 @@ def detail_issue(request, name, owner, issue_id, **kwargs):
     issue_comments = IssueComment.objects.filter(issue=issue)
     issue_comment_create_form = IssueCommentCreateForm()
     repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
+    assignees=[user for user in issue.assignees.all()]
+
+
 
     context['issue'] = issue
     context['issue_comments'] = issue_comments
     context['current_user'] = request.user.username
     context['issue_comment_create_form'] = issue_comment_create_form
     context['repo'] = repo
+    context['assignees'] = assignees
+
     return render(request, 'Repos/issue_detail.html', context=context)
 
 
@@ -270,9 +275,37 @@ def fork(request, id):
     return redirect('home')
 
 
+def issue_edit(request, issue_id):
+    repo=None
+    try :
+        if request.method != 'POST':
+            raise Exception('INVALID method')
+        query_set = Issue.objects.filter(id=issue_id)
+        if len(query_set) == 0:
+            raise Exception("issue does not exist")
+        issue = query_set.first()
+        repo = issue.repo
+        if request.user != issue.author and request.user not in repo.collaborators.all():
+            raise Exception("You so not have the authority to edit issue")
+        new_topic_name = request.POST.get('issue_edit_box')
+        issue.topic = new_topic_name
+        issue.save()
+        messages.success(request, "ISSUE edited successfully")
+    except Exception as error:
+        messages.error(request, repr(error))
+    finally:
+        if(repo is None):
+            return redirect('home')
+        owner=repo.owner
+        name=repo.name
+        return redirect('detail_issue', owner=owner, name=name, issue_id=issue_id)
+
 def create_issue(request, owner, name):
     context = {"owner": owner, "name": name}
-    if request.method == 'POST':
+    query_set=Repo.objects.filter(owner__username=owner, name=name)
+    if(len(query_set)==0):
+        return JsonResponse({"message": "Repo does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+    if request.method == 'POST' :
         print(request.POST)
         try:
             form = IssueCreateForm(request.POST)
@@ -286,20 +319,54 @@ def create_issue(request, owner, name):
         # redirect('detail_issue', owner=owner, name=name,issue_id=issue.id)
         # return redirect('detail_repo',owner=owner,name=name)
     return render(request, 'Repos/issue_create_form.html', context=context)
+def issue_comment_delete(request, issue_comment_id):
+    issue=None
+    try:
+        if request.method != 'POST':
+            raise Exception('INVALID method')
+        query_set = IssueComment.objects.filter(id=issue_comment_id)
+        if len(query_set) == 0:
+            raise Exception("issue does not exist")
+        comment = query_set.first()
+        issue=comment.issue
+        if request.user != comment.author :
+            raise Exception("You so not have the authority to delete this comment")
+        comment.delete()
+        messages.success(request, "comment  deleted successfully")
+    except Exception as error:
+        messages.error(request, repr(error))
+    finally:
+        if (issue is None):
+            return redirect('home')
+        repo=issue.repo
+        owner = repo.owner
+        name = repo.name
+        return redirect('detail_issue', owner=owner, name=name, issue_id=issue.id)
 
-
-def create_issue_comment(request, owner, name, issue_id):
-    context = {}
-    if request.method == 'POST':
-        try:
-            form = IssueCommentCreateForm(request.POST)
-            form.instance.author = request.user
-            form.instance.issue = Issue.objects.filter(id=issue_id).first()
-            form.save()
-            messages.success(request, "comment created successfully")
-        except:
-            messages.error(request, "could not comment on issue")
-        return redirect('detail_issue', owner=owner, name=name, issue_id=issue_id)
+def create_issue_comment(request, issue_id):
+    repo=None
+    try:
+        if request.method != 'POST':
+            raise Exception("INVALID HTTP METHOD")
+        query_set=Issue.objects.filter(id=issue_id)
+        if(len(query_set)==0):
+            raise Exception("issue does not exist")
+        issue=query_set.first()
+        repo=issue.repo
+        form = IssueCommentCreateForm(request.POST)
+        form.instance.author = request.user
+        form.instance.issue = issue
+        if not form.is_valid:
+            raise Exception("Form not Valid")
+        form.save()
+        messages.success(request, "comment created successfully")
+    except Exception as error:
+        messages.error(request, repr(error))
+    finally:
+        if(repo is None):
+            redirect('home')
+        else:
+            return redirect('detail_issue', owner=repo.owner, name=repo.name, issue_id=issue_id)
 
 
 def issue_list(request, owner, name):
