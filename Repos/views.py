@@ -22,17 +22,27 @@ def init_Repo(request):
         form = RepoCreateForm(request.POST)
         if form.is_valid():
             try:
-                new_repo = Repo(owner=request.user, repoURL=form.cleaned_data['rname'], name=form.cleaned_data['rname'])
-                new_repo.repoURL = str(new_repo.owner) + '/' + new_repo.name
-                new_repo.save()
-                new_repo.collaborators.add(request.user)
-                new_repo.save()
-                subprocess.call(['chmod', '-R', '777', rw_dir + new_repo.repoURL + ".git"])
-                git.Git(rw_dir + request.user.username).clone(rw_dir + new_repo.repoURL + ".git")
-                activity = Activity.createdRepo(request.user, new_repo)
-                activity.save()
-                messages.success(request, "Repo created successfully")
-                return redirect('home')
+                # print(form.cleaned_data['group1'])
+                new_repo_name=form.cleaned_data['rname']
+                if not Repo.objects.filter(owner=request.user).filter(name=new_repo_name):
+                    is_private=request.POST.get('group1')
+                    if is_private == 'private':
+                        is_private=True
+                    else:
+                        is_private=False
+                    new_repo = Repo(owner=request.user, is_private=is_private, name=new_repo_name)
+                    new_repo.repoURL = str(new_repo.owner) + '/' + new_repo.name
+                    new_repo.save()
+                    new_repo.collaborators.add(request.user)
+                    new_repo.save()
+                    # subprocess.call(['chmod', '-R', '777', rw_dir + new_repo.repoURL + ".git"])
+                    git.Git(rw_dir + request.user.username).clone(rw_dir + new_repo.repoURL + ".git")
+                    activity = Activity.createdRepo(request.user, new_repo)
+                    activity.save()
+                    messages.success(request, "Repo created successfully")
+                    return redirect('home')
+                else:
+                    messages.error(request,"Repo with this name already exists")
             except:
                 messages.error(request, "Repo details are invalid")
             # for now
@@ -396,3 +406,5 @@ def manage_collaborators(request):
     repo.save()
     html = render_to_string('Repos/repoDetailComponents/collaboratorList.html', {'repo': repo}, request=request)
     return JsonResponse({'data': context, 'html': html})
+
+

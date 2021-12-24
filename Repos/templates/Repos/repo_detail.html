@@ -231,4 +231,29 @@
             })
         })
     </script>
+{#    <script>#}
+{#    autocomplete_list=[]#}
+{#    $('#manage-collab-form').bind('input propertychange', function() {#}
+{#            searchVal=$('#manage-collab-form').val()#}
+{#             $.ajax({#}
+{#                    url: '{% url "filter_user" %}',#}
+{#                    type: 'post',#}
+{#                    data: {#}
+{#                        csrfmiddlewaretoken: "{{csrf_token}}",#}
+{#                        searchVal : searchVal#}
+{#                    },#}
+{#                    success: function (data) {#}
+{#                        console.log(data['users'])#}
+{#                        autocomplete_list.clear();#}
+{#                        autocomplete_list.append(data['users'])#}
+{#                    },#}
+{#                    error: function (data) {#}
+{#                        $("#errorToast").toast("show");#}
+{#                    }#}
+{#                })#}
+{#        console.log(autocomplete_list)#}
+{#    });#}
+{##}
+{#    $('#manage-collab-form').autocomplete({source:autocomplete_list});#}
+{#    </script>#}
 {% endblock %}

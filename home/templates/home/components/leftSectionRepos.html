@@ -5,7 +5,7 @@
             <div class="col s9">
                 <form>
                     <div class="input-field">
-                        <input id="search" type="search" required>
+                        <input id="searchRepo" type="search" required>
                         <label class="label-icon" for="search"></label>
 
                     </div>
@@ -17,18 +17,9 @@
                 </a>
             </div>
         </div>
-
-
-        <ul class="collection with-header">
-            <li class="collection-header"><h5 class="">Repositories</h5></li>
-            {% for repo in repos %}
-                <li class="collection-item repoName thinText"><a
-                        href="{% url 'detail_repo' owner=repo.owner name=repo.name %}">
-                    {{ repo.owner }}/{{ repo.name }}
-                </a>
-                </li>
-            {% endfor %}
-        </ul>
+        <div id="repoListArea">
+            {% include 'home/components/repoList.html' %}
+        </div>
         </p>
     </div>
 </div>

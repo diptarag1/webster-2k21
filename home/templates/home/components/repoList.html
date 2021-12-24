@@ -1,0 +1,10 @@
+<ul class="collection with-header">
+            <li class="collection-header"><h5 class="">Repositories</h5></li>
+            {% for repo in repos %}
+                <li class="collection-item repoName thinText"><a
+                        href="{% url 'detail_repo' owner=repo.owner name=repo.name %}">
+                    {{ repo.owner }}/{{ repo.name }}
+                </a>
+                </li>
+            {% endfor %}
+        </ul>
