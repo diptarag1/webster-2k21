@@ -1,45 +1,58 @@
 <div id="issueTabSection">
     <div class="row">
-    <form class="col s9">
-        <div class="input-field">
-            <input id="search" type="search" required>
-            <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-            <i class="material-icons">close</i>
-        </div>
-    </form>
-    {% if request.user in repo.collaborators.all %}
-        <div class="col s3">
-            <a class="waves-effect waves-light btn modal-trigger"
-               href="{% url 'create_issue' owner=repo.owner name=repo.name %}">Create New Issue</a>
-        </div>
-    {% endif %}
-</div>
+        <form class="col s9">
+            <div class="input-field">
+                <input id="search" type="search" required>
+                <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                <i class="material-icons">close</i>
+            </div>
+        </form>
+        {% if request.user in repo.collaborators.all %}
+            <div class="col s3">
+                <a class="waves-effect waves-light btn modal-trigger"
+                   href="{% url 'create_issue' owner=repo.owner name=repo.name %}">Create New Issue</a>
+            </div>
+        {% endif %}
+    </div>
 
 
-<div>
+    <div>
 
-    <ul id="issuesList" class="collection">
-        <style>
-            #issuesList * {
-                padding-top: 5px;
-                padding-bottom: 0;
-                margin-top: 0;
-                margin-bottom: 0;
-            }
-        </style>
-        {% for issue in issues %}
-            <a class="collection-item ">
-                {#               <i class="left material-icons">grade</i>#}
-                <a href="{% url 'detail_issue' owner=repo.owner name=repo.name issue_id=issue.id %}"><span class="title"><h5>{{ issue.topic }}</h5></span></a>
-                <p>{{ issue.description }}</p>
-                {#                <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>#}
-            </a>
+        <ul id="issuesList" class="">
+            <style>
+                #issuesList * {
+                {#padding-top: 5px;#}{#padding-bottom: 0;#}{#margin-top: 0;#}{#margin-bottom: 0;#}
+                }
 
-        {% endfor %}
+                .compactDiv {
+                    display: inline-block;
+                }
+            </style>
+            {% for issue in issues %}
+                <div class="card horizontal">
+                    <div class="card-stacked">
+                        <div class="card-content row">
+                            <div class="col s1">
+                                {% if issue.is_open %}
+                                    <i class="green-text medium material-icons">radio_button_checked</i>
+                                {% else %}
+                                    <i class="red-text medium material-icons">highlight_off</i>
+                                {% endif %}
+                            </div>
+                            <div class="col s11">
+                                <div class="card-title">
+                                    <a href="{% url 'detail_issue' owner=repo.owner name=repo.name issue_id=issue.id %}"><span
+                                            class="">{{ issue.topic }}</span></a>
+                                </div>
+                                <p>#{{ issue.id }} opened {{ issue.posted_on|timesince }} ago by {{ issue.author }} </p>
+                            </div>
 
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </ul>
 
-    </ul>
-
-</div>
+    </div>
 
 </div>
