@@ -54,18 +54,18 @@
     {% include 'navBar.html' %}
     <div class=" row full-height">
         <div id="leftSection" class="col s3 card">
-             {#  left section contains list of repositories  #}
+            {#  left section contains list of repositories  #}
             {% include 'home/components/leftSectionRepos.html' %}
         </div>
         <div id="middle-section" class="col s6">
-             {#  middles section contains list of all activities  #}
+            {#  middles section contains list of all activities  #}
             {% include 'home/components/middleSectionActivity.html' %}
         </div>
+        <div class="col s3">
+            {#  right  section contains explore #}
+            {% include 'home/components/rightSectionExplore.html' %}
+        </div>
     </div>
-    <div class="col s3">
-     {#  right  section contains explore #}
-        {% include 'home/components/rightSectionExplore.html' %}
-    </div>
-    </div>
+
     {% include 'footer.html' %}
 {% endblock %}
