@@ -144,3 +144,5 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+handler404 = 'home.views.error_404'
+handler500 = 'home.views.error_500'

@@ -30,3 +30,11 @@ def filter_user(request):
     searchVal=request.POST.get('searchVal')
     context['users']=User.objects.filter(username__startswith=searchVal)
     return JsonResponse({'data':list(context['users'])})
+
+def error_404(request):
+    data = {}
+    return render(request, '404.html', data)
+
+def error_500(request):
+    data = {}
+    return render(request, '500.html', data)

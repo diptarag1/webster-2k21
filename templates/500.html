@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block css %}
+    <style>
+        .main_heading_1 {
+            font-size: 7vw;
+            font-weight: 100;
+        }
+
+        .main_heading_2 {
+            font-size: 5vw;
+            font-weight: 100;
+        }
+
+        .main_heading_3 {
+            font-size: 2vw;
+            font-weight: 200;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    {% include 'navBar.html' %}
+    <div class="center-align">
+        <div class="purple-text main_heading_1">
+            500
+        </div>
+        <div class="purple-text main_heading_2">
+            Internal Server Error
+        </div>
+        <div class=" main_heading_3">
+            <a href="{% url 'home' %}">
+                Return to Main Page
+            </a>
+        </div>
+    </div>
+{% endblock %}
