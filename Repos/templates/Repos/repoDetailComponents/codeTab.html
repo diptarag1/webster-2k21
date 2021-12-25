@@ -75,7 +75,7 @@
                 {{ file_content }}
             {% elif commit_view %}
                 {% for commit in commits %} 
-                    {{commit}} {{commit.author}} <br>
+                    {{commit}} <br> {{commit.message}} , {{commit.author}} <br>
                 {% endfor %}
             {%else %}
                 {% for item in dirContents %}
