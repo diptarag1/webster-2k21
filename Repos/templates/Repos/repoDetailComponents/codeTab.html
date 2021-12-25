@@ -71,7 +71,13 @@
                     <li>And done!! Congratulations you have pushed your files onto our servers</li>
                 </ol>
             {% endif %}
-            {% if not file_view %}
+            {% if file_view %}
+                {{ file_content }}
+            {% elif commit_view %}
+                {% for commit in commits %} 
+                    {{commit}} {{commit.author}} <br>
+                {% endfor %}
+            {%else %}
                 {% for item in dirContents %}
                     <li class="collection-item row">
                         <div class="col s6"><i class="material-icons">folder</i>
@@ -97,8 +103,6 @@
                         <div class="col s2">69 days ago</div>
                     </li>
                 {% endfor %}
-            {% else %}
-                {{ file_content }}
             {% endif %}
 
         </div>

@@ -63,3 +63,16 @@ class IssueComment(models.Model):
 
     def __str__(self):
         return " "
+
+
+class PullRequest(models.Model):
+    author = models.ForeignKey(User, null=False, on_delete=models.CASCADE, related_name='request_author')
+    base_repo = models.ForeignKey(Repo, on_delete=models.CASCADE, related_name='base_repo')
+    base_branch = models.CharField(max_length=120)
+    feature_repo = models.ForeignKey(Repo, on_delete=models.CASCADE, related_name='feature_repo')
+    feature_branch = models.CharField(max_length=120)
+
+    def __str__(self):
+        return "Merging " + str(self.feature_repo) + "/" + self.feature_branch + " into " + str(self.base_repo) + "/" + self.base_branch
+
+ 

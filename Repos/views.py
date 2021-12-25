@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404, render, redirect, HttpResponse
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from .forms import RepoCreateForm, AddCollaboratorForm, IssueCreateForm, IssueCommentCreateForm
-from .models import Repo, Issue, IssueComment
+from .forms import PullRequestCreateForm, RepoCreateForm, AddCollaboratorForm, IssueCreateForm, IssueCommentCreateForm
+from .models import PullRequest, Repo, Issue, IssueComment
 from user.models import Activity
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
@@ -84,12 +84,18 @@ def prepare_context(name, owner, branch, repo):
         g = git.Git(os.path.join(rw_dir, owner, name))
         g.pull('origin', branch)
 
+    repo = get_object_or_404(Repo, repoURL=owner+'/'+name)
+    print(repo.name)
+    pull_requests = PullRequest.objects.filter(base_repo=repo)
+    print(len(pull_requests))
+
     context['repo'] = repo
     context['repo_heads'] = bare_repo.branches
     context['name'] = name
     context['owner'] = owner
     context['current_branch'] = branch
     context['isEmpty'] = isEmpty
+    context['pull_requests'] = pull_requests
     return context
 
 
@@ -166,6 +172,23 @@ def detail_file(request, name, owner, branch="master", **kwargs):
     context['file_view'] = True
 
     file.close()
+
+    return render(request, 'Repos/repo_detail.html', context=context)
+
+def commit_list(request, name, owner, branch="master", **kwargs):
+    print('ass')
+    curDir = os.path.join(rw_dir, owner, name)
+    g = git.Git(curDir)
+
+    repos = Repo.objects.filter(name=name).filter(owner__username=owner)
+    repo = get_object_or_404(repos)
+    _repo = _Repo(rw_dir + repo.repoURL)
+    context = prepare_context(name, owner, branch, repo)
+
+    commits = list(_repo.iter_commits(branch))
+    print(commits)
+    context['commits'] = commits
+    context['commit_view'] = True
 
     return render(request, 'Repos/repo_detail.html', context=context)
 
@@ -346,6 +369,8 @@ def create_issue(request, owner, name):
         # redirect('detail_issue', owner=owner, name=name,issue_id=issue.id)
         # return redirect('detail_repo',owner=owner,name=name)
     return render(request, 'Repos/issue_create_form.html', context=context)
+
+
 def issue_comment_delete(request, issue_comment_id):
     issue=None
     try:
@@ -449,3 +474,62 @@ def manage_collaborators(request):
     return JsonResponse({'data': context, 'html': html})
 
 
+
+def create_pull_request(request, owner, name):
+    rName = str(owner) + '/' + name
+    curRepo = get_object_or_404(Repo, repoURL=rName)
+    _curRepo = _Repo(rw_dir + '/' + rName)
+    if request.method == 'POST':
+        form = PullRequestCreateForm(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['feature_branch'] not in _curRepo.heads:
+                return redirect('home')
+            if form.cleaned_data['base_branch'] not in _curRepo.heads:
+                return redirect('home')
+            form.instance.base_repo = curRepo
+            form.instance.feature_repo = curRepo
+            form.instance.author = request.user
+            form.save()
+        else:
+            return redirect('home')
+        return redirect('detail_repo', name=name, owner=owner)
+    else:
+        form = PullRequestCreateForm()
+    return render(request, 'Repos/createPullRequest.html', {'form': form})
+
+
+def pull_request_detail(request, owner, name, id):
+    context = {}
+    pullreq = PullRequest.objects.get(id=id)
+    print(pullreq)
+    context['pr'] = pullreq
+
+    _repo = _Repo(rw_dir + '/' + owner + '/' + name)
+    base_commit = _repo.merge_base(pullreq.base_branch, pullreq.feature_branch)[0]
+    context['base_commit'] = base_commit
+    current_commit = _repo.commit(pullreq.feature_branch)
+    unmerged_commits = []
+    while not current_commit == base_commit:
+        unmerged_commits.append(current_commit)
+        current_commit = current_commit.parents[0]
+
+    print(unmerged_commits)
+    context['unmerged_commits'] = unmerged_commits
+    context['id'] = id
+
+    context['name'] = name
+    context['owner'] = owner
+
+    return render(request, 'Repos/prDetail.html', context = context)
+
+
+def commit_pull_request(request, owner, name, id):
+    pullreq = PullRequest.objects.get(id=id)
+    _repo = _Repo(rw_dir + '/' + owner + '/' + name)
+
+    _repo.git.checkout(pullreq.base_branch)
+    _repo.git.merge(pullreq.feature_branch)
+
+    pullreq.delete()
+
+    return redirect('detail_repo', name=name, owner=owner)

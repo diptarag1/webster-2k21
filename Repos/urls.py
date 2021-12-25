@@ -21,10 +21,17 @@ urlpatterns = [
          name='add-remove-collaborator'),
          
     path('<owner>/<name>/view/<branch>/<path:subpath>/', views.detail_file, name='detail_file'),
-    path('<owner>/<name>/view/<branch>/<path:subpath>/', views.detail_file, name='detail_file'),
-    path('<owner>/<name>/', views.detail_repo, name='detail_repo'),
+    path('<owner>/<name>/commits/', views.commit_list, name='commit_file'),
+    path('<owner>/<name>/commits/<branch>/', views.commit_list, name='commit_file1'),
+    
+    path('<owner>/<name>/tree/', views.detail_repo, name='detail_repo'),
+    path('<owner>/<name>/tree/<branch>/', views.detail_repo, name='detail_repo1'),
+    path('<owner>/<name>/tree/<branch>/<path:subpath>/', views.detail_repo, name='detail_repo2'),
 
-    path('<owner>/<name>/<branch>/', views.detail_repo, name='detail_repo1'),
-    path('<owner>/<name>/<branch>/<path:subpath>/', views.detail_repo, name='detail_repo2'),
+    path('<owner>/<name>/pullrequest/create/', views.create_pull_request, name='create_pr'),
+    path('<owner>/<name>/pullrequest/commit/<id>/', views.commit_pull_request, name='commit_pr'),
+    path('<owner>/<name>/pullrequest/<id>/', views.pull_request_detail, name='detail_pr'),
+    
+
     path('manage-collaborators/',views.manage_collaborators,name='manage_collaborators'),
 ]

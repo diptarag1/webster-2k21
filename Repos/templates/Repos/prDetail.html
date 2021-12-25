@@ -1,0 +1,11 @@
+{{ pr }}
+<br>
+<h2> Unmerged commits: </h2>
+{% for commit in unmerged_commits %}
+    {{ commit }}<br>
+    {{commit.message}} , {{ commit.author }} , {{ commit.authored_date}}
+{% endfor %}
+
+<br>
+<br>
+<a href = "{% url 'commit_pr' name=name owner=owner id=id%}"><button type="button">Merge</button></a>
