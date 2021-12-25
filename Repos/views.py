@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect, HttpResponse
 from rest_framework import status
-
+from django.shortcuts import get_object_or_404
 from .forms import RepoCreateForm, AddCollaboratorForm, IssueCreateForm, IssueCommentCreateForm
 from .models import Repo, Issue, IssueComment
 from user.models import Activity
@@ -117,7 +117,8 @@ def detail_repo(request, name, owner, branch="master", **kwargs):
     curDir = os.path.join(rw_dir, owner, name)
     g = git.Git(curDir)
 
-    repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
+    repos = Repo.objects.filter(name=name).filter(owner__username=owner)
+    repo = get_object_or_404(repos)
     # repo.pull('origin',branch)
     # o = repo.remotes.origin
     # o.pull()

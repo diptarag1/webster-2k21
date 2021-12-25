@@ -15,6 +15,8 @@ from .models import Profile,Activity
 from .userAdd import add_user
 from os import mkdir
 from Repos.serverLocation import rw_dir
+from django.shortcuts import get_object_or_404
+from home.views import error_404
 # Create your views here.
 
 def signup(request):
@@ -60,7 +62,7 @@ def signout(request):
 
 def profile(request,uname):
     context={}
-    user=User.objects.get(username=uname)
+    user=get_object_or_404(User,username=uname)
     userProfile=Profile.objects.get(user=user)
     context['user']=user
     context['userProfile']=userProfile
