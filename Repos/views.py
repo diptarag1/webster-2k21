@@ -147,7 +147,7 @@ def detail_repo(request, name, owner, branch="master", **kwargs):
     context['dirContents'] = dirContents
     context['file_view'] = False
 
-    context['issues'] = Issue.objects.all()
+    context['issues'] = Issue.objects.filter(repo=repo)
 
     return render(request, 'Repos/repo_detail.html', context=context)
 
@@ -394,14 +394,28 @@ def create_issue_comment(request, issue_id):
         else:
             return redirect('detail_issue', owner=repo.owner, name=repo.name, issue_id=issue_id)
 
-
-def issue_list(request, owner, name):
-    context = {}
-    repo = Repo.objects.get(owner__username=owner, name=name)
-    issues = Issue.objects.filter(repo=repo)
-    context['issues'] = issues
-    return render(request, 'Repos/issues_list.html', context=context)
-
+def filter_issue(request,owner,name):
+    try:
+        context = {}
+        tags = request.POST.get('tags')
+        tags = tags.split(',')
+        print(tags)
+        repo = Repo.objects.get(owner__username=owner, name=name)
+        if repo is None :
+            raise Exception("Repo does not exist")
+        # print(len(tags))
+        if len(tags[0]) == 0:
+            issues = Issue.objects.filter(repo=repo)
+        else:
+            issues = Issue.objects.filter(repo=repo, tags__name__in=tags).distinct()
+        print("result has "+ str(len(issues)) +" issues")
+        context['issues'] = issues
+        context['repo'] = repo
+        html = render_to_string('Repos/issues_list.html', context=context, request=request)
+    except Exception as error:
+        messages.error(request, str(error))
+    finally:
+        return JsonResponse({'html': html});
 
 def manage_collaborators(request):
     type = request.POST.get('type')

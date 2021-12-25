@@ -1,11 +1,15 @@
 <div id="issueTabSection">
     <div class="row">
-        <form class="col s9">
-            <div class="input-field">
-                <input id="search" type="search" required>
-                <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-                <i class="material-icons">close</i>
+        <form class="col s9"  >
+            <div class="row">
+                <div class="input-field col s10  ">
+                    {#                <label class="" for="id_tags" style="">Tags</label>#}
+                    <div type="text" name="tags" required id="id_tags"
+                         class="chips chips-autocomplete chips-placeholder"></div>
+                </div>
+                <button id="issue_search_btn" class=" btn col s2">search</button>
             </div>
+
         </form>
         {% if request.user in repo.collaborators.all %}
             <div class="col s3">
@@ -28,31 +32,47 @@
                     display: inline-block;
                 }
             </style>
-            {% for issue in issues %}
-                <div class="card horizontal">
-                    <div class="card-stacked">
-                        <div class="card-content row">
-                            <div class="col s1">
-                                {% if issue.is_open %}
-                                    <i class="green-text medium material-icons">radio_button_checked</i>
-                                {% else %}
-                                    <i class="red-text medium material-icons">highlight_off</i>
-                                {% endif %}
-                            </div>
-                            <div class="col s11">
-                                <div class="card-title">
-                                    <a href="{% url 'detail_issue' owner=repo.owner name=repo.name issue_id=issue.id %}"><span
-                                            class="">{{ issue.topic }}</span></a>
-                                </div>
-                                <p>#{{ issue.id }} opened {{ issue.posted_on|timesince }} ago by {{ issue.author }} </p>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
+            <div id="issue_list_area">
+                {% for issue in issues %}
+                    {% include 'Repos/issueDetailComponents/issue_card.html' %}
+                {% endfor %}
+            </div>
         </ul>
 
     </div>
 
 </div>
+<script>
+    $('#issue_search_btn').on('click', function (event) {
+        event.preventDefault();
+        {#console.log($('.chips'));#}
+        tag_list = new Array();
+        $(".chip").each(function (index) {
+            {#console.log($(this).text());#}
+            tag_list.push($(this).text().slice(0, -5));
+        });
+        tag_list = tag_list.slice(2, tag_list.length)
+        tag_list_as_string = "";
+        tag_list.forEach(function (value) {
+            tag_list_as_string += value + ",";
+        });
+        tag_list_as_string = tag_list_as_string.slice(0, -1);
+        console.log(tag_list_as_string);
+        $.ajax({
+            url: "{% url 'filter_issue' owner=repo.owner name=repo.name %}",
+            type: 'post',
+            data: {
+                csrfmiddlewaretoken: "{{csrf_token}}",
+                tags: tag_list_as_string,
+            },
+            success: function (data) {
+                M.toast({html: 'Success : search', classes: 'green'});
+                console.log(data['html']);
+                $('#issue_list_area').html(data['html']);
+            },
+            error: function (data) {
+                M.toast({html: 'ERROR : could not search', classes: 'red'});
+            }
+        });
+    });
+</script>
