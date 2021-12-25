@@ -1,0 +1,26 @@
+<div class="card horizontal">
+    <div class="card-stacked">
+        <div class="card-content row">
+            <div class="col s1">
+                {% if issue.is_open %}
+                    <i class="green-text medium material-icons">radio_button_checked</i>
+                {% else %}
+                    <i class="red-text medium material-icons">highlight_off</i>
+                {% endif %}
+            </div>
+            <div class="col s11">
+                <div class="card-title">
+                    <a href="{% url 'detail_issue' owner=repo.owner name=repo.name issue_id=issue.id %}"><span
+                            class="">{{ issue.topic }}</span></a>
+
+                </div>
+                <p>#{{ issue.id }} opened {{ issue.posted_on|timesince }} ago by {{ issue.author }} </p>
+                <p >
+                    {% for tag in issue.tags.all %}
+                   <a class="orange-text"> #{{ tag.name }}</a>
+                {% endfor %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

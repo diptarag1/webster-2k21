@@ -147,7 +147,7 @@ def detail_repo(request, name, owner, branch="master", **kwargs):
     context['dirContents'] = dirContents
     context['file_view'] = False
 
-    context['issues'] = Issue.objects.all()
+    context['issues'] = Issue.objects.filter(repo=repo)
 
     return render(request, 'Repos/repo_detail.html', context=context)
 
@@ -275,6 +275,32 @@ def fork(request, id):
     return redirect('home')
 
 
+def issue_close(request, issue_id):
+    repo=None
+    try :
+        if request.method != 'POST':
+            raise Exception('INVALID method')
+        query_set = Issue.objects.filter(id=issue_id)
+        if len(query_set) == 0:
+            raise Exception("issue does not exist")
+        issue = query_set.first()
+        repo = issue.repo
+        if request.user not in repo.collaborators.all():
+            raise Exception("You so not have the authority to close this issue")
+        if  issue.is_open==False:
+            raise Exception("Issue is already closed")
+        issue.is_open = True
+        issue.save()
+        messages.success(request, "ISSUE closed successfully")
+    except Exception as error:
+        messages.error(request, str(error))
+    finally:
+        if(repo is None):
+            return redirect('home')
+        owner=repo.owner
+        name=repo.name
+        return redirect('detail_issue', owner=owner, name=name, issue_id=issue_id)
+
 def issue_edit(request, issue_id):
     repo=None
     try :
@@ -292,7 +318,7 @@ def issue_edit(request, issue_id):
         issue.save()
         messages.success(request, "ISSUE edited successfully")
     except Exception as error:
-        messages.error(request, repr(error))
+        messages.error(request, str(error))
     finally:
         if(repo is None):
             return redirect('home')
@@ -334,7 +360,7 @@ def issue_comment_delete(request, issue_comment_id):
         comment.delete()
         messages.success(request, "comment  deleted successfully")
     except Exception as error:
-        messages.error(request, repr(error))
+        messages.error(request, str(error))
     finally:
         if (issue is None):
             return redirect('home')
@@ -361,21 +387,35 @@ def create_issue_comment(request, issue_id):
         form.save()
         messages.success(request, "comment created successfully")
     except Exception as error:
-        messages.error(request, repr(error))
+        messages.error(request, str(error))
     finally:
         if(repo is None):
             redirect('home')
         else:
             return redirect('detail_issue', owner=repo.owner, name=repo.name, issue_id=issue_id)
 
-
-def issue_list(request, owner, name):
-    context = {}
-    repo = Repo.objects.get(owner__username=owner, name=name)
-    issues = Issue.objects.filter(repo=repo)
-    context['issues'] = issues
-    return render(request, 'Repos/issues_list.html', context=context)
-
+def filter_issue(request,owner,name):
+    try:
+        context = {}
+        tags = request.POST.get('tags')
+        tags = tags.split(',')
+        print(tags)
+        repo = Repo.objects.get(owner__username=owner, name=name)
+        if repo is None :
+            raise Exception("Repo does not exist")
+        # print(len(tags))
+        if len(tags[0]) == 0:
+            issues = Issue.objects.filter(repo=repo)
+        else:
+            issues = Issue.objects.filter(repo=repo, tags__name__in=tags).distinct()
+        print("result has "+ str(len(issues)) +" issues")
+        context['issues'] = issues
+        context['repo'] = repo
+        html = render_to_string('Repos/issues_list.html', context=context, request=request)
+    except Exception as error:
+        messages.error(request, str(error))
+    finally:
+        return JsonResponse({'html': html});
 
 def manage_collaborators(request):
     type = request.POST.get('type')

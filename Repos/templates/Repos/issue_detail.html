@@ -3,7 +3,7 @@
 {% block css %}
     <style>
         #id_data {
-            color: white;
+        {#color: white;#}
         }
 
         #topSection {
@@ -79,7 +79,7 @@
         }
 
         #issue_main_editing {
-        visibility:hidden;
+            visibility: hidden;
         }
     </style>
 {% endblock %}
@@ -120,71 +120,42 @@
             {% endif %}
             <p id="issue_heading_1" class="compactDiv ">{{ issue.author }} opened this
                 issue {{ issue.posted_on|timesince }} ago</p>
-
-            {#            <div class="myRow">#}
-            {#                <p class="  flow-text">asdasdas</p>#}
-            {#                <p class=" myRow flow-text">asdasdas</p>#}
-            {#            </div>#}
-
         </div>
         <div class="divider"></div>
         <div class="row">
             <div class="col s9">
                 <div class="row">
-
-
                     {% for comment in issue_comments %}
-
-                        <div class="col s1 ">
-                            <div class="ratio img-responsive img-circle"
-                                 style="background-image:url('https://www.vangoghgallery.com/img/starry_night_full.jpg');"></div>
-
-                        </div>
-                        <div class="col s11 card blue-grey darken-1">
-
-                            <div class="card-content white-text">
-
-                                {#                                <span class="card-title">#}
-                                <span class="card-title activator grey-text text-darken-4">  <a
-                                        href="{% url 'profile' uname=comment.author %}">
-                                    <h5 class="compactDiv">{{ comment.author }}</h5>
-                                </a>
-                                <p class="compactDiv issue_headings_2">commented {{ comment.posted_on|timesince }}
-                                    ago</p>
-                                    <i class="material-icons right">more_vert</i></span>
-
-                                {#                                </span>#}
-                                <p class=" issue_comment_data">{{ comment.data }} </p>
-                            </div>
-                            <div class="card-reveal">
-                                <span class="card-title grey-text text-darken-4">
-                                    <form method="POST" action="{% url 'issue_comment_delete' issue_comment_id=comment.id %}">
-                                         {% csrf_token %}
-                                        <button type="submit" class="red waves-effect waves-light btn">Delete</button>
-                                         <i class="material-icons right">close</i>
-                                    </form>
-                                </span>
-
-                            </div>
-                        </div>
+                        {% include 'Repos/issueDetailComponents/comment_card.html' %}
                     {% endfor %}
                 </div>
 
+                <div class="card horizontal">
 
-                <div class="card blue-grey darken-1">
-                    <div class="card-content white-text">
-                        <span class="card-title">{{ current_user }} </span>
-                        <form action="{% url 'create_issue_comment' issue_id=issue.id %}"
-                              method="post" class="white-text">
-                            {% csrf_token %}
-                            {{ issue_comment_create_form|materializecss }}
-                            <button
-                                    class="btn" type="submit">Add Comment
-                            </button>
+                    <div class="card-stacked">
+                        <div class="card-content">
+                            <span class="card-title">{{ current_user }} </span>
+                            <form class="compactDiv" action="{% url 'create_issue_comment' issue_id=issue.id %}"
+                                  method="post" class="black-text">
+                                {% csrf_token %}
+                                {{ issue_comment_create_form|materializecss }}
+                                <button class="btn" type="submit">
+                                    Add Comment
+                                </button>
 
-                        </form>
+                            </form>
+                            {% if issue.is_open %}
+                                <form class="" method="POST" action="{% url 'issue_close' issue_id=issue.id %}">
+                                    {% csrf_token %}
+                                    <button id="issue_save_btn" class="col s2 btn red" type="submit">Close Issue
+                                    </button>
+                                </form>
+                            {% endif %}
+
+                        </div>
                     </div>
                 </div>
+
             </div>
 
             <div class="col s3">
@@ -236,21 +207,24 @@
                 <button id="issue_save_btn" class="col s1 btn" type="submit">Save</button>
             </div>
         </form>
+
     </div>
 {% endblock %}
 
 {% block script %}
     <script>
-        $('#edit_issue_btn').on('click', function (e) {
-            e.preventDefault();
-            var string = '';
-            $('#issue_main_heading').html("");
-            {#$('#issue_main_heading').a#}
-            $('#issue_main_editing').appendTo('#issue_main_heading');
-            $('#issue_main_editing').css('visibility', 'visible');
 
+        $(document).ready(function () {
+            $('#edit_issue_btn').on('click', function (e) {
+                e.preventDefault();
+                var string = '';
+                $('#issue_main_heading').html("");
+                $('#issue_main_heading').a
+                $('#issue_main_editing').appendTo('#issue_main_heading');
+                $('#issue_main_editing').css('visibility', 'visible');
+            });
 
         });
-
     </script>
+
 {% endblock %}
