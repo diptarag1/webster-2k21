@@ -275,6 +275,32 @@ def fork(request, id):
     return redirect('home')
 
 
+def issue_close(request, issue_id):
+    repo=None
+    try :
+        if request.method != 'POST':
+            raise Exception('INVALID method')
+        query_set = Issue.objects.filter(id=issue_id)
+        if len(query_set) == 0:
+            raise Exception("issue does not exist")
+        issue = query_set.first()
+        repo = issue.repo
+        if request.user not in repo.collaborators.all():
+            raise Exception("You so not have the authority to close this issue")
+        if  issue.is_open==False:
+            raise Exception("Issue is already closed")
+        issue.is_open = True
+        issue.save()
+        messages.success(request, "ISSUE closed successfully")
+    except Exception as error:
+        messages.error(request, str(error))
+    finally:
+        if(repo is None):
+            return redirect('home')
+        owner=repo.owner
+        name=repo.name
+        return redirect('detail_issue', owner=owner, name=name, issue_id=issue_id)
+
 def issue_edit(request, issue_id):
     repo=None
     try :
@@ -292,7 +318,7 @@ def issue_edit(request, issue_id):
         issue.save()
         messages.success(request, "ISSUE edited successfully")
     except Exception as error:
-        messages.error(request, repr(error))
+        messages.error(request, str(error))
     finally:
         if(repo is None):
             return redirect('home')
@@ -334,7 +360,7 @@ def issue_comment_delete(request, issue_comment_id):
         comment.delete()
         messages.success(request, "comment  deleted successfully")
     except Exception as error:
-        messages.error(request, repr(error))
+        messages.error(request, str(error))
     finally:
         if (issue is None):
             return redirect('home')
@@ -361,7 +387,7 @@ def create_issue_comment(request, issue_id):
         form.save()
         messages.success(request, "comment created successfully")
     except Exception as error:
-        messages.error(request, repr(error))
+        messages.error(request, str(error))
     finally:
         if(repo is None):
             redirect('home')

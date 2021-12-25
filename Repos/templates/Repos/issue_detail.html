@@ -3,7 +3,7 @@
 {% block css %}
     <style>
         #id_data {
-            color: white;
+        {#color: white;#}
         }
 
         #topSection {
@@ -79,7 +79,7 @@
         }
 
         #issue_main_editing {
-        visibility:hidden;
+            visibility: hidden;
         }
     </style>
 {% endblock %}
@@ -158,7 +158,8 @@
                             </div>
                             <div class="card-reveal">
                                 <span class="card-title grey-text text-darken-4">
-                                    <form method="POST" action="{% url 'issue_comment_delete' issue_comment_id=comment.id %}">
+                                    <form method="POST"
+                                          action="{% url 'issue_comment_delete' issue_comment_id=comment.id %}">
                                          {% csrf_token %}
                                         <button type="submit" class="red waves-effect waves-light btn">Delete</button>
                                          <i class="material-icons right">close</i>
@@ -170,21 +171,32 @@
                     {% endfor %}
                 </div>
 
+                <div class="card horizontal">
 
-                <div class="card blue-grey darken-1">
-                    <div class="card-content white-text">
-                        <span class="card-title">{{ current_user }} </span>
-                        <form action="{% url 'create_issue_comment' issue_id=issue.id %}"
-                              method="post" class="white-text">
-                            {% csrf_token %}
-                            {{ issue_comment_create_form|materializecss }}
-                            <button
-                                    class="btn" type="submit">Add Comment
-                            </button>
+                    <div class="card-stacked">
+                        <div class="card-content">
+                            <span class="card-title">{{ current_user }} </span>
+                            <form class="compactDiv" action="{% url 'create_issue_comment' issue_id=issue.id %}"
+                                  method="post" class="black-text">
+                                {% csrf_token %}
+                                {{ issue_comment_create_form|materializecss }}
+                                <button class="btn" type="submit">
+                                    Add Comment
+                                </button>
 
-                        </form>
+                            </form>
+                            {% if issue.is_open %}
+                                <form class="" method="POST" action="{% url 'issue_close' issue_id=issue.id %}">
+                                    {% csrf_token %}
+                                    <button id="issue_save_btn" class="col s2 btn red" type="submit">Close Issue
+                                    </button>
+                                </form>
+                            {% endif %}
+
+                        </div>
                     </div>
                 </div>
+
             </div>
 
             <div class="col s3">
@@ -236,6 +248,7 @@
                 <button id="issue_save_btn" class="col s1 btn" type="submit">Save</button>
             </div>
         </form>
+
     </div>
 {% endblock %}
 
@@ -245,7 +258,7 @@
             e.preventDefault();
             var string = '';
             $('#issue_main_heading').html("");
-            {#$('#issue_main_heading').a#}
+            $('#issue_main_heading').a
             $('#issue_main_editing').appendTo('#issue_main_heading');
             $('#issue_main_editing').css('visibility', 'visible');
 

@@ -10,6 +10,7 @@ urlpatterns = [
     path('star/', views.star, name='star'),
     path('comment/delete/<issue_comment_id>/', views.issue_comment_delete, name='issue_comment_delete'),
     path('issues/edit/<issue_id>', views.issue_edit, name='issue_edit'),
+    path('issues/close/<issue_id>', views.issue_close, name='issue_close'),
     path('issues/<issue_id>/comment/new/', views.create_issue_comment, name='create_issue_comment'),
     path('<owner>/<name>/issues/<issue_id>', views.detail_issue, name='detail_issue'),
     path('<owner>/<name>/issues/', views.issue_list, name='issue_list'),
