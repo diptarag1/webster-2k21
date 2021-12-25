@@ -6,8 +6,10 @@ from Repos.models import Repo
 
 class Profile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
-    following = models.ManyToManyField(User,related_name='following')
-    followers = models.ManyToManyField(User,related_name='followers')
+    bio = models.TextField(null=True,blank=True,default='')
+    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    following = models.ManyToManyField(User,related_name='following',blank=True,null=True)
+    followers = models.ManyToManyField(User,related_name='followers',blank=True,null=True)
     def __str__(self):
         return  self.user.username
 

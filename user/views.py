@@ -1,5 +1,6 @@
 import random
-
+from .forms import ProfileUpdateForm,UserUpdateForm
+from django.contrib import messages
 from django.contrib.auth import login, authenticate,logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
@@ -60,11 +61,14 @@ def signout(request):
 def profile(request,uname):
     context={}
     user=User.objects.get(username=uname)
+    userProfile=Profile.objects.get(user=user)
     context['user']=user
+    context['userProfile']=userProfile
     context['repos']=Repo.objects.filter(owner__username=uname)
     context['mostPopularRepos']=Repo.objects.filter(owner__username=uname)[0:6]
     context['activity'] = [2 for i in range(45*7)]
-
+    context['profileForm']=ProfileUpdateForm(instance=request.user.profile)
+    context['userForm']=UserUpdateForm(instance=request.user)
     return render(request,'user/profile.html',context=context)
 
 def follow(request):
@@ -91,5 +95,18 @@ def follow(request):
     html = render_to_string('user/follow_section.html', context, request=request)
     return JsonResponse({'html': html, 'message': message})
 
-def following(request):
-    pass
+def edit_profile(request):
+    if request.user.is_authenticated:
+        if (request.method == 'POST'):
+            p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+            u_form = UserUpdateForm(request.POST,instance=request.user)
+            if True:
+                p_form.save()
+                u_form.is_valid()
+                print(p_form.cleaned_data['bio'])
+                messages.success(request, 'Account has been updated.')
+                return redirect('profile', uname=request.user.username)
+        else:
+            # p_form = ProfileUpdateForm(instance=request.user.profile)
+            pass
+    return redirect('home')
