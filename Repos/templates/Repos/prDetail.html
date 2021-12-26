@@ -1,11 +1,164 @@
-{{ pr }}
-<br>
-<h2> Unmerged commits: </h2>
-{% for commit in unmerged_commits %}
-    {{ commit }}<br>
-    {{commit.message}} , {{ commit.author }} , {{ commit.authored_date}}
-{% endfor %}
+{% extends 'base.html' %}
+{% block css %}
+    <style>
 
-<br>
-<br>
-<a href = "{% url 'commit_pr' name=name owner=owner id=id%}"><button type="button">Merge</button></a>
+        #topSection {
+            margin-left: 1%;
+            margin-right: 1%;
+
+        }
+
+        #prTabMain {
+            margin-left: 5%;
+            margin-right: 5%;
+        }
+
+        #pr_id_number {
+        {#font-size: 1.5rem;#}
+        }
+
+        #pr_is_open {
+            font-size: 1.25rem;
+            font-weight: 300;
+
+        }
+
+        .compactDiv {
+            display: inline-block;
+        {#float: left;#}
+
+        }
+
+        #pr_heading_1 {
+        {#font-size: 1.5rem;#}
+        }
+
+        .pr_headings_2 {
+            font-size: 1.5rem;
+            font-weight: 200;
+        }
+
+        .pr_comment_data {
+            font-weight: 400;
+        }
+
+        .profilePic {
+            width: auto;
+            height: 110%;
+        }
+
+        .ratio {
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 0;
+            padding-bottom: 100%;
+            position: relative;
+            width: 100%;
+        }
+
+        .img-circle {
+            border-radius: 50%;
+        }
+
+        .img-responsive {
+            display: block;
+            height: auto;
+            max-width: 100%;
+        }
+
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% include 'navBar.html' %}
+    <div id="prTabMain">
+
+        <div id="topSection">
+            <h3 id="pr_main_heading" class="myRow">
+                <div id="pr_heading_2" class="compactDiv ">  {{ pr.topic }} </div>
+                <div class="compactDiv ">
+                    {{ pr }} #{{ pr.id }}
+                </div>
+
+            </h3>
+            <div class="compactDiv ">
+                <div id="issue_is_open" class="compactDiv chip green white-text ">
+                    Open
+                </div>
+            </div>
+            <div class="compactDiv ">
+                <a class="orange-text" href="{% url 'profile' uname=pr.author %}">{{ pr.author }}</a>
+                wants to Merge <a
+                    href="{% url 'detail_repo1' owner=pr.feature_repo.owner name=pr.feature_repo.name branch=pr.feature_branch %}">{{ pr.feature_repo }}
+                / {{ pr.feature_branch }}</a> into <a
+                    href="{% url 'detail_repo1' owner=pr.base_repo.owner name=pr.base_repo.name branch=pr.base_branch %}">{{ pr.base_repo }}/ {{ pr.base_branch }}</a>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+            <div class="col s9">
+
+                <br>
+                <h4> Unmerged commits: </h4>
+                <ul class="collection">
+                    {% for commit in unmerged_commits %}
+
+                        <li class="collection-item">
+                            <div class="chip   purple lighten-1  white-text" >
+                                <img class="responsive-img"
+                                     src="https://www.vangoghgallery.com/img/starry_night_full.jpg">
+                                {{ commit.author }}
+
+                            </div>
+                            {{ commit.message }}
+                            {#                                <p>{{ commit.authored_date|timesince }}</p>#}
+                            <p class="right"><a>{{ commit }}</a></p>
+                        </li>
+
+
+                    {% endfor %}
+                </ul>
+                <br>
+                <br>
+                <a class="btn orange" href="{% url 'commit_pr' name=name owner=owner id=id %}">
+                   Merge
+                </a>
+                <div class="row">
+
+                </div>
+
+
+            </div>
+
+            <div class="col s3">
+                <div class="myRow">
+                    <h5 class="compactDiv">Assignees</h5>
+                    <i class="compactDiv small material-icons right">settings</i>
+
+
+                </div>
+                <ul>
+
+                    <div class="divider">
+                    </div>
+                    <div class="myRow">
+                        <h5 class="compactDiv">Labels</h5>
+                        <i class="compactDiv small material-icons right">settings</i>
+                    </div>
+                    <div class="divider">
+                    </div>
+
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+
+
+{% endblock %}

@@ -1,5 +1,4 @@
-from _cffi_backend import typeof
-from django.shortcuts import get_object_or_404, render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .forms import PullRequestCreateForm, RepoCreateForm, AddCollaboratorForm, IssueCreateForm, IssueCommentCreateForm
@@ -7,23 +6,18 @@ from .models import PullRequest, Repo, Issue, IssueComment
 from user.models import Activity
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse
 import os
 from .serverLocation import rw_dir
-from git import Git, Repo as _Repo
+from git import Repo as _Repo
 import git
 import subprocess
-import datetime
 from django.contrib import messages
 
 
 # Create your views here.
+from .utility import get_bare_repo_by_name, get_nonbare_repo_by_name
 
-def get_bare_repo_by_name(owner, name):
-    return _Repo(rw_dir + '/' + str(owner) + '/' + name + '.git')
-
-def get_nonbare_repo_by_name(owner, name):
-    return _Repo(rw_dir + '/' + str(owner) + '/' + name)
 
 def init_Repo(request):
     if request.method == 'POST':

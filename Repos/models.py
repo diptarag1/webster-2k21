@@ -8,6 +8,8 @@ from taggit.managers import TaggableManager
 from .serverLocation import rw_dir, new_dir
 import subprocess
 
+from .utility import get_nonbare_repo_by_name, get_bare_repo_by_name
+
 
 # Create your models here.
 class Repo(models.Model):
@@ -18,7 +20,9 @@ class Repo(models.Model):
     repoURL = models.CharField(max_length=30)  # ownerName/repoName
     star = models.ManyToManyField(User, related_name='star', blank=True)
     is_private = models.BooleanField(default=False)
-
+    def get_latest_commit_message(self,branch):
+        _repo = get_bare_repo_by_name(self.owner, self.name)
+        return _repo.heads[branch].commit.message
     def __str__(self):
         return self.repoURL
 
@@ -74,6 +78,8 @@ class PullRequest(models.Model):
     parentBit = models.BooleanField(default=False) #if true, base repo is parent
 
     def __str__(self):
-        return "Merging " + str(self.feature_repo) + "/" + self.feature_branch + " into " + str(self.base_repo) + "/" + self.base_branch
+        return self.feature_repo.get_latest_commit_message(self.feature_branch)
+        # return "Merging " + str(self.feature_repo) + "/" + self.feature_branch + " into " + str(self.base_repo) + "/" + self.base_branch
+
 
  
