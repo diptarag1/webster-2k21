@@ -478,15 +478,22 @@ def manage_collaborators(request):
 def create_pull_request(request, owner, name):
     rName = str(owner) + '/' + name
     curRepo = get_object_or_404(Repo, repoURL=rName)
+    print(curRepo.parent)
     _curRepo = _Repo(rw_dir + '/' + rName)
+    baseRepo = curRepo
+    _baseRepo = _curRepo
+
     if request.method == 'POST':
         form = PullRequestCreateForm(request.POST)
         if form.is_valid():
+            if form.cleaned_data['parentBit']:
+                baseRepo = curRepo.parent
+                _baseRepo = _Repo(rw_dir + '/' + str(baseRepo.owner) + '/' + baseRepo.name)
             if form.cleaned_data['feature_branch'] not in _curRepo.heads:
                 return redirect('home')
-            if form.cleaned_data['base_branch'] not in _curRepo.heads:
+            if form.cleaned_data['base_branch'] not in _baseRepo.heads:
                 return redirect('home')
-            form.instance.base_repo = curRepo
+            form.instance.base_repo = baseRepo
             form.instance.feature_repo = curRepo
             form.instance.author = request.user
             form.save()
@@ -496,6 +503,7 @@ def create_pull_request(request, owner, name):
     else:
         form = PullRequestCreateForm()
     return render(request, 'Repos/createPullRequest.html', {'form': form})
+
 
 
 def pull_request_detail(request, owner, name, id):

@@ -71,6 +71,7 @@ class PullRequest(models.Model):
     base_branch = models.CharField(max_length=120)
     feature_repo = models.ForeignKey(Repo, on_delete=models.CASCADE, related_name='feature_repo')
     feature_branch = models.CharField(max_length=120)
+    parentBit = models.BooleanField(default=False) #if true, base repo is parent
 
     def __str__(self):
         return "Merging " + str(self.feature_repo) + "/" + self.feature_branch + " into " + str(self.base_repo) + "/" + self.base_branch

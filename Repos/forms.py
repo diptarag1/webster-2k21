@@ -21,4 +21,4 @@ class IssueCommentCreateForm(forms.ModelForm):
 class PullRequestCreateForm(forms.ModelForm):
     class Meta:
         model=PullRequest
-        fields=['base_branch', 'feature_branch']
+        fields=['base_branch', 'feature_branch', 'parentBit']
