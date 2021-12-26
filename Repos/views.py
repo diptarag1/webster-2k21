@@ -17,6 +17,13 @@ from django.contrib import messages
 
 
 # Create your views here.
+
+def get_bare_repo_by_name(owner, name):
+    return _Repo(rw_dir + '/' + str(owner) + '/' + name + '.git')
+
+def get_nonbare_repo_by_name(owner, name):
+    return _Repo(rw_dir + '/' + str(owner) + '/' + name)
+
 def init_Repo(request):
     if request.method == 'POST':
         form = RepoCreateForm(request.POST)
@@ -56,8 +63,8 @@ def init_Repo(request):
 def prepare_context(name, owner, branch, repo):
     context = {}
     # To handle branching
-    _repo = _Repo(rw_dir + repo.repoURL)
-    bare_repo = _Repo(rw_dir + repo.repoURL + ".git")
+    _repo = get_nonbare_repo_by_name(owner, name)
+    bare_repo = get_bare_repo_by_name(owner, name)
 
     print("trying to access branch with name " + branch)
     print("available branches are ", bare_repo.heads)
@@ -121,7 +128,6 @@ def detail_issue(request, name, owner, issue_id, **kwargs):
 
 def detail_repo(request, name, owner, branch="master", **kwargs):
     curDir = os.path.join(rw_dir, owner, name)
-    g = git.Git(curDir)
 
     repos = Repo.objects.filter(name=name).filter(owner__username=owner)
     repo = get_object_or_404(repos)
@@ -286,6 +292,8 @@ def fork(request, id):
                 ['git', '-C', rw_dir + request.user.username, 'clone', '--bare', rw_dir + parent.repoURL + ".git"])
             subprocess.call(['chmod', '-R', '777', rw_dir + new_repo.repoURL + ".git"])
             git.Git(rw_dir + request.user.username).clone(rw_dir + new_repo.repoURL + ".git")
+            _non_bare_repo = _Repo(rw_dir + new_repo.repoURL)
+            _non_bare_repo.create_remote('bare_parent', rw_dir + parent.repoURL + ".git")
             new_repo.save()
             new_repo.collaborators.add(request.user)
             new_repo.save()
@@ -479,7 +487,7 @@ def create_pull_request(request, owner, name):
     rName = str(owner) + '/' + name
     curRepo = get_object_or_404(Repo, repoURL=rName)
     print(curRepo.parent)
-    _curRepo = _Repo(rw_dir + '/' + rName)
+    _curRepo = get_bare_repo_by_name(owner, name)
     baseRepo = curRepo
     _baseRepo = _curRepo
 
@@ -488,7 +496,7 @@ def create_pull_request(request, owner, name):
         if form.is_valid():
             if form.cleaned_data['parentBit']:
                 baseRepo = curRepo.parent
-                _baseRepo = _Repo(rw_dir + '/' + str(baseRepo.owner) + '/' + baseRepo.name)
+                _baseRepo = get_bare_repo_by_name(baseRepo.owner, name)
             if form.cleaned_data['feature_branch'] not in _curRepo.heads:
                 return redirect('home')
             if form.cleaned_data['base_branch'] not in _baseRepo.heads:
@@ -512,14 +520,27 @@ def pull_request_detail(request, owner, name, id):
     print(pullreq)
     context['pr'] = pullreq
 
-    _repo = _Repo(rw_dir + '/' + owner + '/' + name)
-    base_commit = _repo.merge_base(pullreq.base_branch, pullreq.feature_branch)[0]
+    cur_repo = get_bare_repo_by_name(pullreq.feature_repo.owner, pullreq.feature_repo.name)
+    cur_nb_repo = get_nonbare_repo_by_name(pullreq.feature_repo.owner, pullreq.feature_repo.name)
+    base_repo = get_bare_repo_by_name(pullreq.base_repo.owner, pullreq.base_repo.name)
+    base_commit =  cur_repo.merge_base(cur_repo.commit(pullreq.base_branch), cur_repo.commit(pullreq.feature_branch))[0]
+    if base_repo != cur_repo:
+        for branch in cur_repo.branches:
+            cur_nb_repo.git.pull('origin', branch)
+        cur_nb_repo.git.fetch('bare_parent')
+        base_commit = cur_nb_repo.merge_base(cur_nb_repo.commit('bare_parent/' + pullreq.base_branch), cur_nb_repo.commit(pullreq.feature_branch))[0]
+
+    print(base_commit.message)
     context['base_commit'] = base_commit
-    current_commit = _repo.commit(pullreq.feature_branch)
+    current_commit = cur_nb_repo.commit(pullreq.feature_branch)
     unmerged_commits = []
     while not current_commit == base_commit:
         unmerged_commits.append(current_commit)
-        current_commit = current_commit.parents[0]
+        try:
+            current_commit = current_commit.parents[0]
+        except:
+            print(current_commit.message)
+            return redirect('home')
 
     print(unmerged_commits)
     context['unmerged_commits'] = unmerged_commits
@@ -533,10 +554,16 @@ def pull_request_detail(request, owner, name, id):
 
 def commit_pull_request(request, owner, name, id):
     pullreq = PullRequest.objects.get(id=id)
-    _repo = _Repo(rw_dir + '/' + owner + '/' + name)
+    base_repo = get_bare_repo_by_name(owner, name)
+    base_nb_repo = get_nonbare_repo_by_name(owner, name)
+    feature_repo = get_bare_repo_by_name(pullreq.feature_repo.owner, pullreq.feature_repo.name)
 
-    _repo.git.checkout(pullreq.base_branch)
-    _repo.git.merge(pullreq.feature_branch)
+    base_nb_repo.git.checkout(pullreq.base_branch)
+    url = rw_dir + str(pullreq.feature_repo.owner) + '/' + pullreq.feature_repo.name + '.git'
+    base_nb_repo.git.pull(url, feature_repo.heads[pullreq.feature_branch])
+
+    base_nb_repo.git.push('origin', pullreq.base_branch)
+
 
     pullreq.delete()
 

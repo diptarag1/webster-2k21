@@ -1,4 +1,4 @@
 {% for pr in pull_requests %}
-    {{ pr }} <br>
-    Author: {{ pr.author }}
+    <a href = "{% url 'detail_pr' id=pr.id owner=owner name=name%}" > {{ pr }} <br> </a>
+    Author: {{ pr.author }} 
 {% endfor %}
