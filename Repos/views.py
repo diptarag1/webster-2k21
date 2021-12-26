@@ -1,3 +1,4 @@
+from _cffi_backend import typeof
 from django.shortcuts import get_object_or_404, render, redirect, HttpResponse
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -484,33 +485,48 @@ def manage_collaborators(request):
 
 
 def create_pull_request(request, owner, name):
-    rName = str(owner) + '/' + name
-    curRepo = get_object_or_404(Repo, repoURL=rName)
-    print(curRepo.parent)
-    _curRepo = get_bare_repo_by_name(owner, name)
-    baseRepo = curRepo
-    _baseRepo = _curRepo
-
-    if request.method == 'POST':
-        form = PullRequestCreateForm(request.POST)
-        if form.is_valid():
-            if form.cleaned_data['parentBit']:
+    print("got post create_pull_request")
+    try:
+        context={}
+        rName = str(owner) + '/' + name
+        curRepo = get_object_or_404(Repo, repoURL=rName)
+        print(curRepo.parent)
+        _curRepo = get_bare_repo_by_name(owner, name)
+        baseRepo = curRepo
+        _baseRepo = _curRepo
+        if request.method == 'POST':
+            form = PullRequestCreateForm(request.POST)
+            parentBit=(request.POST.get('parentBit')=='1')
+            if not form.is_valid():
+                raise Exception("Entered Details are invalid")
+            if parentBit:
+                print("got a forked repo as base")
                 baseRepo = curRepo.parent
                 _baseRepo = get_bare_repo_by_name(baseRepo.owner, name)
             if form.cleaned_data['feature_branch'] not in _curRepo.heads:
-                return redirect('home')
+                raise Exception("feature_branch is not in current repo")
             if form.cleaned_data['base_branch'] not in _baseRepo.heads:
-                return redirect('home')
+                raise Exception("base_branch is not in base Repo ")
             form.instance.base_repo = baseRepo
             form.instance.feature_repo = curRepo
             form.instance.author = request.user
             form.save()
+            messages.success(request, "pull request created")
+            return redirect('detail_repo', name=name, owner=owner)
         else:
-            return redirect('home')
-        return redirect('detail_repo', name=name, owner=owner)
-    else:
-        form = PullRequestCreateForm()
-    return render(request, 'Repos/createPullRequest.html', {'form': form})
+            branches = _curRepo.branches
+            repo_model_object = Repo.objects.get(owner__username=owner, name=name)
+            is_repo_forked= repo_model_object.parent is not None
+            parent_repo_model_object= repo_model_object.parent
+
+            context['repo_model_object'] = repo_model_object
+            context['parent_repo_model_object'] = parent_repo_model_object
+            context['is_repo_forked'] = is_repo_forked
+            context['branches'] = branches
+    except Exception as error:
+        messages.error(request, str(error))
+        return redirect('home')
+    return render(request, 'Repos/createPullRequest.html', context)
 
 
 

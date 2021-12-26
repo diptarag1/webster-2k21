@@ -31,7 +31,5 @@ urlpatterns = [
     path('<owner>/<name>/pullrequest/create/', views.create_pull_request, name='create_pr'),
     path('<owner>/<name>/pullrequest/commit/<id>/', views.commit_pull_request, name='commit_pr'),
     path('<owner>/<name>/pullrequest/<id>/', views.pull_request_detail, name='detail_pr'),
-    
-
     path('manage-collaborators/',views.manage_collaborators,name='manage_collaborators'),
 ]

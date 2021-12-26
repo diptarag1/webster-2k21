@@ -1,8 +1,86 @@
-<h2>Pull Request</h2>
-<div class="container">
-    <form method="post">
-        {% csrf_token %}
-        {{ form }}
-        <button type="submit">Create</button>
-    </form>
-</div>
+{% extends 'base.html' %}
+{% block css %}
+    <style>
+        #theButtonContainer {
+            margin-top: 10px;
+        }
+
+        #allTabsContainer div {
+        {#min-height:60vh;#}
+        }
+
+        #repoTypeTag {
+            transform: translateY(-14px);
+        }
+
+        .tabDetails {
+            height: 800px;
+        {#min-height:60vh#}{#min-height: 100vmax;#}
+        }
+
+        .repoName {
+            display: inline-block;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% include 'navBar.html' %}
+    <div class="container">
+        <div class="col s12 m7">
+            <h2 class="header">Pull Request</h2>
+            <div class="card horizontal">
+
+                <div class="card-stacked">
+                    <div class="card-content row">
+                        <form method="post" >
+                            {% csrf_token %}
+                            <div  class="input-field col s3">
+                                <select required name="parentBit" id="id_parentBit">
+                                    {% if is_repo_forked %}
+                                        <option value="1">{{ parent_repo_model_object.owner }}/{{ parent_repo_model_object.name }}</option>
+                                    {% endif %}
+                                    <option value="0" selected>{{ repo_model_object.owner }}/{{ repo_model_object.name }}</option>
+                                </select>
+                                <label>Base Repositorty</label>
+                            </div>
+                            <div class="input-field col s3">
+                                <select id="id_base_branch" required name="base_branch" >
+                                    {% for branch in branches %}
+                                        <option value="{{ branch }}">{{ branch }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label>Base Branch</label>
+                            </div>
+                            <div class="col s1">
+                                <i class="medium material-icons">keyboard_backspace</i>
+                            </div>
+                            <div class="input-field col s3">
+                                <select  name="feature_branch" required id="id_feature_branch" >
+                                    {% for branch in branches %}
+                                        <option value="{{ branch }}">{{ branch }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label>Feature Branch</label>
+                            </div>
+                            <button class="btn orange" type="submit" >Create Pull Request</button>
+                        </form>
+
+                    </div>
+                    <div class="card-action">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+        $(document).ready(function () {
+            $('select').formSelect();
+        });
+    </script>
+{% endblock %}

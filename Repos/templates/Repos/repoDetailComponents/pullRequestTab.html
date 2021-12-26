@@ -1,3 +1,5 @@
+<a class="btn orange" type="submit" href="{% url 'create_pr' owner=owner name=name %}" >Create Pull Request</a>
+
 {% for pr in pull_requests %}
     <a href = "{% url 'detail_pr' id=pr.id owner=owner name=name%}" > {{ pr }} <br> </a>
     Author: {{ pr.author }} 
