@@ -1,0 +1,4 @@
+<a class="btn orange" type="submit" href="{% url 'create_pr' owner=owner name=name %}">Create Pull Request</a>
+{% for pr in pull_requests %}
+    {% include 'Repos/pull_request_components/pull_request_card.html' %}
+{% endfor %}
