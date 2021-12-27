@@ -18,7 +18,7 @@ from Repos.serverLocation import rw_dir
 from django.shortcuts import get_object_or_404
 from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
-from django.utils.encoding import force_bytes, force_text
+from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from home.views import error_404
 from verify.tokens import account_activation_token
