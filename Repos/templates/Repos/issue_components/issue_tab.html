@@ -51,7 +51,6 @@
             {#console.log($(this).text());#}
             tag_list+=$(this).text();
         });
-        console.log(tag_list);
         tag_list_as_string = tag_list;
         {#    tag_list_as_string.slice(0, -1);#}
         {#console.log(tag_list_as_string);#}
@@ -64,7 +63,6 @@
             },
             success: function (data) {
                 M.toast({html: 'Success : search', classes: 'green'});
-                console.log(data['html']);
                 $('#issue_list_area').html(data['html']);
             },
             error: function (data) {

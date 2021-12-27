@@ -411,8 +411,6 @@ def filter_issue(request,owner,name):
         if(len(tags)>0):
             if(len(tags[-1])==0):
                 tags.pop()
-        print(len(tags))
-        print(tags)
         repo =Repo.objects.get(owner__username=owner, name=name)
         if repo is None :
             raise Exception("Repo does not exist")
@@ -426,7 +424,7 @@ def filter_issue(request,owner,name):
     except Exception as error:
         messages.error(request, str(error))
     finally:
-        return JsonResponse({'html': html});
+        return JsonResponse({'html': html})
 
 def manage_collaborators(request):
     type = request.POST.get('type')
