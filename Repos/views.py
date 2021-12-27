@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from django.shortcuts import render, redirect
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -26,7 +25,6 @@ def init_Repo(request):
         form = RepoCreateForm(request.POST)
         if form.is_valid():
             try:
-                # print(form.cleaned_data['group1'])
                 new_repo_name=form.cleaned_data['rname']
                 if not Repo.objects.filter(owner=request.user).filter(name=new_repo_name):
                     is_private=request.POST.get('group1')
@@ -62,36 +60,25 @@ def prepare_context(name, owner, branch, repo):
     # To handle branching
     _repo = get_nonbare_repo_by_name(owner, name)
     bare_repo = get_bare_repo_by_name(owner, name)
-
-    print("trying to access branch with name " + branch)
-    print("available branches are ", bare_repo.heads)
-
     isEmpty = False
 
     if branch not in bare_repo.heads:
-        print("tried to checkout to branch which doesnt exist")
-        print("redirecting to default branch")
         if len(bare_repo.heads) == 0:
             isEmpty = True
         else:
             branch = "master"
     else:
-        print(branch)
         try:
             _repo.heads[branch].checkout()
-            print("repo {} has been checked out to {}".format(name, branch))
         except:
             _repo.git.checkout('-b', branch)
-            print("repo {} has been -b checked out to {}".format(name, branch))
 
     if not isEmpty:
         g = git.Git(os.path.join(rw_dir, owner, name))
         g.pull('origin', branch)
 
     repo = get_object_or_404(Repo, repoURL=owner+'/'+name)
-    print(repo.name)
     pull_requests = PullRequest.objects.filter(base_repo=repo)
-    print(len(pull_requests))
 
     context['repo'] = repo
     context['repo_heads'] = bare_repo.branches
@@ -150,7 +137,6 @@ def detail_repo(request, name, owner, branch="master", **kwargs):
                 fileContents.append(f)
             else:
                 dirContents.append(f)
-        print(f)
 
     context['fileContents'] = fileContents
     context['dirContents'] = dirContents
@@ -178,7 +164,6 @@ def detail_file(request, name, owner, branch="master", **kwargs):
     return render(request, 'Repos/repo_components/repo_detail.html', context=context)
 
 def commit_list(request, name, owner, branch="master", **kwargs):
-    print('ass')
     curDir = os.path.join(rw_dir, owner, name)
     g = git.Git(curDir)
 
@@ -188,8 +173,6 @@ def commit_list(request, name, owner, branch="master", **kwargs):
     context = prepare_context(name, owner, branch, repo)
 
     commits = list(_repo.iter_commits(branch))
-
-    print(commits)
     for commit in commits:
         commit.authored_date=datetime.fromtimestamp(commit.authored_date)
     # print([datetime.fromtimestamp(commit.authored_date)  for commit in commits])
@@ -273,7 +256,6 @@ def star(request):
             activity = Activity.starredRepo(request.user, repo)
             activity.save()
             is_repo_starred = True
-            print(activity)
     except:
         return JsonResponse({}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -363,7 +345,6 @@ def create_issue(request, owner, name):
     if(len(query_set)==0):
         return JsonResponse({"message": "Repo does not exist"}, status=status.HTTP_400_BAD_REQUEST)
     if request.method == 'POST' :
-        print(request.POST)
         try:
             form = IssueCreateForm(request.POST)
             form.instance.author = request.user
@@ -371,7 +352,6 @@ def create_issue(request, owner, name):
             issue = form.save()
         except:
             return JsonResponse({"message": "error"}, status=status.HTTP_400_BAD_REQUEST)
-        print("issue.id " + str(issue.id))
         return JsonResponse({"issue_id": issue.id, "owner": owner, "name": name})
         # redirect('detail_issue', owner=owner, name=name,issue_id=issue.id)
         # return redirect('detail_repo',owner=owner,name=name)
@@ -432,7 +412,6 @@ def filter_issue(request,owner,name):
         context = {}
         tags = request.POST.get('tags')
         tags = tags.split(',')
-        print(tags)
         repo = Repo.objects.get(owner__username=owner, name=name)
         if repo is None :
             raise Exception("Repo does not exist")
@@ -441,7 +420,6 @@ def filter_issue(request,owner,name):
             issues = Issue.objects.filter(repo=repo)
         else:
             issues = Issue.objects.filter(repo=repo, tags__name__in=tags).distinct()
-        print("result has "+ str(len(issues)) +" issues")
         context['issues'] = issues
         context['repo'] = repo
         html = render_to_string('Repos/issue_components/issues_list.html', context=context, request=request)
@@ -472,6 +450,8 @@ def manage_collaborators(request):
     if type == '1':
         if user not in repo.collaborators.all():
             context['message'] = 'User is not added'
+        elif user==repo.owner:
+             context['message'] = 'Cannot remove owner'
         else:
             repo.collaborators.remove(user)
             context['message'] = 'User removed successfully'

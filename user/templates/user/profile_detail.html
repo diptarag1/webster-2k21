@@ -185,6 +185,7 @@
                     },
                     success: function (data) {
                         $('#follow-section').html(data['html']);
+                        M.toast({html: data['message'], classes: 'green'});
                     },
                     error: function () {
                         $("#errorToast").toast("show");

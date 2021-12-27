@@ -215,6 +215,7 @@
                     },
                     success: function (data) {
                         console.log(data['data']['message'])
+                        M.toast({html: data['data']['message'], classes: 'green'});
                         $('#collaborator-list').html(data['html'])
                     },
                     error: function (data) {

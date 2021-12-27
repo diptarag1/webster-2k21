@@ -2,7 +2,7 @@
 <div>
     {% for collaborator in repo.collaborators.all %}
         <div class="chip purple lighten-1 ">
-            <img class="responsive-img" src="https://www.vangoghgallery.com/img/starry_night_full.jpg">
+            <img class="responsive-img" src="{{ collaborator.profile.image.url }}">
             <a class="white-text"
                href="{% url 'profile' uname=collaborator %}">{{ collaborator }}</a>
         </div>
