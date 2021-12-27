@@ -39,8 +39,9 @@ def init_Repo(request):
                     new_repo.save()
                     subprocess.call(['chmod', '-R', '777', rw_dir + new_repo.repoURL + ".git"])
                     git.Git(rw_dir + request.user.username).clone(rw_dir + new_repo.repoURL + ".git")
-                    activity = Activity.createdRepo(request.user, new_repo)
-                    activity.save()
+                    if not is_private:
+                        activity = Activity.createdRepo(request.user, new_repo)
+                        activity.save()
                     messages.success(request, "Repo created successfully")
                     return redirect('home')
                 else:
