@@ -33,6 +33,7 @@ class Repo(models.Model):
 
     def delete(self, *args, **kwargs):
         shutil.rmtree(os.path.join(rw_dir, self.repoURL))
+        shutil.rmtree(os.path.join(rw_dir, self.repoURL+ ".git"))
         super().delete(*args, **kwargs)
 
     def create_fork(self, parent):
