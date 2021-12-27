@@ -100,7 +100,10 @@
                                         success: function (data) {
                                              M.toast({html: 'SUCCESS : issue created successfully', classes: 'green'});
                                             {#console.log(data);#}
-                                            {#window.location.pathname={% url 'detail_repo' owner=owner name=name %}#}
+                                              setTimeout(function(){
+                                                  location.assign("{% url 'detail_repo' owner=owner name=name %}"+"#issue_tab");
+                                                    {#window.location.pathname="{% url 'detail_repo' owner=owner name=name %}"+"/#issue_tab";#}
+                                               },500);
                                         },
                                         error: function (data) {
                                              M.toast({html: 'ERROR : could not create issue please enter valid details', classes: 'red'});
