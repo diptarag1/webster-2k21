@@ -15,7 +15,7 @@
     <div class="col s6 offset-s3">
         <h2 class="deep-purple-text thinText3 center">Please Sign Up</h2>
     <div class="form-container">
-        <form method="POST">
+        <form method="POST" action="{% url 'signup' %}">
             {% csrf_token %}
             <fieldset class=" blackShade1trans form-group">
                 <legend class="border-bottom mb-4"> Register</legend>

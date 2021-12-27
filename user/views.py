@@ -16,24 +16,42 @@ from .userAdd import add_user
 from os import mkdir
 from Repos.serverLocation import rw_dir
 from django.shortcuts import get_object_or_404
+from django.core.mail import EmailMessage
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from home.views import error_404
+from verify.tokens import account_activation_token
+from django.utils.crypto import get_random_string
+from verify.models import LoginToken
 # Create your views here.
 
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            current_site = get_current_site(request)
+            mail_subject = 'Activate your account.'
+            message = render_to_string('acc_active_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
+            })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            email.send()
             try:
-                mkdir(rw_dir+username)
+                mkdir(rw_dir+str(user))
             except:
                 print("could not make directory")
             # add_user(username=username,password=raw_password)
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('home')
+            return redirect('signin')
     else:
         form = SignUpForm()
     return render(request, 'user/signup.html', {'form': form})
@@ -48,6 +66,22 @@ def signin(request):
             if not cuser[0].is_active:
                 return HttpResponse("not active")
             elif user is not None:
+                # try:
+                #     user_token=LoginToken.objects.get(user=user)
+                # except:
+                #     user_token=LoginToken.objects.create(user=user,token=get_random_string(20))
+                # current_site = get_current_site(request)
+                # mail_subject = 'Token to login your account.'
+                # message = render_to_string('login_email.html', {
+                #     'user': user,
+                #     'domain': current_site.domain,
+                #     'token': account_activation_token.make_token(user),
+                # })
+                # to_email = User.objects.get(user=user).email
+                # email = EmailMessage(
+                #     mail_subject, message, to=[to_email]
+                # )
+                # email.send()
                 login(request, user)
                 return redirect('home')
             else:

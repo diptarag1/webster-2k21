@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'home',
     'user',
     'Repos',
+    'verify',
 
     #third party
     'crispy_forms',
@@ -146,3 +147,9 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 handler404 = 'home.views.error_404'
 handler500 = 'home.views.error_500'
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'divanimax@gmail.com'
+EMAIL_HOST_PASSWORD = 'qhluutbezmtyllcn'
+EMAIL_PORT = 587

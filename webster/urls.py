@@ -24,6 +24,7 @@ urlpatterns = [
     path('users/',include('user.urls')),
     path('',include('home.urls')),
     path('repo/',include('Repos.urls')),
+    path('verify/',include('verify.urls')),
 ]
 
 if settings.DEBUG:
