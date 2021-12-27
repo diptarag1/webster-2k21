@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render, redirect
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -186,12 +188,15 @@ def commit_list(request, name, owner, branch="master", **kwargs):
     context = prepare_context(name, owner, branch, repo)
 
     commits = list(_repo.iter_commits(branch))
+
     print(commits)
+    for commit in commits:
+        commit.authored_date=datetime.fromtimestamp(commit.authored_date)
+    # print([datetime.fromtimestamp(commit.authored_date)  for commit in commits])
     context['commits'] = commits
     context['commit_view'] = True
 
     return render(request, 'Repos/repo_components/repo_detail.html', context=context)
-
 
 def delete_repo(request, name, owner):
     context = {}
