@@ -118,12 +118,11 @@ def detail_issue(request, name, owner, issue_id, **kwargs):
     context['repo'] = repo
     context['assignees'] = assignees
 
-    return render(request, 'Repos/issue_detail.html', context=context)
+    return render(request, 'Repos/issue_components/issue_detail.html', context=context)
 
 
 def detail_repo(request, name, owner, branch="master", **kwargs):
     curDir = os.path.join(rw_dir, owner, name)
-
     repos = Repo.objects.filter(name=name).filter(owner__username=owner)
     repo = get_object_or_404(repos)
     # repo.pull('origin',branch)
@@ -157,7 +156,7 @@ def detail_repo(request, name, owner, branch="master", **kwargs):
 
     context['issues'] = Issue.objects.filter(repo=repo)
 
-    return render(request, 'Repos/repo_detail.html', context=context)
+    return render(request, 'Repos/repo_components/repo_detail.html', context=context)
 
 
 def detail_file(request, name, owner, branch="master", **kwargs):
@@ -174,7 +173,7 @@ def detail_file(request, name, owner, branch="master", **kwargs):
 
     file.close()
 
-    return render(request, 'Repos/repo_detail.html', context=context)
+    return render(request, 'Repos/repo_components/repo_detail.html', context=context)
 
 def commit_list(request, name, owner, branch="master", **kwargs):
     print('ass')
@@ -191,7 +190,7 @@ def commit_list(request, name, owner, branch="master", **kwargs):
     context['commits'] = commits
     context['commit_view'] = True
 
-    return render(request, 'Repos/repo_detail.html', context=context)
+    return render(request, 'Repos/repo_components/repo_detail.html', context=context)
 
 
 def delete_repo(request, name, owner):
@@ -247,7 +246,7 @@ def add_remove_collaborator(request, ownerUsername, repoName):
         return redirect('detail_repo', name=repoName, owner=ownerUsername)
     else:
         form = AddCollaboratorForm()
-    return render(request, 'Repos/addCollaborator.html', {'form': form})
+    return render(request, 'Repos/add_collaborator.html', {'form': form})
 
 
 def star(request):
@@ -316,7 +315,7 @@ def issue_close(request, issue_id):
             raise Exception("You so not have the authority to close this issue")
         if  issue.is_open==False:
             raise Exception("Issue is already closed")
-        issue.is_open = True
+        issue.is_open = False
         issue.save()
         messages.success(request, "ISSUE closed successfully")
     except Exception as error:
@@ -371,7 +370,7 @@ def create_issue(request, owner, name):
         return JsonResponse({"issue_id": issue.id, "owner": owner, "name": name})
         # redirect('detail_issue', owner=owner, name=name,issue_id=issue.id)
         # return redirect('detail_repo',owner=owner,name=name)
-    return render(request, 'Repos/issue_create_form.html', context=context)
+    return render(request, 'Repos/issue_components/issue_create_form.html', context=context)
 
 
 def issue_comment_delete(request, issue_comment_id):
@@ -440,7 +439,7 @@ def filter_issue(request,owner,name):
         print("result has "+ str(len(issues)) +" issues")
         context['issues'] = issues
         context['repo'] = repo
-        html = render_to_string('Repos/issues_list.html', context=context, request=request)
+        html = render_to_string('Repos/issue_components/issues_list.html', context=context, request=request)
     except Exception as error:
         messages.error(request, str(error))
     finally:
@@ -473,7 +472,7 @@ def manage_collaborators(request):
             context['message'] = 'User removed successfully'
 
     repo.save()
-    html = render_to_string('Repos/repoDetailComponents/collaboratorList.html', {'repo': repo}, request=request)
+    html = render_to_string('Repos/repo_components/collaborator_list.html', {'repo': repo}, request=request)
     return JsonResponse({'data': context, 'html': html})
 
 
@@ -520,7 +519,7 @@ def create_pull_request(request, owner, name):
     except Exception as error:
         messages.error(request, str(error))
         return redirect('home')
-    return render(request, 'Repos/createPullRequest.html', context)
+    return render(request, 'Repos/pull_request_components/pull_request_create.html', context)
 
 
 
@@ -559,7 +558,7 @@ def pull_request_detail(request, owner, name, id):
     context['name'] = name
     context['owner'] = owner
 
-    return render(request, 'Repos/prDetail.html', context = context)
+    return render(request, 'Repos/pull_request_components/pull_request_detail.html', context = context)
 
 
 def commit_pull_request(request, owner, name, id):

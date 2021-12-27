@@ -102,16 +102,16 @@
                         <div class="row">
 
                             <div id="test1" class="tabDetails  col s12"
-                                 href="#codeTab">   {% include 'Repos/repoDetailComponents/codeTab.html' %}</div>
+                                 href="#codeTab">   {% include 'Repos/repo_components/code_tab.html' %}</div>
                             <div id="test2" class="tabDetails col s12"
-                                 href="#issueTab"> {% include 'Repos/repoDetailComponents/issueTab.html' %}</div>
+                                 href="#issueTab"> {% include 'Repos/issue_components/issue_tab.html' %}</div>
                             <div id="test3" class="tabDetails col s12"
-                                 href="#pullRequestTab">{% include 'Repos/repoDetailComponents/pullRequestTab.html' %}</div>
+                                 href="#pullRequestTab">{% include 'Repos/pull_request_components/pull_request_tab.html' %}</div>
                             <div id="test4" class="tabDetails col s12"
-                                 href="#securityTab"> {% include 'Repos/repoDetailComponents/securityTab.html' %}</div>
+                                 href="#securityTab"> {% include 'Repos/repo_components/security_tab.html' %}</div>
                             {% if repo.owner == request.user %}
                                 <div id="test5"
-                                     class="tabDetails col s12">{% include 'Repos/repoDetailComponents/settingsTab.html' %}</div>
+                                     class="tabDetails col s12">{% include 'Repos/repo_components/settings_tab.html' %}</div>
                             {% endif %}
                         </div>
                     </div>
@@ -119,7 +119,7 @@
             </div>
         </div>
         <div class="col s3 ">
-            {% include 'Repos/repoDetailComponents/right_section.html' %}
+            {% include 'Repos/repo_components/right_section.html' %}
 
         </div>
     </div>
