@@ -105,7 +105,7 @@ def profile(request,uname):
     context['activity'] = [2 for i in range(45*7)]
     context['profileForm']=ProfileUpdateForm(instance=request.user.profile)
     context['userForm']=UserUpdateForm(instance=request.user)
-    return render(request,'user/profile.html',context=context)
+    return render(request, 'user/profile_detail.html', context=context)
 
 def follow(request):
     pro_user=request.POST.get('user')
