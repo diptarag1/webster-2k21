@@ -1,0 +1,10 @@
+<div class="row">
+    {% for repo in mostPopularRepos %}
+        <div class="col s6">
+            {% include "Repos/repo_detail_card_mini.html" %}
+        </div>
+    {% endfor %}
+</div>
+<div class="row">
+{#    {% include "user/profile_components/user_commits_frequency_panel.html" %}#}
+</div>

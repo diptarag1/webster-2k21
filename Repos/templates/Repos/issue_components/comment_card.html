@@ -4,30 +4,24 @@
 
 </div>
 <div class="col s11 card blue-grey darken-1">
-
     <div class="card-content white-text">
-
-        {#                                <span class="card-title">#}
-        <span class="card-title activator grey-text text-darken-4">  <a
-                href="{% url 'profile' uname=comment.author %}">
-                                    <h5 class="compactDiv">{{ comment.author }}</h5>
-                                </a>
-                                <p class="compactDiv issue_headings_2">commented {{ comment.posted_on|timesince }}
-                                    ago</p>
-                                    <i class="material-icons right">more_vert</i></span>
-
-        {#                                </span>#}
+        <span class="card-title activator grey-text text-darken-4">
+            <a href="{% url 'profile' uname=comment.author %}">
+             <h5 class="compactDiv orange-text">{{ comment.author }}</h5>
+            </a>
+            <p class="compactDiv issue_headings_2 white-text">commented {{ comment.posted_on|timesince }} ago</p>
+           <i class="material-icons right">more_vert</i>
+        </span>
         <p class=" issue_comment_data">{{ comment.data }} </p>
     </div>
     <div class="card-reveal">
-                                <span class="card-title grey-text text-darken-4">
-                                    <form method="POST"
-                                          action="{% url 'issue_comment_delete' issue_comment_id=comment.id %}">
-                                         {% csrf_token %}
-                                        <button type="submit" class="red waves-effect waves-light btn">Delete</button>
-                                         <i class="material-icons right">close</i>
-                                    </form>
-                                </span>
+        <span class="card-title grey-text text-darken-4">
+           <form method="POST" action="{% url 'issue_comment_delete' issue_comment_id=comment.id %}">
+                {% csrf_token %}
+                   <button type="submit" class="red waves-effect waves-light btn">Delete</button>
+                        <i class="material-icons right">close</i>
+           </form>
+          </span>
 
     </div>
 </div>
