@@ -15,10 +15,18 @@
         {#                #}
         {#            </li>#}
         {#        </ul>#}
-        <ul id="nav-mobile" class="right hide-on-med-and-down">
+    <style>
+         #dropdown1{
+             min-width: 12vw;
 
+         }
+         #mainChip{
+             margin-right: 1vw;
+         }
+    </style>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
             {% if user.is_authenticated %}
-                <div class="chip dropdown-trigger purple lighten-1  white-text" href='#' data-target='dropdown1'>
+                <div id="mainChip" class="chip dropdown-trigger purple lighten-1  white-text" href='#' data-target='dropdown1'>
                     <img  class="responsive-img" src="https://www.vangoghgallery.com/img/starry_night_full.jpg">
                {{ user }}
 
@@ -27,18 +35,14 @@
 
                 <!-- Dropdown Structure -->
                 <ul id='dropdown1' class='dropdown-content'>
-                    <li><a href="{% url 'profile' user %}">Signed in as {{ user }}</a></li>
+                    <li><a disabled >Signed in as {{ user }}</a></li>
                     <li class="divider" tabindex="-1"></li>
-                    <li><a href="#!">Profile</a></li>
-                    <li><a href="#!">Repositories</a></li>
-                    <li><a href="#!">Projects</a></li>
-                    <li><a href="#!">Stars</a></li>
+                    <li><a href="{% url 'profile' user %}">Profile</a></li>
+                    <li><a href="{% url 'profile' user %}#repository_all_tab">Repositories</a></li>
                     <li class="divider" tabindex="-1"></li>
-                    <li><a href="#!">Help</a></li>
-
-                    <li><a href="#!">Settings</a></li>
+                    <li><a class="modal-trigger" href="{% url 'profile' user %}#modal1">Settings</a></li>
                     <li class="divider" tabindex="-1"></li>
-                    <li><a href="{% url 'signout' %}">Signout</a></li>
+                    <li><a  href="{% url 'signout' %}">Signout</a></li>
                 </ul>
                 {##}
                 {#                <li><a href="{% url 'signout' %}">#}

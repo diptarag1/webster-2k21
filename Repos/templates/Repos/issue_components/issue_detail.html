@@ -159,37 +159,36 @@
             </div>
 
             <div class="col s3">
-                <div class="myRow">
-                    <h5 class="compactDiv">Assignees</h5>
-                    <i class="compactDiv small material-icons right">settings</i>
-
-
-                </div>
-                <ul>
-                    {% for assignee in assignees %}
-                        <li>
-                            <a href="{% url 'profile' uname=assignee %}">
-                                <div class="chip   purple lighten-1  white-text">
-                                    <img class="responsive-img"
-                                         src="https://www.vangoghgallery.com/img/starry_night_full.jpg">
-                                    {{ assignee }}
-                                </div>
-                            </a>
-
-                        </li>
-                    {% endfor %}
-
-                </ul>
-                <div class="divider">
-                </div>
-                <div class="myRow">
-                    <h5 class="compactDiv">Labels</h5>
-                    <i class="compactDiv small material-icons right">settings</i>
-                </div>
-                <div class="divider">
-                </div>
-
-                <h2>right side section for things like assigned to , get notified on updates </h2>
+{#                <div class="myRow">#}
+{#                    <h5 class="compactDiv">Assignees</h5>#}
+{#                    <i class="compactDiv small material-icons right">settings</i>#}
+{##}
+{##}
+{#                </div>#}
+{#                <ul>#}
+{#                    {% for assignee in assignees %}#}
+{#                        <li>#}
+{#                            <a href="{% url 'profile' uname=assignee %}">#}
+{#                                <div class="chip   purple lighten-1  white-text">#}
+{#                                    <img class="responsive-img"#}
+{#                                         src="https://www.vangoghgallery.com/img/starry_night_full.jpg">#}
+{#                                    {{ assignee }}#}
+{#                                </div>#}
+{#                            </a>#}
+{##}
+{#                        </li>#}
+{#                    {% endfor %}#}
+{##}
+{#                </ul>#}
+{#                <div class="divider">#}
+{#                </div>#}
+{#                <div class="myRow">#}
+{#                    <h5 class="compactDiv">Labels</h5>#}
+{#                    <i class="compactDiv small material-icons right">settings</i>#}
+{#                </div>#}
+{#                <div class="divider">#}
+{#                </div>#}
+{#                <h2>right side section for things like assigned to , get notified on updates </h2>#}
             </div>
         </div>
 
