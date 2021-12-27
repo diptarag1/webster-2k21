@@ -194,8 +194,13 @@ def change_visibility(request, name, owner):
         repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
         if repo.is_private:
             repo.is_private = False
+            activity = Activity.createdRepo(request.user, repo)
+            activity.save()
         else:
             repo.is_private = True
+            activity=Activity.objects.get(user=request.user,targetRepo=repo)
+            activity.delete()
+
         repo.save()
         if (repo.is_private):
             messages.success(request, "Visibility changed to private")
