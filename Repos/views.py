@@ -37,7 +37,7 @@ def init_Repo(request):
                     new_repo.save()
                     new_repo.collaborators.add(request.user)
                     new_repo.save()
-                    # subprocess.call(['chmod', '-R', '777', rw_dir + new_repo.repoURL + ".git"])
+                    subprocess.call(['chmod', '-R', '777', rw_dir + new_repo.repoURL + ".git"])
                     git.Git(rw_dir + request.user.username).clone(rw_dir + new_repo.repoURL + ".git")
                     activity = Activity.createdRepo(request.user, new_repo)
                     activity.save()
@@ -531,13 +531,14 @@ def pull_request_detail(request, owner, name, id):
     context['pr'] = pullreq
 
     cur_repo = get_bare_repo_by_name(pullreq.feature_repo.owner, pullreq.feature_repo.name)
+    print(rw_dir + str(owner) + '/' + name)
     cur_nb_repo = get_nonbare_repo_by_name(pullreq.feature_repo.owner, pullreq.feature_repo.name)
     base_repo = get_bare_repo_by_name(pullreq.base_repo.owner, pullreq.base_repo.name)
     base_commit =  cur_repo.merge_base(cur_repo.commit(pullreq.base_branch), cur_repo.commit(pullreq.feature_branch))[0]
     if base_repo != cur_repo:
         for branch in cur_repo.branches:
             cur_nb_repo.git.pull('origin', branch)
-        cur_nb_repo.git.fetch('bare_parent')
+        subprocess.call(['git','-C',rw_dir+str(pullreq.feature_repo.owner)+'/'+pullreq.feature_repo.name,'fetch','bare_parent'])
         base_commit = cur_nb_repo.merge_base(cur_nb_repo.commit('bare_parent/' + pullreq.base_branch), cur_nb_repo.commit(pullreq.feature_branch))[0]
 
     print(base_commit.message)
