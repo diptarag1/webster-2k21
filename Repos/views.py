@@ -482,13 +482,14 @@ def create_pull_request(request, owner, name):
             if not form.is_valid():
                 raise Exception("Entered Details are invalid")
             if parentBit:
-                print("got a forked repo as base")
                 baseRepo = curRepo.parent
                 _baseRepo = get_bare_repo_by_name(baseRepo.owner, name)
             if form.cleaned_data['feature_branch'] not in _curRepo.heads:
                 raise Exception("feature_branch is not in current repo")
             if form.cleaned_data['base_branch'] not in _baseRepo.heads:
                 raise Exception("base_branch is not in base Repo ")
+            if parentBit==False and form.cleaned_data['feature_branch']==form.cleaned_data['base_branch']:
+                raise Exception("cannot merge into same Branch ")
             form.instance.base_repo = baseRepo
             form.instance.feature_repo = curRepo
             form.instance.author = request.user
@@ -507,7 +508,7 @@ def create_pull_request(request, owner, name):
             context['branches'] = branches
     except Exception as error:
         messages.error(request, str(error))
-        return redirect('home')
+        return redirect('create_pr', name=name, owner=owner)
     return render(request, 'Repos/pull_request_components/pull_request_create.html', context)
 
 
