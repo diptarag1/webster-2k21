@@ -101,8 +101,12 @@ def profile(request,uname):
     userProfile=Profile.objects.get(user=user)
     context['user']=user
     context['userProfile']=userProfile
-    context['repos']=Repo.objects.filter(owner__username=uname)
-    context['mostPopularRepos']=Repo.objects.filter(owner__username=uname)[0:6]
+    if(request.user==user):
+        repos=Repo.objects.filter(owner__username=uname)
+    else:
+        repos = Repo.objects.filter(owner__username=uname, is_private=False)
+    context['repos']=repos
+    context['mostPopularRepos']=repos[0:6]
     context['activity'] = [2 for i in range(45*7)]
     context['profileForm']=ProfileUpdateForm(instance=request.user.profile)
     context['userForm']=UserUpdateForm(instance=request.user)
