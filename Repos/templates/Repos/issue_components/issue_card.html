@@ -14,7 +14,7 @@
                             class="">{{ issue.topic }}</span></a>
 
                 </div>
-                <p>#{{ issue.id }} opened {{ issue.posted_on|timesince }} ago by {{ issue.author }} </p>
+                <p>#{{ issue.id }} opened {{ issue.posted_on|timesince }} ago by  <a href="{% url 'profile' uname=issue.author %}">{{ issue.author }}</a> </p>
                 <p >
                     {% for tag in issue.tags.all %}
                    <a class="orange-text"> #{{ tag.name }}</a>
