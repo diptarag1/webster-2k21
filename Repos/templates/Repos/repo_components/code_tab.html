@@ -7,13 +7,24 @@
             </a>
             <!-- Dropdown Structure -->
             <ul id='branchSelector' class='dropdown-content'>
-                {% for branch in repo_heads %}
-                    <li>
-                        <a href="{% url 'detail_repo1' owner=repo.owner name=repo.name branch=branch %}">
-                        {{ branch }}
-                    </a>
-                    </li>
-                {% endfor %}
+                {% if file_view %}
+                    {% for branch in repo_heads %}
+                        <li>
+                            <a href="{% url 'detail_repo1' owner=repo.owner name=repo.name branch=branch %}">
+                                {{ branch }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% elif commit_view %}
+                    {% for branch in repo_heads %}
+                        <li>
+                            <a href="{% url 'commit_file1' owner=repo.owner name=repo.name branch=branch %}">
+                                {{ branch }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+
                 {#                <li><a href="#!" class="active">Branch 1</a></li>#}
                 {#                <li><a href="#!">Branch 2</a></li>#}
                 {#                <li><a href="#!">Branch 3</a></li>#}
@@ -30,20 +41,20 @@
 
         </div>
         <div class="col offset-s5">
-{#            <div class="row">#}
-{#                <div class="col ">#}
-{#                    <a class="  offset-s4 purple waves-effect waves-light btn-small">Go to File</a>#}
-{##}
-{#                </div>#}
-{#                <div class="col">#}
-{#                    <a class=" purple waves-effect waves-light btn-small">Add File</a>#}
-{##}
-{#                </div>#}
-{#                <div class="col">#}
-{#                    <a class="   purple waves-effect waves-light btn-small">Code</a>#}
-{##}
-{#                </div>#}
-{#            </div>#}
+            {#            <div class="row">#}
+            {#                <div class="col ">#}
+            {#                    <a class="  offset-s4 purple waves-effect waves-light btn-small">Go to File</a>#}
+            {##}
+            {#                </div>#}
+            {#                <div class="col">#}
+            {#                    <a class=" purple waves-effect waves-light btn-small">Add File</a>#}
+            {##}
+            {#                </div>#}
+            {#                <div class="col">#}
+            {#                    <a class="   purple waves-effect waves-light btn-small">Code</a>#}
+            {##}
+            {#                </div>#}
+            {#            </div>#}
         </div>
 
 
@@ -62,7 +73,7 @@
             </style>
             {% if isEmpty %}
                 <ol>
-                <li>This is empty git repository</li>
+                    <li>This is empty git repository</li>
                     <li>Create a folder ,add some files and through cmd enter <b>git init</b></li>
                     <li>git add .</li>
                     <li>git commit -m "first commit"</li>
@@ -74,10 +85,23 @@
             {% if file_view %}
                 {{ file_content }}
             {% elif commit_view %}
-                {% for commit in commits %} 
-                    {{commit}} <br> {{commit.message}} , {{commit.author}} <br>
-                {% endfor %}
-            {%else %}
+                <ul class="collection">
+                    {% for commit in commits %}
+                        <li class="collection-item avatar">
+                            <img src="https://www.vangoghgallery.com/img/starry_night_full.jpg" alt="" class="circle">
+                            <span class="title">{{ commit.message }}</span>
+                            <p> <a href="{% url 'profile' uname=commit.author %}">{{ commit.author }} </a><br>
+                                {{ commit.authored_date|timesince }}
+                            </p>
+                            <a  class="btn secondary-content truncate orange"> {{ commit|truncatechars:8 }}</a>
+
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
                 {% for item in dirContents %}
                     <li class="collection-item row">
                         <div class="col s6"><i class="material-icons">folder</i>
@@ -98,7 +122,7 @@
                         {% else %}
                             <a href="{% url 'detail_file' owner=owner name=repo.name subpath=curDir|add:'/'|add:item branch=current_branch %}"> {{ item }}</a>
                         {% endif %}
-                    </div>
+                        </div>
                         <div class="col s4">First Commit</div>
                         <div class="col s2">69 days ago</div>
                     </li>
