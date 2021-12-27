@@ -1,0 +1,9 @@
+<div class="chip   purple lighten-1  white-text">
+    <img class="responsive-img"
+         src="https://www.vangoghgallery.com/img/starry_night_full.jpg">
+    {{ commit.author }}
+
+</div>
+{{ commit.message }}
+{#                                <p>{{ commit.authored_date|timesince }}</p>#}
+<p class="right"><a>{{ commit }}</a></p>
