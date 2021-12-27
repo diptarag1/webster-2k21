@@ -1,4 +1,6 @@
-<a class="btn orange" type="submit" href="{% url 'create_pr' owner=owner name=name %}">Create Pull Request</a>
+{% if request.user in repo.collaborators.all %}
+    <a class="btn orange" type="submit" href="{% url 'create_pr' owner=owner name=name %}">Create Pull Request</a>
+{% endif %}
 {% for pr in pull_requests %}
     {% include 'Repos/pull_request_components/pull_request_card.html' %}
 {% endfor %}
