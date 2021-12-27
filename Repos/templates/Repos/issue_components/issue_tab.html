@@ -1,6 +1,6 @@
 <div id="issueTabSection">
     <div class="row">
-        <form class="col s9"  >
+        <form id="myFormForsearch" class="col s9"  >
             <div class="row">
                 <div class="input-field col s10  ">
                     {#                <label class="" for="id_tags" style="">Tags</label>#}
@@ -46,18 +46,14 @@
     $('#issue_search_btn').on('click', function (event) {
         event.preventDefault();
         {#console.log($('.chips'));#}
-        tag_list = new Array();
-        $(".chip").each(function (index) {
+        tag_list ="";
+        $("#myFormForsearch").find('.chips').each(function (index) {
             {#console.log($(this).text());#}
-            tag_list.push($(this).text().slice(0, -5));
+            tag_list+=$(this).text();
         });
-        tag_list = tag_list.slice(2, tag_list.length)
-        tag_list_as_string = "";
-        tag_list.forEach(function (value) {
-            tag_list_as_string += value + ",";
-        });
-        tag_list_as_string = tag_list_as_string.slice(0, -1);
-        console.log(tag_list_as_string);
+        tag_list_as_string = tag_list;
+        {#    tag_list_as_string.slice(0, -1);#}
+        {#console.log(tag_list_as_string);#}
         $.ajax({
             url: "{% url 'filter_issue' owner=repo.owner name=repo.name %}",
             type: 'post',
@@ -67,7 +63,6 @@
             },
             success: function (data) {
                 M.toast({html: 'Success : search', classes: 'green'});
-                console.log(data['html']);
                 $('#issue_list_area').html(data['html']);
             },
             error: function (data) {

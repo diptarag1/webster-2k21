@@ -98,8 +98,6 @@ def detail_issue(request, name, owner, issue_id, **kwargs):
     repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
     assignees=[user for user in issue.assignees.all()]
 
-
-
     context['issue'] = issue
     context['issue_comments'] = issue_comments
     context['current_user'] = request.user.username
@@ -149,13 +147,10 @@ def detail_repo(request, name, owner, branch="master", **kwargs):
 
 def detail_file(request, name, owner, branch="master", **kwargs):
     repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
-
     context = prepare_context(name, owner, branch, repo)
     curDir = os.path.join(rw_dir, owner, name)
     fileDir = os.path.join(curDir, kwargs['subpath'])
-
     file = open(fileDir)
-
     context['file_content'] = file.read()
     context['file_view'] = True
 
@@ -408,14 +403,17 @@ def create_issue_comment(request, issue_id):
             return redirect('detail_issue', owner=repo.owner, name=repo.name, issue_id=issue_id)
 
 def filter_issue(request,owner,name):
+    html=""
+    context = {}
     try:
-        context = {}
         tags = request.POST.get('tags')
-        tags = tags.split(',')
-        repo = Repo.objects.get(owner__username=owner, name=name)
+        tags = tags.split('close')
+        if(len(tags)>0):
+            if(len(tags[-1])==0):
+                tags.pop()
+        repo =Repo.objects.get(owner__username=owner, name=name)
         if repo is None :
             raise Exception("Repo does not exist")
-        # print(len(tags))
         if len(tags[0]) == 0:
             issues = Issue.objects.filter(repo=repo)
         else:
@@ -426,7 +424,7 @@ def filter_issue(request,owner,name):
     except Exception as error:
         messages.error(request, str(error))
     finally:
-        return JsonResponse({'html': html});
+        return JsonResponse({'html': html})
 
 def manage_collaborators(request):
     type = request.POST.get('type')
