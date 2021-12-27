@@ -7,7 +7,7 @@ class LoginToken(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     token=models.CharField(null=True,blank=True,unique=True,max_length=20)
     creation_date = models.DateTimeField(default=timezone.now())
-    expiration_seconds = models.BigIntegerField()
+    expiration_seconds = models.BigIntegerField(default=300)
 
     def __str__(self):
         return self.user.username

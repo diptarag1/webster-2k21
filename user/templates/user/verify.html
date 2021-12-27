@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}
+    Sign In
+{% endblock %}
+{% block css %}
+    <style>
+        .auth-page-buttons {
+        {#padding:10px;#} margin: 5px;
+        }
+
+    </style>
+{% endblock %}
+{% block content %}
+    <style>
+
+        .thinText3 {
+            font-weight: 200;
+        }
+
+    </style>
+    <div class="container row " id="myFormContainer">
+        <div class="col s6 offset-s3">
+            <h2 class="deep-purple-text thinText3 center">Check your mail for token!!</h2>
+            <div class="form-container">
+                <form method="POST" action="{% url 'two_factor' %}">
+                    {% csrf_token %}
+                    <fieldset class=" blackShade1trans form-group row">
+                        <legend class="border-bottom mb-4"> Token Verification</legend>
+
+                        <div class="input-field col s12 black-text ">
+
+                            <input type="text" name="token" maxlength="150" autofocus class="  validate" required
+                                   id="id_username">
+
+                            <label class="" for="id_username">Login Token</label>
+
+
+                        </div>
+
+
+                        <div class="input-field col s12  ">
+
+                            <button class=" auth-page-buttons form-group btn btn-outline-info col s8 offset-s2 deep-purple darken-1"
+                                    type="submit"> Sign In
+                            </button>
+                        </div>
+                    </fieldset>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+{% endblock %}

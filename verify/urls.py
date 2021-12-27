@@ -5,4 +5,5 @@ from . import views
 
 urlpatterns=[
 path('activate/<uidb64>/<token>/', views.activate, name='activate'),
+path('login_token/',views.two_factor_login,name='two_factor'),
 ]

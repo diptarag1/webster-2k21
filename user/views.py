@@ -66,24 +66,25 @@ def signin(request):
             if not cuser[0].is_active:
                 return HttpResponse("not active")
             elif user is not None:
-                # try:
-                #     user_token=LoginToken.objects.get(user=user)
-                # except:
-                #     user_token=LoginToken.objects.create(user=user,token=get_random_string(20))
-                # current_site = get_current_site(request)
-                # mail_subject = 'Token to login your account.'
-                # message = render_to_string('login_email.html', {
-                #     'user': user,
-                #     'domain': current_site.domain,
-                #     'token': account_activation_token.make_token(user),
-                # })
-                # to_email = User.objects.get(user=user).email
-                # email = EmailMessage(
-                #     mail_subject, message, to=[to_email]
-                # )
-                # email.send()
-                login(request, user)
-                return redirect('home')
+                try:
+                    user_token=LoginToken.objects.get(user=user)
+                    return HttpResponse('token is already sent on your email')
+                except:
+                    user_token=LoginToken.objects.create(user=user,token=get_random_string(20))
+                    current_site = get_current_site(request)
+                    mail_subject = 'Token to login your account.'
+                    message = render_to_string('login_email.html', {
+                        'user': user,
+                        'domain': current_site.domain,
+                        'token': user_token.token,
+                    })
+                    to_email = User.objects.get(username=user).email
+                    email = EmailMessage(
+                        mail_subject, message, to=[to_email]
+                    )
+                    email.send()
+                # login(request, user)
+                return redirect('two_factor')
             else:
                 return HttpResponse("password incorrect")
         else:

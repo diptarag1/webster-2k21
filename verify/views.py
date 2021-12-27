@@ -6,6 +6,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from .tokens import account_activation_token
 from .models import LoginToken
 from django.utils import timezone
+from django.contrib import messages
 # Create your views here.
 def activate(request, uidb64, token):
     try:
@@ -25,9 +26,11 @@ def activate(request, uidb64, token):
 def two_factor_login(request):
     if request.method=='POST':
         token=request.POST.get('token')
+        print(token)
         try:
             user_token=LoginToken.objects.get(token=token)
-            if timezone.now()-user_token.creation_date >= 600:
+            print(user_token.user)
+            if (timezone.now()-user_token.creation_date).seconds >= 600:
                 user_token.delete()
                 return HttpResponse('Token has been expired')
             user=user_token.user
@@ -36,3 +39,5 @@ def two_factor_login(request):
             return redirect('home')
         except:
             return HttpResponse('Invalid Token')
+    else:
+        return render(request,'user/verify.html')
