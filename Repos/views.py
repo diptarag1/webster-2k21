@@ -14,7 +14,7 @@ from git import Repo as _Repo
 import git
 import subprocess
 from django.contrib import messages
-
+from taggit.models import Tag
 
 # Create your views here.
 from .utility import get_bare_repo_by_name, get_nonbare_repo_by_name
@@ -354,6 +354,8 @@ def create_issue(request, owner, name):
         return JsonResponse({"issue_id": issue.id, "owner": owner, "name": name})
         # redirect('detail_issue', owner=owner, name=name,issue_id=issue.id)
         # return redirect('detail_repo',owner=owner,name=name)
+    tags = Tag.objects.all()
+    context['tags']=tags
     return render(request, 'Repos/issue_components/issue_create_form.html', context=context)
 
 

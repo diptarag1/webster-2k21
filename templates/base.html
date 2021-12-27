@@ -57,6 +57,11 @@
                 'aoe': null,
                 'webster': null,
                 'insomnia': null,
+                {% if tags %}
+                    {% for tag in tags %}
+                        '{{tag.name}}': null,
+                    {% endfor %}
+                {% endif %}
 
             },
             limit: Infinity,
