@@ -93,6 +93,7 @@
                 <div class="compactDiv ">
                     # {{ issue.id }}
                 </div>
+
                 {% if request.user in repo.collaborators.all %}
 
                     <div class="compactDiv right">
@@ -104,6 +105,7 @@
                     </div>
                 {% endif %}
             </h3>
+         <div class="grey-text">{{ issue.description }}</div>
 
             {#            <p class=" compactDivmyRow flow-text ">#}
             {#              #}
