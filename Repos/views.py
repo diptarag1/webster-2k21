@@ -180,9 +180,6 @@ def delete_repo(request, name, owner):
     context = {}
     try:
         repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
-        activities = Activity.objects.filter(user=request.user, targetRepo=repo)
-        for activity in activities:
-            activity.delete()
         repo.delete()
         messages.success(request, "Repo deleted successfully")
     except:
