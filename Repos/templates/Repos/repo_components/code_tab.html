@@ -111,8 +111,8 @@
                                 <a href="{% url 'detail_repo2' owner=owner name=repo.name subpath=curDir|add:'/'|add:item branch=current_branch %}"> {{ item }}</a>
                             {% endif %}
                         </div>
-                        <div class="col s4">First Commit</div>
-                        <div class="col s2">{{ item.date }}</div>
+                        <div class="col s4"></div>
+                        <div class="col s2"></div>
                     </li>
                 {% endfor %}
                 {% for item in fileContents %}
