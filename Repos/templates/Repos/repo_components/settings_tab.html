@@ -1,13 +1,47 @@
 <div>
-    <h3>settings tab</h3>
-    <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Delete Repository</a>
-    <a class="waves-effect waves-light btn modal-trigger" href="{% url 'change_visibility' owner=repo.owner name=repo.name %}">Change Visibility</a>
+    <h2>Settings</h2>
+
 </div>
-<div id="collab-section">
-    <input type="text" id="manage-collab-form" placeholder="Enter username">
-    <a  class="waves-effect waves-light btn modal-trigger"  id="manage-collaboratorbtn" type="0">Add Collaborator</a>
-    <a  class="waves-effect waves-light btn modal-trigger"  id="manage-collaboratorbtn" type="1">Remove Collaborator</a>
-</div>
-<div id="collaborator-list" class="container">
+
+<div class="row">
+    <div class="col s6">
+        <div class="card horizontal">
+            <div class="card-stacked">
+                <div class="card-content">
+                    <span class="card-title black-text">Manage Repository</span>
+                    <div class="center-align">
+                        <a class="  red waves-effect waves-light btn modal-trigger" href="#modal1">Delete Repository</a>
+                    <a class=" waves-effect waves-light btn modal-trigger"
+                       href="{% url 'change_visibility' owner=repo.owner name=repo.name %}">Change Visibility</a>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+    <div class="col s6">
+        <div class="card horizontal">
+
+            <div class="card-stacked">
+                <div class="card-content">
+                    <span class="card-title black-text">Manage Collaborators</span>
+                    <div id="collab-section">
+                        <input type="text" id="manage-collab-form" placeholder="Enter username">
+                        <a class="waves-effect waves-light btn modal-trigger" id="manage-collaboratorbtn" type="0">Add
+                            Collaborator</a>
+                        <a class="waves-effect waves-light btn modal-trigger" id="manage-collaboratorbtn" type="1">Remove
+                            Collaborator</a>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
 
 </div>

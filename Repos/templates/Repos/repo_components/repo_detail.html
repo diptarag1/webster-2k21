@@ -45,12 +45,13 @@
             <div class="row">
                 <div class="col s12">
                     <ul class="tabs">
-                        <li class="tab col s2"><a class="active" href="#test1">Code</a></li>
-                        <li class="tab col s2"><a href="#test2">Issues</a></li>
-                        <li class="tab col s2 "><a href="#test3">Pull request</a></li>
-                        <li class="tab col s2"><a href="#test4">Security</a></li>
+
+                        <li class="tab col s3"><a class="active" href="#code_tab">Code</a></li>
+                        <li class="tab col s3"><a href="#issue_tab">Issues</a></li>
+                        <li class="tab col s3 "><a href="#pull_request_tab">Pull request</a></li>
+{#                        <li class="tab col s2"><a href="#test4">Security</a></li>#}
                         {% if repo.owner == request.user %}
-                            <li class="tab col s2"><a href="#test5">Settings</a></li>
+                            <li class="tab col s3"><a href="#settings_tab">Settings</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -71,14 +72,6 @@
                             Profile
                         </a>
                     </div>
-
-                    <div class="">
-                        <a class=" col s4 btn btn-small purple lighten-1 " href="{% url 'profile' user %}">
-                            Watch
-                        </a>
-                    </div>
-
-
                     {% if repo.parent %}
                         <p>This repo is forked from</p>
                         <a class="waves-effect waves-light modal-trigger"
@@ -100,18 +93,21 @@
                 <div class="col s11 offset-s1">
                     <div class="row">
                         <div class="row">
-
-                            <div id="test1" class="tabDetails  col s12"
-                                 href="#codeTab">   {% include 'Repos/repo_components/code_tab.html' %}</div>
-                            <div id="test2" class="tabDetails col s12"
-                                 href="#issueTab"> {% include 'Repos/issue_components/issue_tab.html' %}</div>
-                            <div id="test3" class="tabDetails col s12"
-                                 href="#pullRequestTab">{% include 'Repos/pull_request_components/pull_request_tab.html' %}</div>
-                            <div id="test4" class="tabDetails col s12"
-                                 href="#securityTab"> {% include 'Repos/repo_components/security_tab.html' %}</div>
+                            <div id="code_tab" class="tabDetails  col s12">
+                                {% include 'Repos/repo_components/code_tab.html' %}
+                            </div>
+                            <div id="issue_tab" class="tabDetails col s12">
+                                {% include 'Repos/issue_components/issue_tab.html' %}
+                            </div>
+                            <div id="pull_request_tab" class="tabDetails col s12">
+                                {% include 'Repos/pull_request_components/pull_request_tab.html' %}
+                            </div>
+{#                            <div id="test4" class="tabDetails col s12"#}
+{#                                 href="#securityTab"> {% include 'Repos/repo_components/security_tab.html' %}</div>#}
                             {% if repo.owner == request.user %}
-                                <div id="test5"
-                                     class="tabDetails col s12">{% include 'Repos/repo_components/settings_tab.html' %}</div>
+                                <div id="settings_tab" class="tabDetails col s12">
+                                    {% include 'Repos/repo_components/settings_tab.html' %}
+                                </div>
                             {% endif %}
                         </div>
                     </div>
@@ -133,7 +129,7 @@
         </div>
         <div class="modal-footer">
             <a href="{% url 'delete_repo' owner=repo.owner name=repo.name %}">
-                <button class="btn" disabled="disabled" id="delete_btn"> Delete</button>
+                <button class="red btn" disabled="disabled" id="delete_btn"> Delete</button>
             </a>
         </div>
     </div>
@@ -173,7 +169,6 @@
             $('.modal').modal();
             $('select').formSelect();
             $('.tabs').tabs();
-
             $(document).on('click', '#starbtn', function (event) {
                 event.preventDefault()
                 var iid = {{ repo.pk }}
@@ -255,3 +250,4 @@
 {#    $('#manage-collab-form').autocomplete({source:autocomplete_list});#}
 {#    </script>#}
 {% endblock %}
+
