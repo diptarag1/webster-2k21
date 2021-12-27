@@ -94,10 +94,10 @@ def prepare_context(name, owner, branch, repo):
 
 def detail_issue(request, name, owner, issue_id, **kwargs):
     context = {}
-    issue = Issue.objects.filter(id=issue_id).first()
+    issue = get_object_or_404(Issue,id=issue_id)
     issue_comments = IssueComment.objects.filter(issue=issue)
     issue_comment_create_form = IssueCommentCreateForm()
-    repo = Repo.objects.filter(name=name).filter(owner__username=owner).first()
+    repo =issue.repo
     assignees=[user for user in issue.assignees.all()]
 
     context['issue'] = issue
