@@ -20,6 +20,7 @@ class Repo(models.Model):
     repoURL = models.CharField(max_length=30)  # ownerName/repoName
     star = models.ManyToManyField(User, related_name='star', blank=True)
     is_private = models.BooleanField(default=False)
+    description=models.TextField(default="Well this is a new born Repo ")
     def get_latest_commit_message(self,branch):
         _repo = get_bare_repo_by_name(self.owner, self.name)
         return _repo.heads[branch].commit.message

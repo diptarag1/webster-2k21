@@ -51,8 +51,14 @@
                                     <input type="text" name="rname" maxlength="30"
                                            class="textinput textInput form-control" required id="id_rname">
                                 </div>
+
                             </div>
+
                         </div>
+                    </div>
+                    <div class="input-field row">
+                        <textarea id="id_description" name="description" class="materialize-textarea"></textarea>
+                        <label for="id_description">Descrtiption (Optional)</label>
                     </div>
                     <div class="row">
                         <div class="col s12">
@@ -61,16 +67,17 @@
                             </p>
                         </div>
                     </div>
-{#                    <div class="row">#}
-{#                        <div class="input-field col s12">#}
-{#                            <textarea id="textarea1" class="materialize-textarea"></textarea>#}
-{#                            <label for="textarea1">Description</label>#}
-{#                        </div>#}
-{#                    </div>#}
+                    {#                    <div class="row">#}
+                    {#                        <div class="input-field col s12">#}
+                    {#                            <textarea id="textarea1" class="materialize-textarea"></textarea>#}
+                    {#                            <label for="textarea1">Description</label>#}
+                    {#                        </div>#}
+                    {#                    </div>#}
                     <div class="row">
                         <p>
                             <label>
-                                <input  class="active checked" id="private" name="group1" value="private" type="radio" checked/>
+                                <input class="active checked" id="private" name="group1" value="private" type="radio"
+                                       checked/>
                                 <span>Private</span>
                             </label>
                         </p>
@@ -84,7 +91,9 @@
                             </label>
                         </p>
                     </div>
-                    <button  type="submit" class="waves-effect waves-light btn-large purple lighten-1">Create repository</button>
+                    <button type="submit" class="waves-effect waves-light btn-large purple lighten-1">Create
+                        repository
+                    </button>
 
 
                 </form>

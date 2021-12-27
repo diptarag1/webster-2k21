@@ -27,12 +27,13 @@ def init_Repo(request):
             try:
                 new_repo_name=form.cleaned_data['rname']
                 if not Repo.objects.filter(owner=request.user).filter(name=new_repo_name):
+                    description=request.POST.get('description')
                     is_private=request.POST.get('group1')
                     if is_private == 'private':
                         is_private=True
                     else:
                         is_private=False
-                    new_repo = Repo(owner=request.user, is_private=is_private, name=new_repo_name)
+                    new_repo = Repo(owner=request.user, is_private=is_private, name=new_repo_name,description=description)
                     new_repo.repoURL = str(new_repo.owner) + '/' + new_repo.name
                     new_repo.save()
                     new_repo.collaborators.add(request.user)
